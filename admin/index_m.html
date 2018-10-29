@@ -14,7 +14,7 @@
 <script type="text/javascript" src="words.js"></script>
  <style>
   .m .col .select-wrapper+label {
-   top: -26px;  
+   top: -26px;
   }
      .m span{
          font-size: 0.9em;
@@ -27,7 +27,7 @@
     function load(settings, onChange) {
         // example: select elements with id=key and class=value and insert value
        if (!settings) return;
-        $('.value').each(function () {            
+        $('.value').each(function () {
             var $key = $(this);
             var id = $key.attr('id');
             if ($key.attr('type') === 'checkbox') {
@@ -73,48 +73,50 @@
          Learn more http://materializecss.com/forms.html-->
             <div class="row">
                 <div class="input-field col s6">
-                    <img src="template.png" class="logo">
+                    <img src="cec.png" class="logo">
                 </div>
             </div>
-            <div class="row">
+            <!-- div class="row">
                 <div class="input-field col s3">
                     <input class="value" id="test1" type="checkbox" />
                     <label for="test1" class="translate">test1</label>
                 </div>
-            </div>
+            </div -->
             <div class="row">
                 <div class="input-field col s12 m6 l4">
-                    <input class="value" id="myText" type="text">
-                    <label for="myText">Text</label>
-                    <span class="translate">Descriptions of the input field</span>
+                    <input class="value" id="osdName" type="text">
+                    <label for="osdName">OSD Name</label>
+                    <span class="translate">Name in CEC network, might be visible on TV.</span>
                 </div>
-                <div class="input-field col s12 m6 l4">
+                <!--div class="input-field col s12 m6 l4">
                     <input type="number" class="value" id="test2" />
                     <label for="test2" class="translate">Number</label>
                     <!-- Important: label must come directly after input. Label is important. -->
-                    <span class="translate">test2</span>
+                    <!-- span class="translate">test2</span>
                 </div>
                 <div class="input-field col s12 m6 l4">
                     <input id="email" type="email" class="value validate">
                     <label for="email" data-error="wrong" data-success="right">Email</label>
                     <!--  You can add custom validation messages by adding either data-error or data-success attributes to your input field labels.-->
-                    <span class="translate">Verification input</span>
-                </div>
+                    <!-- span class="translate">Verification input</span>
+                </div -->
             </div>
             <div class="row">
                 <div class="input-field col s12 m4">
-                    <select class="value" id="mySelect">
-                        <option value="auto" class="translate">Auto</option>
-                        <option value="manual" class="translate">Manual</option>
+                    <select class="value" id="type">
+                        <option value="p" class="translate">Playback</option>
+                        <option value="r" class="translate">Recording</option>
+                        <option value="t" class="translate">Tuner</option>
+                        <option value="a" class="translate">Audio</option>
                     </select>
-                    <label for="mySelect" class="translate">My select</label>
+                    <label for="type" class="translate">Type of device to emulate</label>
                     <!-- Important: label must come directly after select. Label is important. -->
                 </div>
-                <div class="input-field col s12 m8">
+                <!-- div class="input-field col s12 m8">
                     <i class="material-icons prefix">mode_edit</i>
                     <textarea id="Textarea" class="value materialize-textarea"></textarea>
                     <label for="Textarea">Message</label>
-                </div>
+                </div-->
             </div>
             <div class="row">
                 <div class="col s12">

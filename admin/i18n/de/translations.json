@@ -1,9 +1,8 @@
 {
-  "Auto": "Auto",
-  "Manual": "Manual",
-  "My select": "Mein Auswahl",
-  "on save adapter restarts with new config immediately": "Beim Speichern von Einstellungen der Adapter wird sofort neu gestartet.",
-  "template adapter settings": "Beispiel",
-  "test1": "Test 1",
-  "test2": "Test 2"
+  "Name in CEC network, might be visible on TV.": "Name im CEC Netzwerk. Sichtbar z.B. auf dem TV.",
+  "Playback": "Wiedergabe",
+  "Recording": "Aufnahme",
+  "Tuner": "Tuner",
+  "Audio": "Audio",
+  "Type of device to emulate": "Gerät, das emuliert werden soll",
 }
