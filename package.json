@@ -1,28 +1,37 @@
 {
-  "name": "iobroker.template",
-  "version": "0.6.0",
-  "description": "ioBroker template Adapter",
+  "name": "iobroker.cec2",
+  "version": "0.0.1",
+  "description": "Controls HDMI CEC devices form out of ioBroker.",
   "author": {
-    "name": "@@Author@@",
-    "email": "@@email@@"
+    "name": "Garfonso",
+    "email": "garfonso@mobo.info"
   },
   "contributors": [
     {
-      "name": "@@Author@@",
-      "email": "@@email@@"
+      "name": "Garfonso",
+      "email": "garfonso@mobo.info"
+    },
+    {
+      "name": "soef",
+      "email": "soef@gmx.net"
     }
   ],
-  "homepage": "https://github.com/ioBroker/ioBroker.template",
+  "homepage": "https://github.com/Garfonso/ioBroker.cec2",
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "template",
+    "HDMI",
     "Smart Home",
-    "home automation"
+    "home automation",
+    "multimedia",
+    "CEC"
+  ],
+  "os": [
+    "!win32"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.template"
+    "url": "https://github.com/Garfonso/ioBroker.cec2"
   },
   "dependencies": {},
   "devDependencies": {
@@ -35,7 +44,7 @@
     "test": "node node_modules/mocha/bin/mocha --exit"
   },
   "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.template/issues"
+    "url": "https://github.com/Garfonso/ioBroker.cec2/issues"
   },
   "readmeFilename": "README.md"
 }
