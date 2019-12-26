@@ -28,10 +28,12 @@
 
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
-const utils = require('@iobroker/adapter-core');
+const utils = require("@iobroker/adapter-core");
 
 //imports:
-const CEC = require("./lib/cec-functions");
+//const CEC = require("./lib/cec-functions");
+import {CEC, CECMonitor} from "@senzil/cec-monitor";
+
 
 class CEC2 extends utils.Adapter {
 
@@ -41,15 +43,51 @@ class CEC2 extends utils.Adapter {
     constructor(options) {
         super({
             ...options,
-            name: 'template',
+            name: 'cec2',
         });
         this.on('ready', this.onReady.bind(this));
         this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+
+        this.cec = {};
     }
 
+    async pollPowerStates() {
+        let status = await this.cec.SendCommand(null, CEC.LogicalAddress.TV, CEC.GIVE_DEVICE_POWER_STATUS, CECMonitor.EVENTS.REPORT_POWER_STATUS);
+        this.log.debug("TV Power is " + status.data.str);
+
+        setTimeout(this.pollPowerStates, this.config.pollInterval || 30000);
+    }
+
+    /**
+     * initializes cec monitor
+     * @param config
+     */
+    async setupCECMonitor(config) {
+        this.cec = new CECMonitor(config.osdName, {
+            debug: config.cecDebug,
+            hdmiport: config.hdmiPort,
+            processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
+            recorder: config.type === "r",
+            player: config.type === "p",
+            tuner: config.type === "t",
+            audio: config.type === "a",
+            autorestart: true, //allows auto restart of cec-client.
+            command_timeout: 3,
+            user_control_hold_interval: config.userControlHoldInterval
+        });
+
+        await this.cec.WaitForReady();
+        this.log.debug("CEC Monitor ready.");
+        //let's see what is there: //TODO is this necessary? Does the package do this anyway?
+        this.cec.WriteRawMessage("scan");
+
+        if (config.pollPowerStates) {
+            this.pollPowerStates();
+        }
+    }
 
     /**
      * Is called when databases are connected and adapter received configuration.
@@ -61,6 +99,8 @@ class CEC2 extends utils.Adapter {
         // this.config:
         this.log.info('config osdName: ' + this.config.osdName);
         this.log.info('config type: ' + this.config.type);
+
+        this.setupCECMonitor(this.config);
 
         /*
         For every state in the system there has to be also an object of type state

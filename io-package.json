@@ -39,7 +39,12 @@
     },
     "native": {
         "osdName": "ioBroker",
-        "type": "r"
+        "type": "r",
+        "cecDebug": true,
+        "hdmiPort": 3,
+        "userControlHoldInterval": 1000,
+        "pollPowerStates": true,
+        "pollInterval": 30000
     },
     "objects": [
 
