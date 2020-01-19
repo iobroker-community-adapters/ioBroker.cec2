@@ -1,17 +1,17 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.6.0",
+        "version": "0.0.1",
         "news": {
             "0.0.1": {
                 "en": "initial adapter",
                 "de": "Initiale Version"
             }
         },
-		"title": "HDMI CEC devices",
+		"title": "HDMI CEC devices 2",
         "titleLang": {
-            "en": "HDMI CEC devices",
-            "de": "HDMI CEC Geräte"
+            "en": "HDMI CEC devices 2",
+            "de": "HDMI CEC Geräte 2"
         },
         "desc": {
             "en": "Can be used to monitor / control multimedia devices using the HDMI CEC bus. Possible commands include power on/off, switch input (for TVs), volume up/donw",
@@ -24,6 +24,7 @@
             "en": "docs/en/admin.md",
             "de": "docs/de/admin.md"
         },
+        "osDependencies": ["cec-utils"],
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "cec2.png",
