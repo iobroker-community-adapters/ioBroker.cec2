@@ -637,7 +637,11 @@ class CEC2 extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            this.log.info('cleaned everything up...');
+            this.cec.Stop();
+            for (const key of Object.keys(this.timeouts)) {
+                clearTimeout(this.timeouts[key]);
+            }
+            this.log.debug('cleaned everything up...');
             callback();
         } catch (e) {
             callback();
