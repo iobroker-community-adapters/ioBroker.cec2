@@ -13,11 +13,16 @@ and might not be supported on all devices.
 Early alpha release, just now only tested on Raspberry Pi.
 
 #### Requirements
-cec-client have to be installed. Install the client from [here] (https://github.com/Pulse-Eight/libcec)
-and follow the install instruction in the [readme] (https://github.com/Pulse-Eight/libcec/blob/master/README.md) of the libcec project.
-The readme has a special section for the Raspberry Pi.
+cec-client have to be installed. Usually can be installed using:
+```
+sudo apt install cec-utils
+```
 
-Or you can try this simple [script] (/install-libcec.sh/) as root.
+The user running iobroker (nowadays "iobroker") needs acces to /dev/vchiq. You may need to add the iobroker user to the 
+video group for that:
+```
+sudo usermod -a -G video iobroker
+```
 
 #### Installation
 Execute the following command in the iobroker root directory (e.g. in /opt/iobroker)

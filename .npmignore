@@ -26,3 +26,6 @@ admin/i18n
 
 # maintenance scripts
 maintenance/**
+
+distribute.sh
+distribute.cmd
