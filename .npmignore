@@ -16,6 +16,8 @@ appveyor.yaml
 
 .eslintrc.json
 .eslintrc.js
+.tsconfig.json
+.github/
 
 # npm package files
 iobroker.*.tgz
