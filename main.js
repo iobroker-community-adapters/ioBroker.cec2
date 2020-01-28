@@ -561,7 +561,18 @@ class CEC2 extends utils.Adapter {
         Object.keys(eventToStateDefinition).forEach(k => this.cec.on(k, d => this.processEvent(d)));
 
         this.log.debug('Starting CEC Monitor.');
-        await this.cec.WaitForReady();
+        try {
+            await this.cec.WaitForReady();
+            await this.setStateChangedAsync("info.connection", true, true);
+        } catch (e) {
+            this.log.error("Could not start CEC adapter: " + e);
+            await this.setStateChangedAsync("info.connection", false, true);
+            if (e.code === "ENOENT") {
+                this.log.error("cec-client not found. Please make sure cec-utils are installed and cec-client can be run by iobroker user.");
+                return;  //can not do the rest of the stuff.
+            }
+        }
+
         this.log.debug("CEC Monitor ready.");
         this.timeouts.scan = setTimeout(() => this.cec.WriteRawMessage("scan"), 10000);
 
@@ -640,6 +651,19 @@ class CEC2 extends utils.Adapter {
             await this.setStateChangedAsync(buildId(device, stateDefinitions.active), false, true);
             this.devices.push(existingDevice);
         }
+
+        await this.setObjectNotExistsAsync("info.connection", {
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If communication with cec-client works",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {},
+        });
 
         //setup cec system
         await this.setupCECMonitor(this.config);
