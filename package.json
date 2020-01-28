@@ -22,9 +22,7 @@
     "multimedia",
     "CEC"
   ],
-  "os": [
-    "!win32"
-  ],
+  "os": [],
   "repository": {
     "type": "git",
     "url": "https://github.com/iobroker-community-adapters/ioBroker.cec2"
