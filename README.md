@@ -1,6 +1,8 @@
 ![Logo](admin/cec2.png)
 ### ioBroker.cec2
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/iobroker-community-adapters/ioBroker.cec2.svg)](https://greenkeeper.io/)
+
 Adapter for HDMI CEC
 
 You can monitor / control devices using HDMI CEC. Most modern TVs and multimedia devices support CEC to some extent.
