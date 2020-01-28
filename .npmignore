@@ -16,7 +16,7 @@ appveyor.yaml
 
 .eslintrc.json
 .eslintrc.js
-.tsconfig.json
+tsconfig.json
 .github/
 
 # npm package files
