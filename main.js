@@ -74,11 +74,11 @@ const eventToStateDefinition = {
     "REPORT_ARC_ENDED": stateDefinitions.arc
 };
 
-function buildId(device, stateDef) {
+function buildId(device, stateDef, poll = false) {
     if (typeof stateDef === "string") {
         stateDef = eventToStateDefinition[stateDef];
     }
-    return device.name + "." + (stateDef.idPrefix ? stateDef.idPrefix + "." : "") + stateDef.name;
+    return device.name + "." + (stateDef.idPrefix ? stateDef.idPrefix + "." : "") + (poll ? "poll." : "") + stateDef.name;
 }
 
 function cleanUpName(name) {
@@ -186,7 +186,7 @@ class CEC2 extends utils.Adapter {
             type: "state",
             common: {
                 type: stateDefinition.type,
-                desciption: stateDefinition.desc,
+                description: stateDefinition.desc,
                 name: stateDefinition.name,
                 read: stateDefinition.read === undefined ? true : stateDefinition.read,
                 write: stateDefinition.write,
@@ -198,6 +198,23 @@ class CEC2 extends utils.Adapter {
         device.createdStates.push(stateDefinition.name);
 
         await this.setStateChangedAsync(id, device[stateDefinition.key || stateDefinition.name], true);
+
+        //create poll states:
+        if (stateDefinition.pollOpCode) {
+            let id = buildId(device, stateDefinition, true);
+            await this.setObjectNotExistsAsync(id, {
+                type: "state",
+                common: {
+                    type: "boolean",
+                    description: "poll " + stateDefinition.name,
+                    name: "poll " + stateDefinition.name,
+                    role: "button",
+                    read: false,
+                    write: true
+                },
+                native: { def: stateDefinition.key || stateDefinition.name }
+            });
+        }
     }
 
     getDeviceByName(name) {
@@ -654,9 +671,18 @@ class CEC2 extends utils.Adapter {
                 try {
                     this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                     let stateDefinition = stateDefinitionFromId(id);
+                    let isPoll = id.indexOf(".poll.") > 0;
                     let deviceName = getDeviceIdFromId(id);
                     let device = this.devices.find(d => d.name === deviceName);
                     this.log.debug("Device: " + device.name);
+                    if (isPoll) {
+                        if (stateDefinition.pollOpCode) {
+                            await this.cec.SendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
+                        } else {
+                            this.log.error("Can not poll " + stateDefinition.name + ". Please report error.");
+                        }
+                        return;
+                    }
                     if (typeof stateDefinition.command === "function") {
                         this.log.debug("Sending " + state.val + " for id " + id + " to " + deviceName);
                         await stateDefinition.command(state.val, device, this.cec, this.log);
