@@ -465,6 +465,24 @@ class CEC2 extends utils.Adapter {
                 }
             }
 
+            if (stateDef.name === stateDefinitions.physicalAddress.name) {
+                if (data && data.data && data.data.str) {
+                    if (device.physicalAddress !== data.data.str && !device.physicalAddressReallyChanged) {
+                        this.log.info("Devices with unexpected physical address came online on logical address " + device.logicalAddressHex);
+                        if (device.active) {
+                            await this.setDeviceActive(device, false, CEC.LogicalAddress.UNKNOWN);
+                            delete this.logicalAddressToDevice[data.source];
+                        }
+                        device.physicalAddressReallyChanged = true; //prevent endless loop, if physical address really changed.
+
+                        //this should create the new device:
+                        await this.cec.SendCommand(null, data.source, CEC.Opcode.GIVE_OSD_NAME, CECMonitor.EVENTS.SET_OSD_NAME);
+                        //add phyiscal adress to device:
+                        return this.processEvent(data);
+                    }
+                }
+            }
+
             let value = data.parsedData;
             if (value === undefined) {
                 this.log.debug("Parsing data...");
