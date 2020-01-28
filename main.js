@@ -212,7 +212,7 @@ class CEC2 extends utils.Adapter {
                     read: false,
                     write: true
                 },
-                native: { def: stateDefinition.key || stateDefinition.name }
+                native: { def: stateDefinition.key || stateDefinition.name, poll: true }
             });
         }
     }
@@ -638,14 +638,16 @@ class CEC2 extends utils.Adapter {
             let states = await this.getStatesOfAsync(id);
 
             for (const state of states) {
-                let def = stateDefinitions[state.native.def];
-                let value = await this.getStateAsync(state._id);
-                if (value) { //unpack val
-                    value = value.val;
+                if (!state.native.poll) { //skipp poll states
+                    let def = stateDefinitions[state.native.def];
+                    let value = await this.getStateAsync(state._id);
+                    if (value) { //unpack val
+                        value = value.val;
+                    }
+                    existingDevice[def.name] = value; //remember values
+                    // @ts-ignore
+                    existingDevice.createdStates.push(state.native.def);
                 }
-                existingDevice[def.name] = value; //remember values
-                // @ts-ignore
-                existingDevice.createdStates.push(state.native.def);
             }
             existingDevice.active = false;
             await this.setStateChangedAsync(buildId(device, stateDefinitions.active), false, true);
@@ -724,16 +726,17 @@ class CEC2 extends utils.Adapter {
                     if (isPoll) {
                         if (stateDefinition.pollOpCode) {
                             await this.cec.SendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
+                            await this.cec.SendMessage(null, stateDefinition.pollTarget || device.logicalAddress, stateDefinition.pollOpCode, stateDefinition.pollArgument);
                         } else {
                             this.log.error("Can not poll " + stateDefinition.name + ". Please report error.");
                         }
-                        return;
-                    }
-                    if (typeof stateDefinition.command === "function") {
-                        this.log.debug("Sending " + state.val + " for id " + id + " to " + deviceName);
-                        await stateDefinition.command(state.val, device, this.cec, this.log);
                     } else {
-                        this.log.warn("Can not write state " + id + " of type " + stateDefinition.name + ". Please do not write read only states!");
+                        if (typeof stateDefinition.command === "function") {
+                            this.log.debug("Sending " + state.val + " for id " + id + " to " + deviceName);
+                            await stateDefinition.command(state.val, device, this.cec, this.log);
+                        } else {
+                            this.log.warn("Can not write state " + id + " of type " + stateDefinition.name + ". Please do not write read only states!");
+                        }
                     }
                 } catch (e) {
                     this.log.error("Could not write state " + id + ": " + e);
