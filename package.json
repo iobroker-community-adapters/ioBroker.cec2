@@ -10,10 +10,6 @@
     {
       "name": "Garfonso",
       "email": "garfonso@mobo.info"
-    },
-    {
-      "name": "soef",
-      "email": "soef@gmx.net"
     }
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.cec2",
