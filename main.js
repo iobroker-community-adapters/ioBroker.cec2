@@ -347,6 +347,13 @@ class CEC2 extends utils.Adapter {
         await this.createStateInDevice(device, stateDefinitions.menuStatus);
         //power state:
         await this.createStateInDevice(device, stateDefinitions.powerState);
+        //active source state:
+        await this.createStateInDevice(device, stateDefinitions.activeSource);
+
+        if (logicalAddress === 0) { //TV always has 0.0.0.0, but does not necessarily report that.
+            device.physicalAddress = "0.0.0.0";
+            await this.createStateInDevice(device, stateDefinitions.physicalAddress);
+        }
 
         switch (logicalAddress) {
             /*case CEC.LogicalAddress.PLAYBACKDEVICE1:
@@ -515,6 +522,12 @@ class CEC2 extends utils.Adapter {
                 //set global active source here:
                 if (stateDef.name === stateDefinitions.activeSource.name) {
                     await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions["active-source"]), device.physicalAddress, true);
+
+                    for (const otherDevice of this.devices) {
+                        if (otherDevice.name !== "Global" && otherDevice.activeSource && otherDevice.name !== device.name) {
+                            await this.setStateChangedAsync(buildId(device, stateDef), false, true);
+                        }
+                    }
                 }
                 if (stateDef.name === stateDefinitions.volume.name) {
                     await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions.volume), value, true);
