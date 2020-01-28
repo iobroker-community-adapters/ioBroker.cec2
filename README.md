@@ -36,6 +36,9 @@ Or install from admin webpage.
 
 ## Changelog
 
+### 0.0.2 (2020-01-28)
+* (Garfonso) fixed a lot of bugs
+
 ### 0.0.1 (2020-01-28)
 * (Garfonso) initial release
 

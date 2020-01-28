@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "news": {
+            "0.0.2": {
+                "en": "fixed a lot of bugs",
+                "de": "viele Fehler behoben"
+            },
             "0.0.1": {
                 "en": "initial adapter",
                 "de": "Initiale Version"
