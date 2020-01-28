@@ -2,6 +2,8 @@
  *
  * cec2 adapter
  *
+ * Created with @iobroker/create-adapter v1.20.0
+ *
  * //native parameters will be in adapter.config
  *
  * Structure:
@@ -21,10 +23,19 @@
  *
  */
 
-/* jshint -W097 */// jshint strict:false
-/*jslint node: true */
-"use strict";
 
+//TODO:
+// - add user control as states in device (subfolder)
+//      - could also need a state with button press lenght
+// - testing!!!
+// - especially setting stuff, everything besides on off needs testing, i.e.:
+//          activeSource (on AND off!),
+//          recording (do we have a device that can record at all??),
+//          deck (what can I control with this?),
+//          tuner (can I control TV tuner with that?),
+//          menu (can I open menu with that? On TV? On FireTV?),
+//  - add more specific polling, i.e. ask audio device for audio status and tuner maybe?
+//  - should we add parameter subfolder and allow polling of single states?
 
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
@@ -36,263 +47,9 @@ const CEC = require("@senzil/cec-monitor").CEC;
 const CECMonitor = require("@senzil/cec-monitor").CECMonitor;
 const fs = require('fs').promises;
 const fsConstants = require('fs').constants;
+const stateDefinitions = require("./lib/stateDefinitions");
 
-const stateDefinitions = {
-    active: { //seen this session -> only then LE is valid.
-        name: "active",
-        type: "boolean",
-        write: false,
-        role: "indicator.active",
-        desc: "device was active, logical address should be right",
-        parse: () => true
-    },
-    lastSeen: {
-        name: "lastSeen",
-        write: false,
-        desc: "last CEC command from device",
-        role: "value.time",
-        parse: () => Date.now()
-    },
-    //events exists for them:
-    physicalAddress: {
-        name: "physicalAddress",
-        type: "string",
-        desc: "HDMI Ports on route from TV to device",
-        write: false,
-        pollOpCode: CEC.Opcode.GIVE_PHYSICAL_ADDRESS
-    },
-    logicalAddress: {
-        name: "logicalAddress",
-        type: "number",
-        write: false,
-        desc: "Logical Address (might change)"
-    },
-    logicalAddressHex: {
-        name: "logicalAddressHex",
-        type: "string",
-        write: false,
-        desc: "Logical Address as Hex Number"
-    },
-    powerState: {
-        name: "state",
-        type: "boolean",
-        write: true,
-        command: async function(value, device, cec) {
-            if (value) {
-                return cec.WriteRawMessage("on " + device.logicalAddress);
-            } else {
-                return cec.WriteRawMessage("standby " + device.logicalAddress);
-            }
-        },
-        parse: (data) => {
-            if (data.data.val === CEC.PowerStatus.ON || data.data.val === CEC.PowerStatus.IN_TRANSITION_STANDBY_TO_ON) {
-                return true;
-            }
-            return false;
-        },
-        pollOpCode: CEC.Opcode.GIVE_DEVICE_POWER_STATUS,
-        key: "powerState"
-    },
-    activeSource: {
-        name: "activeSource",
-        type: "boolean",
-        desc: "switch input to this device and probably switches on TV",
-        write: true,
-        command: async function(value, device, cec) {
-            if (value) {
-                return cec.SendMessage(device.logicalAddress, CEC.LogicalAddress.BROADCAST, CEC.Opcode.ACTIVE_SOURCE);
-            } else {
-                return cec.SendMessage(device.logicalAddress, CEC.LogicalAddress.TV, CEC.Opcode.INACTIVE_SOURCE);
-            }
-        },
-        parse: (data) => data.opcode === CEC.Opcode.ACTIVE_SOURCE ? true : false,
-        pollOpCode: CEC.Opcode.REQUEST_ACTIVE_SOURCE
-    },
-    route: {
-        name: "route",
-        type: "string",
-        write: false,
-        pollOpCode: CEC.Opcode.GIVE_PHYSICAL_ADDRESS
-    },
-    routingInfo: {
-        name: "routingInfo",
-        type: "string",
-        write: false,
-        pollOpCode: CEC.Opcode.GIVE_PHYSICAL_ADDRESS
-    },
-    recording: {
-        name: "recording",
-        type: "boolean",
-        write: true,
-        command: async function(value, device, cec) {
-            if (value) {
-                return cec.SendMessage(null, device.logicalAddress, CEC.Opcode.RECORD_TV_SCREEN);
-            } else {
-                return cec.SendMessage(null, device.logicalAddress, CEC.Opcode.RECORD_OFF);
-            }
-        }
-    },
-    cecVersion: {
-        name: "cecVersion",
-        type: "string",
-        write: false,
-        pollOpCode: CEC.Opcode.GET_CEC_VERSION
-    },
-    language: {
-        name: "language",
-        type: "string",
-        write: false,
-        pollOpCode: CEC.Opcode.GET_MENU_LANGUAGE,
-    },
-    menu: {
-        name: "menu",
-        type: "boolean",
-        write: true,
-        command: async function(value, device, cec) {
-            if (device.logicalAddress === CEC.LogicalAddress.TV) {
-                await cec.SendMessage(null, device.logicalAddress, CEC.Opcode.MENU_REQUEST, value ? CEC.MenuRequestType.ACTIVATE : CEC.MenuRequestType.DEACTIVATE);
-            }
-            await cec.SendMessage(CEC.LogicalAddress.TV, device.logicalAddress, CEC.Opcode.MENU_REQUEST, value ? CEC.MenuRequestType.ACTIVATE : CEC.MenuRequestType.DEACTIVATE);
-            return cec.SendMessage(null, device.logicalAddress, CEC.Opcode.MENU_REQUEST, CEC.MenuRequestType.QUERY); //query afterwards
-        },
-        parse: data => {
-            return !data.args[0]; //0 = menu is active.
-        },
-        pollOpCode: CEC.Opcode.MENU_REQUEST,
-        pollArgument: CEC.MenuRequestType.QUERY,
-    },
-    deck: {
-        name: "deck",
-        type: "number",
-        write: true,
-        valueList: CEC.DeckStatus,
-        command: async function(value, device, cec) {
-            let commandOpcode = CEC.Opcode.DECK_CONTROL;
-            let argument;
-            //might add "speed" state in order to let user choose min/max/medium speed options?
-            switch (value) {
-                case CEC.DeckStatus.STOP:
-                    argument = CEC.DeckControl.STOP;
-                    break;
-                case CEC.DeckStatus.SKIP_FOWARD:
-                case CEC.DeckStatus.INDEX_SEARCH_FOWARD:
-                    argument = CEC.DeckControl.SKIP_FORWARD_WIND;
-                    break;
-                case CEC.DeckStatus.SKIP_REVERSE:
-                case CEC.DeckStatus.INDEX_SEARCH_REVERSE:
-                    argument = CEC.DeckControl.SKIP_REVERSE_REWIND;
-                    break;
-                case CEC.DeckStatus.NO_MEDIA:
-                    argument = CEC.DeckControl.EJECT;
-                    break;
-                case CEC.DeckStatus.PLAY:
-                    argument = CEC.Play.PLAY_FORWARD;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.PLAY_REVERSE:
-                    argument = CEC.Play.PLAY_REVERSE;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.SLOW:
-                    argument = CEC.Play.SLOW_FORWARD_MEDIUM_SPEED;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.SLOW_REVERSE:
-                    argument = CEC.Play.SLOW_REVERSE_MEDIUM_SPEED;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.STILL:
-                    argument = CEC.Play.PLAY_STILL;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.FAST_FOWARD:
-                    argument = CEC.Play.FAST_FORWARD_MEDIUM_SPEED;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.FAST_REVERSE:
-                    argument = CEC.Play.FAST_REVERSE_MEDIUM_SPEED;
-                    commandOpcode = CEC.Opcode.PLAY;
-                    break;
-                case CEC.DeckStatus.RECORD:
-                    commandOpcode = CEC.Opcode.RECORD_ON;
-                    argument = null;
-                    break;
-                default:
-                    this.log.info(value + " not recognized as play command.");
-                    return;
-            }
-            return cec.SendMessage(null, device.logicalAddress, commandOpcode, argument);
-        },
-        pollOpCode: CEC.Opcode.GIVE_DECK_STATUS
-    },
-    tuner: {
-        name: "tuner",
-        type: "string",
-        write: false,
-        parse: function (data) {
-            return JSON.stringify(data); //in order to gather more information...
-        },
-        pollOpCode: CEC.Opcode.GIVE_TUNER_DEVICE_STATUS
-    },
-    vendor: {
-        name: "vendor",
-        type: "string",
-        write: false,
-        parse: function (data) {
-            return data.data.str || "Unknown (" + data.data.val + ")";
-        },
-        pollOpCode: CEC.Opcode.GIVE_DEVICE_VENDOR_ID
-    },
-    name: {
-        name: "name",
-        type: "string",
-        write: false,
-        pollOpCode: CEC.Opcode.GIVE_OSD_NAME
-    },
-    volume: {
-        name: "volume",
-        type: "number",
-        write: true,
-        parse: (data) => {
-            let vol = parseInt(data.args.join(""), 16);
-            let mute = 0x80 & vol;
-            if (mute) {
-                return 0;
-            } else {
-                return vol;
-            }
-        },
-        command: async function(value, device, cec) {
-            let button = CEC.UserControlCode.MUTE;
-            if (value > 0) {
-                button = value > device.volume ? CEC.UserControlCode.VOLUME_UP : CEC.UserControlCode.VOLUME_DOWN;
-            }
-            await cec.SendCommand(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_PRESSED, CECMonitor.EVENTS.REPORT_AUDIO_STATUS, button);
-            return cec.SendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_RELEASE);
-        },
-        pollOpCode: CEC.Opcode.GIVE_AUDIO_STATUS
-    },
-    systemAudio: {
-        name: "systemAudio",
-        type: "boolean",
-        write: true,
-        command: async function(value, device, cec) {
-            //maybe need to do SYSTEM_AUDIO_MODE_REQUEST from LE of active source and physical adress of active source, too?
-            return cec.SendCommand(null, device.logicalAddress, CEC.Opcode.SET_SYSTEM_AUDIO_MODE, CECMonitor.EVENTS.SYSTEM_AUDIO_MODE_STATUS, value ? CEC.SystemAudioStatus.ON : CEC.SystemAudioStatus.OFF);
-        },
-        pollOpCode: CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS
-    },
-    arc: {
-        name: "arc",
-        type: "boolean",
-        write: true,
-        parse: (data) => data.opcode === CEC.Opcode.REPORT_ARC_STARTED,
-        command: async function(value, device, cec) {
-            //evaluate if that works
-            return cec.SendMessage(null, CEC.LogicalAddress.BROADCAST, value ? CEC.Opcode.REQUEST_ARC_START : CEC.Opcode.REQUEST_ARC_END);
-        }
-    }
-};
+const forbiddenCharacters = /[\]\[*,;'"`<>\\\s?]/g;
 
 const eventToStateDefinition = {
     0: stateDefinitions.active, //0 === polling.
@@ -308,7 +65,7 @@ const eventToStateDefinition = {
     "TUNER_DEVICE_STATUS": stateDefinitions.tuner,
     "DEVICE_VENDOR_ID": stateDefinitions.vendor,
     "SET_OSD_NAME": stateDefinitions.name,
-    "MENU_STATUS": stateDefinitions.menu,
+    "MENU_STATUS": stateDefinitions.menuStatus,
     "REPORT_POWER_STATUS": stateDefinitions.powerState,
     "POLLING_MESSAGE": stateDefinitions.active,
     "REPORT_AUDIO_STATUS": stateDefinitions.volume,
@@ -321,18 +78,23 @@ function buildId(device, stateDef) {
     if (typeof stateDef === "string") {
         stateDef = eventToStateDefinition[stateDef];
     }
-    return device.name + "." + stateDef.name;
+    return device.name + "." + (stateDef.idPrefix ? stateDef.idPrefix + "." : "") + stateDef.name;
 }
 
 function cleanUpName(name) {
-    let newName = name.replace(/[\.'"!?,]/g, "");
-    newName = newName.replace(/ /g, "_");
+    //hack, somehow FireTV reports different name, when off...
+    if (name === "AFTR") {
+        return "Amazon_FireTV";
+    }
+    let newName = name.replace(/ /g, "_");
+    newName = newName.replace(forbiddenCharacters, "");
     return newName;
 }
 
-function getDeviceNameFromId(id) {
-    let lastDot = id.lastIndexOf(".");
-    return id.substring(id.lastIndexOf(".", lastDot - 1) + 1, lastDot);
+function getDeviceIdFromId(id) {
+    let parts = id.split(".");
+    return parts[2]; //0 == adapter, 2 == instance.
+    //return id.substring(id.lastIndexOf(".", lastDot - 1) + 1, lastDot);
 }
 
 function getStateFromId(id) {
@@ -369,7 +131,20 @@ class CEC2 extends utils.Adapter {
         this.timeouts = {};
         this.logicalAddressToDevice = {};
         this.devices = [];
-        this.searchingLogicalAddresses = {};
+        this.globalDevice = {
+            name: "Global",
+            logicalAddress: CEC.LogicalAddress.BROADCAST,
+            volume: 0,
+            volumeUp: false,
+            volumeDown: false,
+            mute: false,
+            arc: false,
+            systemAudio: false,
+            devices: this.devices,
+            created: true,
+            createdStates: []
+        };
+        this.devices.push(this.globalDevice);
     }
 
     async pollPowerStates() {
@@ -387,6 +162,60 @@ class CEC2 extends utils.Adapter {
         this.timeouts.pollPowerStates = setTimeout(() => this.pollPowerStates(), this.config.pollInterval || 30000);
     }
 
+    //create a state in device based on statedefinition and set value.
+    async createStateInDevice(device, stateDefinition) {
+        if (device.createdStates.find(s => s === (stateDefinition.key ? stateDefinition.key : stateDefinition.name))) {
+            this.log.debug("State " + stateDefinition.name + " already created in " + device.name);
+            return;
+        }
+
+        let states = undefined;
+        if (stateDefinition.valueList) {
+            states = {};
+            Object.keys(stateDefinition.valueList).forEach(key => {
+                states[stateDefinition.valueList[key]] = key;
+            });
+        }
+
+        let id = buildId(device, stateDefinition);
+        if (id.indexOf("undefined") >= 0) {
+            this.log.error("Creating state undefined: " + JSON.stringify(stateDefinition) + " in device" + JSON.stringify(device) + " id " + id);
+            throw new Error("State undefined: " + id);
+        }
+        await this.setObjectNotExistsAsync(id, {
+            type: "state",
+            common: {
+                type: stateDefinition.type,
+                desciption: stateDefinition.desc,
+                name: stateDefinition.name,
+                read: stateDefinition.read === undefined ? true : stateDefinition.read,
+                write: stateDefinition.write,
+                role: stateDefinition.role,
+                states: states
+            },
+            native: { def: stateDefinition.key || stateDefinition.name }
+        });
+        device.createdStates.push(stateDefinition.name);
+
+        await this.setStateChangedAsync(id, device[stateDefinition.key || stateDefinition.name], true);
+    }
+
+    getDeviceByName(name) {
+        if (name) {
+            name = cleanUpName(name);
+            return this.devices.find(d => d.name === name);
+        }
+        return undefined;
+    }
+
+    async setDeviceActive(device, active, logicalAddress) {
+        device.active = active;
+        device.logicalAddress = logicalAddress;
+        await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
+        await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
+        await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
+    }
+
     async createCECDevice(logicalAddress, data) {
         this.log.debug("============================ Creating device: " + logicalAddress + ": " + JSON.stringify(data));
         //do we have a name already?
@@ -394,9 +223,16 @@ class CEC2 extends utils.Adapter {
         if (!name && logicalAddress === 0) {
             name = "TV"; //TV does not really need to implement OSD Name... not nice. :-(
         }
+        //do we know the device already?
+        let device = this.getDeviceByName(name);
+        if (device && !this.logicalAddressToDevice[logicalAddress]) {
+            this.logicalAddressToDevice[logicalAddress] = device; //we do not fill this from existing devices in ioBroker, do that here.
+        }
 
-        //let's find/create a dummy device to store data into.
-        let device = this.logicalAddressToDevice[logicalAddress];
+        //do we have a device for the logicalAddress?
+        if (!device) {
+            device = this.logicalAddressToDevice[logicalAddress];
+        }
         if (!device) {
             this.log.debug("Creating dummy device for " + logicalAddress + " to use during device creation.");
             device = {
@@ -406,8 +242,9 @@ class CEC2 extends utils.Adapter {
                 lastGetPhysAddr: 0,
                 getPhysAddrTries: 0,
                 logicalAddress: logicalAddress,
-                name: name,
-                get logicalAddressHex() { return Number(this.logicalAddress).toString(16); }
+                name: name ? cleanUpName(name) : undefined,
+                get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
+                createdStates: []
             };
             this.logicalAddressToDevice[logicalAddress] = device;
         }
@@ -415,7 +252,7 @@ class CEC2 extends utils.Adapter {
             name = device.name;
         }
         if (device.created) { //make sure we do the following only once:
-            this.log.warn("Device for " + logicalAddress + " already created.");
+            this.log.info("Device for " + logicalAddress + " already created.");
             return device;
         }
 
@@ -466,98 +303,104 @@ class CEC2 extends utils.Adapter {
         //all failed, we can not get a name... use Logical Address.
         if (!name) {
             this.log.warn("Cound not find a name for device " + logicalAddress);
-            name = "Unknown " + Number(logicalAddress).toString((16)).toUpperCase();
+            name = "Unknown_" + Number(logicalAddress).toString((16)).toUpperCase();
         }
 
-        this.log.debug("Device with logicalAddress " + logicalAddress + " seen. Has name " + name);
         name = cleanUpName(name);
+        this.log.debug("Device with logicalAddress " + logicalAddress + " seen. Has name " + name);
+        device.name = name; //make sure we store clean name in device!
+        device.active = true;
+        device.lastSeen = Date.now();
+        device.created = true;
+        device.logicalAddress = logicalAddress;
+        this.logicalAddressToDevice[logicalAddress] = device;
+
+        //create device in objectDB:
+        await this.createDeviceAsync(name);
+        //set physical address:
+        await this.createStateInDevice(device, stateDefinitions.name);
+        //set logical address:
+        await this.createStateInDevice(device, stateDefinitions.logicalAddress);
+        await this.createStateInDevice(device, stateDefinitions.logicalAddressHex);
+        //set active:
+        await this.createStateInDevice(device, stateDefinitions.active);
+        //last seen:
+        await this.createStateInDevice(device, stateDefinitions.lastSeen);
+        //menu status:
+        await this.createStateInDevice(device, stateDefinitions.menuStatus);
+        //power state:
+        await this.createStateInDevice(device, stateDefinitions.powerState);
+
+        switch (logicalAddress) {
+            /*case CEC.LogicalAddress.PLAYBACKDEVICE1:
+            case CEC.LogicalAddress.PLAYBACKDEVICE2:
+            case CEC.LogicalAddress.PLAYBACKDEVICE3:
+                this.createStateInDevice(device, stateDefinitions.deck);
+                break;
+            case CEC.LogicalAddress.TUNER1:
+            case CEC.LogicalAddress.TUNER2:
+            case CEC.LogicalAddress.TUNER3:
+            case CEC.LogicalAddress.TUNER4:
+                this.createStateInDevice(device, stateDefinitions.deck);
+                this.createStateInDevice(device, stateDefinitions.tuner);
+                break;*/
+            case CEC.LogicalAddress.RECORDINGDEVICE1:
+            case CEC.LogicalAddress.RECORDINGDEVICE2:
+            case CEC.LogicalAddress.RECORDINGDEVICE3:
+                this.createStateInDevice(device, stateDefinitions.recording);
+                break;
+        }
 
         //got a name, let's check if we know that device already.
         let existingDevice = this.devices.find(d => d.name === name);
         if (!existingDevice) {
             //ok, now existing device, let's create it.
-            //create device in objectDB:
-            await this.createDeviceAsync(name);
-            //set physical address:
-            await this.setObjectNotExistsAsync(buildId(device, stateDefinitions.name), {
-                type: "state",
-                common: {
-                    type: "string",
-                    desciption: "OSD Name of device",
-                    name: "Name",
-                    read: true,
-                    write: false
-                },
-                native: { def: "name" }
-            });
-            //set logical address:
-            await this.setObjectNotExistsAsync(buildId(device, stateDefinitions.logicalAddress), {
-                type: "state",
-                common: {
-                    type: "string",
-                    description: "Current logical address (may change)",
-                    name: "Logical Address",
-                    read: true,
-                    write: false
-                },
-                native: { def: "logicalAddress" }
-            });
-            //set active:
-            await this.setObjectNotExistsAsync(buildId(device, stateDefinitions.active), {
-                type: "state",
-                common: {
-                    type: "boolean",
-                    role: "indicator.active",
-                    name: "active",
-                    desc: "device was seen this session",
-                    read: true,
-                    write: false
-                },
-                native: { def: "active"}
-            });
-            //last seen:
-            await this.setObjectNotExistsAsync(buildId(device, stateDefinitions.lastSeen), {
-                type: "state",
-                common: {
-                    type: "number",
-                    role: 'value.time',
-                    name: "last seen",
-                    desc: "last time device was seen",
-                    read: true,
-                    write: false
-                },
-                native: { def: "lastSeen"}
-            });
-            device.created = true;
         } else {
-            //copy data from new device:
-            for (const key of Object.keys(device)) {
-                existingDevice[key] = device[key];
-            }
-            device = existingDevice;
+            await this.setDeviceActive(device, true, logicalAddress);
+
+            //copy data from old device:
             this.log.warn("Already had device with name " + name + " copy new stuff in old device.");
-            this.logicalAddressToDevice[logicalAddress] = existingDevice;
+            for (const key of Object.keys(existingDevice)) {
+                if (existingDevice[key] !== undefined && existingDevice[key] !== null) {
+                    let stateDef = stateDefinitions[key];
+                    if (stateDef) {
+                        await this.processEvent({
+                            source: logicalAddress,
+                            stateDef: stateDef,
+                            parsedData: existingDevice[key]
+                        });
+                    } else {
+                        this.log.warn("No state definition for " + key);
+                    }
+                }
+            }
         }
 
-        //fill in some data in device:
-        device.created = true;
-        device.name = name;
-        device.active = true;
-        device.lastSeen = Date.now();
-        device.logicalAddress = logicalAddress;
+        //set all fields in ioBroker, might have some stuff that was received before CEC Ready.
+        this.log.debug("PowerState: " + JSON.stringify(stateDefinitions["powerState"]));
         for (const key of Object.keys(device)) {
-            let stateDef = stateDefinitions[key];
-            if (stateDef) {
-                await this.processEvent({source: logicalAddress, stateDef: stateDef, parsedData: device[key]});
+
+            if (device[key] !== undefined && device[key] !== null) {
+                let stateDef = stateDefinitions[key];
+                if (stateDef) {
+                    await this.processEvent({source: logicalAddress, stateDef: stateDef, parsedData: device[key]});
+                } else {
+                    this.log.warn("No state definition for " + key);
+                }
             }
         }
+
+        //poll some more:
+        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.deck.pollOpCode, stateDefinitions.deck.pollArgument);
+        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.tuner.pollOpCode, stateDefinitions.tuner.pollArgument);
+        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.menuStatus.pollOpCode, stateDefinitions.menuStatus.pollArgument);
+        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.powerState.pollOpCode);
 
         this.log.debug("created/found device, returning " + JSON.stringify(device));
         return device;
     }
 
     async processEvent(data) {
-        this.log.debug("============================ Processing Event: " + data.event + ": " + JSON.stringify(data));
         try {
             //REPORT_PHYSICAL_ADDRESS: {"type":"TRAFFIC","number":"17707","flow":"OUT","source":1,"target":15,"opcode":132,"args":[48,0,1],"event":"REPORT_PHYSICAL_ADDRESS","data":{"val":12288,"str":"3.0.0.0"}}
             //DEVICE_VENDOR_ID:        {"type":"TRAFFIC","number":"57985","flow":"IN","source":11,"target":15,"opcode":135,"args":[0,0,0],"event":"DEVICE_VENDOR_ID","data":{"val":0,"str":"UNKNOWN"}}
@@ -566,17 +409,43 @@ class CEC2 extends utils.Adapter {
             if (data.flow === "OUT") {
                 return;
             }
+            this.log.debug("============================ Processing Event: " + data.event + ": " + JSON.stringify(data));
 
+            let stateDef = data.stateDef;
+            if (!stateDef) {
+                stateDef = eventToStateDefinition[data.event || data.opcode];
+            }
+            if (!stateDef) {
+                if (data.opcode !== CEC.Opcode.SET_MENU_LANGUAGE) {
+                    this.log.error("No stateDef for " + JSON.stringify(data));
+                }
+                return;
+            }
             let device = this.logicalAddressToDevice[data.source];
+            if (stateDef.isGlobal) {
+                this.log.debug("State " + stateDef.name + " is global, use global device.");
+                device = this.globalDevice;
+            }
+
             if (!device || !device.created) {
                 this.log.debug("No device for " + data.source + " start device creation");
                 await this.createCECDevice(data.source, data);
                 device = this.logicalAddressToDevice[data.source];
             }
 
-            let stateDef = data.stateDef;
-            if (!stateDef) {
-                stateDef = eventToStateDefinition[data.event || data.opcode];
+            if (stateDef.name === stateDefinitions.name.name) {
+                if (data && data.data && data.data.str) {
+                    data.data.str = cleanUpName(data.data.str);
+                }
+                if (device.created && data.data && data.data.str && data.data.str !== device.name) {
+                    this.log.warn("New device with name " + data.data.str + " for logicalAddress " + device.logicalAddressHex);
+                    //deactivate old device:
+                    await this.setDeviceActive(device, false, CEC.LogicalAddress.UNKNOWN);
+                    delete this.logicalAddressToDevice[data.source];
+
+                    //rerun method:
+                    return this.processEvent(data);
+                }
             }
 
             let value = data.parsedData;
@@ -592,61 +461,28 @@ class CEC2 extends utils.Adapter {
                 }
             }
             //store value in device:
-            device[stateDef.key || stateDef.name] = value;
+            if (device.created && device[stateDef.key || stateDef.name] === undefined) {
+                this.createStateInDevice(device, stateDef);
+            }
+            if (!stateDef.readOnly) {
+                device[stateDef.key || stateDef.name] = value;
+            }
 
             if (device.created) {
-                if (stateDef.name === "name" && data.data && data.data.str && cleanUpName(data.data.str) !== device.name) {
-                    this.log.warn("Device changed name from " + device.name + " to " + data.data.str);
-                    await this.deleteDeviceAsync(device.name);
-                    //create new device for new name:
-                    device = await this.createCECDevice(data.source, data);
-                }
-                await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
                 await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
                 await this.setStateAsync(buildId(device, stateDefinitions.lastSeen), Date.now(), true);
 
                 let id = buildId(device, stateDef);
-                let states = undefined;
-                if (stateDef.valueList) {
-                    states = {};
-                    Object.keys(stateDef.valueList).forEach(key => {
-                        states[stateDef.valuesList[key]] = key;
-                    });
-                }
-                await this.setObjectNotExistsAsync(id, {
-                    type: "state",
-                    common: {
-                        type: stateDef.type,
-                        read: true,
-                        write: stateDef.write,
-                        name: stateDef.name,
-                        desc: stateDef.desc,
-                        role: stateDef.role,
-                        states: states
-                    },
-                    native: {def: stateDef.key || stateDef.name}
-                });
-
                 this.log.debug("Updating " + id + " to " + value);
+                this.createStateInDevice(device, stateDef);
                 await this.setStateChangedAsync(id, value, true);
 
-                if (stateDef.name === "logicalAddress") {
-                    stateDef = stateDefinitions.logicalAddressHex;
-                    id = buildId(device, stateDef);
-                    await this.setObjectNotExistsAsync(id, {
-                        type: "state",
-                        common: {
-                            type: stateDef.type,
-                            read: true,
-                            write: stateDef.write,
-                            name: stateDef.name,
-                            role: stateDef.role,
-                            desc: stateDef.desc
-                        },
-                        native: {def: stateDef.key || stateDef.name}
-                    });
-
-                    await this.setStateChangedAsync(id, value, true);
+                //set global active source here:
+                if (stateDef.name === stateDefinitions.activeSource.name) {
+                    await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions["active-source"]), device.physicalAddress, true);
+                }
+                if (stateDef.name === stateDefinitions.volume.name) {
+                    await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions.volume), value, true);
                 }
             }
         } catch (e) {
@@ -692,36 +528,47 @@ class CEC2 extends utils.Adapter {
         this.log.debug('Starting CEC Monitor.');
         await this.cec.WaitForReady();
         this.log.debug("CEC Monitor ready.");
-        this.timeouts.scan = setTimeout(() => this.cec.WriteRawMessage("scan"), 1000);
+        this.timeouts.scan = setTimeout(() => this.cec.WriteRawMessage("scan"), 10000);
 
-        if (config.pollPowerStates) {
+        if (false && config.pollPowerStates) {
             this.pollPowerStates();
         }
 
         //some global states:
+        await this.createDeviceAsync(this.globalDevice.name);
         //raw command
-        await this.setObjectNotExistsAsync("raw", {
-            type: "state",
-            common: {
-                name: "raw command",
-                desc: "send command to cec-client",
-                type: "string",
-                write: true
-            },
-            native: {}
-        });
-
+        await this.createStateInDevice(this.globalDevice, stateDefinitions["raw-command"]);
         //active-source:
-        await this.setObjectNotExistsAsync("active-source", {
-            type: "state",
-            common: {
-                name: "set active source",
-                desc: "set physical address of active source",
-                type: "string",
-                write: true
-            },
-            native: {}
-        });
+        await this.createStateInDevice(this.globalDevice, stateDefinitions["active-source"]);
+        //volume:
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.volume);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.volumeUp);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.volumeDown);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.mute);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.systemAudio);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.arc);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions.standbyAll);
+        //poll audio stuff:
+        this.timeouts.pollAudio = setTimeout(async () => {
+            //volume, mute and so on
+            try {
+                await this.cec.SendCommand(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS, CECMonitor.EVENTS.REPORT_AUDIO_STATUS);
+            } catch (e) {
+                this.log.warn("Could not poll audio status: " + e);
+            }
+            //do we use audio at all?
+            try {
+                await this.cec.SendCommand(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS, CECMonitor.EVENTS.SYSTEM_AUDIO_MODE_STATUS);
+            } catch (e) {
+                this.log.warn("Could not poll audio system status: " + e);
+            }
+            //who is active:
+            try {
+                await this.cec.SendCommand(null, CEC.LogicalAddress.BROADCAST, CEC.Opcode.REQUEST_ACTIVE_SOURCE, CECMonitor.EVENTS.ACTIVE_SOURCE);
+            } catch (e) {
+                this.log.warn("Could not poll active source: " + e);
+            }
+        }, 2000);
     }
 
     /**
@@ -739,7 +586,9 @@ class CEC2 extends utils.Adapter {
         let existingDevices = await this.getDevicesAsync();
         for (const device of existingDevices) {
             let id = device._id;
-            let existingDevice = {};
+            let existingDevice = {
+                createdStates: []
+            };
             let states = await this.getStatesOfAsync(id);
 
             for (const state of states) {
@@ -749,8 +598,11 @@ class CEC2 extends utils.Adapter {
                     value = value.val;
                 }
                 existingDevice[def.name] = value; //remember values
+                // @ts-ignore
+                existingDevice.createdStates.push(state.native.def);
             }
             existingDevice.active = false;
+            await this.setStateChangedAsync(buildId(device, stateDefinitions.active), false, true);
             this.devices.push(existingDevice);
         }
 
@@ -800,34 +652,16 @@ class CEC2 extends utils.Adapter {
             // The state was changed
             if (!state.ack) {
                 try {
-                    this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-                    let stateName = getStateFromId(id);
-                    if (stateName === "raw") {
-                        if (state.val) {
-                            await this.cec.WriteRawMessage(state.val);
-                        }
-                    } else if (stateName === "active-source") {
-                        if (state.val) {
-                            if (state.val.length === 1) { //allow single numbers for hdmi port.
-                                state.val += ".0.0.0";
-                            }
-                            let device = this.devices.find(d => d.physicalAddress === state.val);
-                            let sender = null;
-                            if (device) {
-                                sender = device.logicalAddress;
-                            }
-                            await this.cec.SendMessage(sender, CEC.LogicalAddress.BROADCAST, CEC.Opcode.ACTIVE_SOURCE, state.val);
-                        }
+                    this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                    let stateDefinition = stateDefinitionFromId(id);
+                    let deviceName = getDeviceIdFromId(id);
+                    let device = this.devices.find(d => d.name === deviceName);
+                    this.log.debug("Device: " + device.name);
+                    if (typeof stateDefinition.command === "function") {
+                        this.log.debug("Sending " + state.val + " for id " + id + " to " + deviceName);
+                        await stateDefinition.command(state.val, device, this.cec, this.log);
                     } else {
-                        let stateDefinition = stateDefinitionFromId(id);
-                        let deviceName = getDeviceNameFromId(id);
-                        let device = this.devices.find(d => d.name === deviceName);
-                        if (typeof stateDefinition.command === "function") {
-                            this.log.debug("Sending " + state.val + " for id " + id + " to " + deviceName);
-                            await stateDefinition.command(state.val, device, this.cec);
-                        } else {
-                            this.log.warn("Can not write state " + id + " of type " + stateDefinition.name + ". Please do not write read only states!");
-                        }
+                        this.log.warn("Can not write state " + id + " of type " + stateDefinition.name + ". Please do not write read only states!");
                     }
                 } catch (e) {
                     this.log.error("Could not write state " + id + ": " + e);
