@@ -156,7 +156,7 @@ class CEC2 extends utils.Adapter {
             let status = await this.cec.SendCommand(null, CEC.LogicalAddress.TV, CEC.Opcode.GIVE_DEVICE_POWER_STATUS, CECMonitor.EVENTS.REPORT_POWER_STATUS);
             this.log.debug("TV Power is " + status.data.str);
         } catch (e) {
-            this.log.debug("TV did not answer to powerRequest: " + e);
+            this.log.debug("TV did not answer to powerRequest: " + e + " - " + e.stack);
         }
 
         this.timeouts.pollPowerStates = setTimeout(() => this.pollPowerStates(), this.config.pollInterval || 30000);
@@ -288,7 +288,7 @@ class CEC2 extends utils.Adapter {
                         device.lastGetName = Date.now();
                         await this.cec.SendMessage(null, logicalAddress, CEC.Opcode.GIVE_OSD_NAME);
                     } catch (e) {
-                        this.log.error("Could not get name: " + e);
+                        this.log.error("Could not get name: " + e + " - " + e.stack);
                     }
                 }
                 return device; //exit and retry later.
@@ -310,7 +310,7 @@ class CEC2 extends utils.Adapter {
                         device.lastGetPhysAddr = Date.now();
                         await this.cec.SendMessage(null, logicalAddress, CEC.Opcode.GIVE_PHYSICAL_ADDRESS);
                     } catch (e) {
-                        this.log.error("Could not get physical address: " + e);
+                        this.log.error("Could not get physical address: " + e + " - " + e.stack);
                     }
                 }
                 return device; //exit and retry later.
@@ -394,7 +394,10 @@ class CEC2 extends utils.Adapter {
                             parsedData: existingDevice[key]
                         });
                     } else {
-                        this.log.warn("No state definition for " + key);
+                        if (key !== "created" && key !== "physicalAddressReallyChanged" && key !== "createdStates" &&
+                            key !== "lastGetName" && key !== "getNameTries" && key !== "lastGetPhysAddr" && key !== "getPhysAddrTries") {
+                            this.log.warn("No state definition for " + key);
+                        }
                     }
                 }
             }
@@ -535,7 +538,7 @@ class CEC2 extends utils.Adapter {
             }
         } catch (e) {
             console.log("Error: ", e);
-            this.log.error("Error during processing event: " + e + " " + JSON.stringify(data));
+            this.log.error("Error during processing event: " + e + " " + JSON.stringify(data) + " - " + e.stack);
         }
     }
 
@@ -550,7 +553,11 @@ class CEC2 extends utils.Adapter {
             let result = await fs.access('/dev/vchiq', fsConstants.R_OK);
             this.log.debug('Access resulted in: ' + result);
         } catch (e) {
-            this.log.error('Can not access HDMI. Please read requirements part of readme. Error: ' + e);
+            if (e.code === "EACCES") {
+                this.log.error("Can not access HDMI-CEC, please make sure iobroker user can access /dev/vchiq. On Raspian run this command: 'sudo usermod -a -G video iobroker'");
+            } else {
+                this.log.error('Can not access HDMI. Please read requirements part of readme. Error: ' + e + " - " + e.stack);
+            }
         }
 
         this.cec = new CECMonitor(config.osdName, {
@@ -578,7 +585,7 @@ class CEC2 extends utils.Adapter {
             await this.cec.WaitForReady();
             await this.setStateChangedAsync("info.connection", true, true);
         } catch (e) {
-            this.log.error("Could not start CEC adapter: " + e);
+            this.log.error("Could not start CEC adapter: " + e + " - " + e.stack);
             await this.setStateChangedAsync("info.connection", false, true);
             if (e.code === "ENOENT") {
                 this.log.error("cec-client not found. Please make sure cec-utils are installed and cec-client can be run by iobroker user.");
@@ -613,19 +620,19 @@ class CEC2 extends utils.Adapter {
             try {
                 await this.cec.SendCommand(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS, CECMonitor.EVENTS.REPORT_AUDIO_STATUS);
             } catch (e) {
-                this.log.warn("Could not poll audio status: " + e);
+                this.log.info("Could not poll audio status: " + e);
             }
             //do we use audio at all?
             try {
                 await this.cec.SendCommand(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS, CECMonitor.EVENTS.SYSTEM_AUDIO_MODE_STATUS);
             } catch (e) {
-                this.log.warn("Could not poll audio system status: " + e);
+                this.log.info("Could not poll audio system status: " + e);
             }
             //who is active:
             try {
                 await this.cec.SendCommand(null, CEC.LogicalAddress.BROADCAST, CEC.Opcode.REQUEST_ACTIVE_SOURCE, CECMonitor.EVENTS.ACTIVE_SOURCE);
             } catch (e) {
-                this.log.warn("Could not poll active source: " + e);
+                this.log.info("Could not poll active source: " + e);
             }
         }, 2000);
     }
@@ -755,7 +762,7 @@ class CEC2 extends utils.Adapter {
                         }
                     }
                 } catch (e) {
-                    this.log.error("Could not write state " + id + ": " + e);
+                    this.log.error("Could not write state " + id + ": " + e + " " + e.stack);
                 }
             }
         } else {
