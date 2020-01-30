@@ -734,8 +734,11 @@ class CEC2 extends utils.Adapter {
                     let stateDefinition = stateDefinitionFromId(id);
                     let isPoll = id.indexOf(".poll.") > 0;
                     let deviceName = getDeviceIdFromId(id);
-                    let device = this.devices.find(d => d.name === deviceName);
-                    this.log.debug("Device: " + device.name);
+                    let device = this.devices.find(d => d && d.name === deviceName);
+                    if (!device) {
+                        this.log.error("No device for name " + deviceName + " created.");
+                        return;
+                    }
                     if (isPoll) {
                         if (stateDefinition.pollOpCode) {
                             await this.cec.SendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
