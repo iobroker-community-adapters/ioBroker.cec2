@@ -282,7 +282,7 @@ class CEC2 extends utils.Adapter {
         if (!name) {
             if (device.getNameTries < 11) { //try to get name, if tried too often, continue with physicalAddress.
                 if (Date.now() - device.lastGetName > 3000) {
-                    this.log.debug("No name for logicalAddress " + logicalAddress + ", requesting it.");
+                    this.log.info("No name for logicalAddress " + logicalAddress + ", requesting it.");
                     try {
                         device.getNameTries += 1;
                         device.lastGetName = Date.now();
@@ -324,7 +324,7 @@ class CEC2 extends utils.Adapter {
         }
 
         name = cleanUpName(name);
-        this.log.debug("Device with logicalAddress " + logicalAddress + " seen. Has name " + name);
+        this.log.info("Device with logicalAddress " + logicalAddress + " seen. Has name " + name);
         device.name = name; //make sure we store clean name in device!
         device.active = true;
         device.lastSeen = Date.now();
@@ -412,7 +412,10 @@ class CEC2 extends utils.Adapter {
                 if (stateDef) {
                     await this.processEvent({source: logicalAddress, stateDef: stateDef, parsedData: device[key]});
                 } else {
-                    this.log.warn("No state definition for " + key);
+                    if (key !== "created" && key !== "physicalAddressReallyChanged" && key !== "createdStates" &&
+                        key !== "lastGetName" && key !== "getNameTries" && key !== "lastGetPhysAddr" && key !== "getPhysAddrTries") {
+                        this.log.warn("No state definition for " + key);
+                    }
                 }
             }
         }
@@ -423,7 +426,7 @@ class CEC2 extends utils.Adapter {
         await this.cec.SendMessage(null, logicalAddress, stateDefinitions.menuStatus.pollOpCode, stateDefinitions.menuStatus.pollArgument);
         await this.cec.SendMessage(null, logicalAddress, stateDefinitions.powerState.pollOpCode);
 
-        this.log.debug("created/found device, returning " + JSON.stringify(device));
+        this.log.info("created/found device, returning " + JSON.stringify(device));
         return device;
     }
 
