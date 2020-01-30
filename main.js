@@ -281,7 +281,7 @@ class CEC2 extends utils.Adapter {
         //ask for name, if we don't have it
         if (!name) {
             if (device.getNameTries < 11) { //try to get name, if tried too often, continue with physicalAddress.
-                if (Date.now() - device.lastGetName > 60000) {
+                if (Date.now() - device.lastGetName > 3000) {
                     this.log.debug("No name for logicalAddress " + logicalAddress + ", requesting it.");
                     try {
                         device.getNameTries += 1;
