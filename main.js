@@ -197,7 +197,8 @@ class CEC2 extends utils.Adapter {
         });
         device.createdStates.push(stateDefinition.name);
 
-        await this.setStateChangedAsync(id, device[stateDefinition.key || stateDefinition.name], true);
+        //don't set val here, will set all vals when adapter start. We do not really want that. And we do not need that here, do we?
+        //await this.setStateChangedAsync(id, val, true);
 
         //create poll states:
         if (stateDefinition.pollOpCode) {
@@ -287,6 +288,10 @@ class CEC2 extends utils.Adapter {
                         device.getNameTries += 1;
                         device.lastGetName = Date.now();
                         await this.cec.SendMessage(null, logicalAddress, CEC.Opcode.GIVE_OSD_NAME);
+                        clearTimeout(this.timeouts["createTimeout" + logicalAddress]);
+                        this.timeouts["createTimeout" + logicalAddress] = setTimeout(() => {
+                            this.createCECDevice(logicalAddress, data);
+                        }, 10000);
                     } catch (e) {
                         this.log.error("Could not get name: " + e + " - " + e.stack);
                     }
@@ -309,6 +314,10 @@ class CEC2 extends utils.Adapter {
                         device.getPhysAddrTries += 1;
                         device.lastGetPhysAddr = Date.now();
                         await this.cec.SendMessage(null, logicalAddress, CEC.Opcode.GIVE_PHYSICAL_ADDRESS);
+                        clearTimeout(this.timeouts["createTimeout" + logicalAddress]);
+                        this.timeouts["createTimeout" + logicalAddress] = setTimeout(() => {
+                            this.createCECDevice(logicalAddress, data);
+                        }, 10000);
                     } catch (e) {
                         this.log.error("Could not get physical address: " + e + " - " + e.stack);
                     }
@@ -326,87 +335,71 @@ class CEC2 extends utils.Adapter {
         name = cleanUpName(name);
         this.log.info("Device with logicalAddress " + logicalAddress + " seen. Has name " + name);
         device.name = name; //make sure we store clean name in device!
-        device.active = true;
-        device.lastSeen = Date.now();
-        device.created = true;
-        device.logicalAddress = logicalAddress;
-        this.logicalAddressToDevice[logicalAddress] = device;
-
-        //create device in objectDB:
-        await this.createDeviceAsync(name);
-        //set physical address:
-        await this.createStateInDevice(device, stateDefinitions.name);
-        //set logical address:
-        await this.createStateInDevice(device, stateDefinitions.logicalAddress);
-        await this.createStateInDevice(device, stateDefinitions.logicalAddressHex);
-        //set active:
-        await this.createStateInDevice(device, stateDefinitions.active);
-        //last seen:
-        await this.createStateInDevice(device, stateDefinitions.lastSeen);
-        //menu status:
-        await this.createStateInDevice(device, stateDefinitions.menuStatus);
-        //power state:
-        await this.createStateInDevice(device, stateDefinitions.powerState);
-        //active source state:
-        await this.createStateInDevice(device, stateDefinitions.activeSource);
-
-        if (logicalAddress === 0) { //TV always has 0.0.0.0, but does not necessarily report that.
-            device.physicalAddress = "0.0.0.0";
-            await this.createStateInDevice(device, stateDefinitions.physicalAddress);
-        }
-
-        switch (logicalAddress) {
-            /*case CEC.LogicalAddress.PLAYBACKDEVICE1:
-            case CEC.LogicalAddress.PLAYBACKDEVICE2:
-            case CEC.LogicalAddress.PLAYBACKDEVICE3:
-                this.createStateInDevice(device, stateDefinitions.deck);
-                break;
-            case CEC.LogicalAddress.TUNER1:
-            case CEC.LogicalAddress.TUNER2:
-            case CEC.LogicalAddress.TUNER3:
-            case CEC.LogicalAddress.TUNER4:
-                this.createStateInDevice(device, stateDefinitions.deck);
-                this.createStateInDevice(device, stateDefinitions.tuner);
-                break;*/
-            case CEC.LogicalAddress.RECORDINGDEVICE1:
-            case CEC.LogicalAddress.RECORDINGDEVICE2:
-            case CEC.LogicalAddress.RECORDINGDEVICE3:
-                this.createStateInDevice(device, stateDefinitions.recording);
-                break;
-        }
 
         //got a name, let's check if we know that device already.
         let existingDevice = this.devices.find(d => d.name === name);
         if (!existingDevice) {
-            //ok, now existing device, let's create it.
+            //ok, no existing device, let's create it.
+            device.active = true;
+            device.lastSeen = Date.now();
+            device.created = true;
+            device.logicalAddress = logicalAddress;
+            this.logicalAddressToDevice[logicalAddress] = device;
+            this.devices.push(device);
+
+            //create device in objectDB:
+            await this.createDeviceAsync(name);
+            //set physical address:
+            await this.createStateInDevice(device, stateDefinitions.name);
+            //set logical address:
+            await this.createStateInDevice(device, stateDefinitions.logicalAddress);
+            await this.createStateInDevice(device, stateDefinitions.logicalAddressHex);
+            //set active:
+            await this.createStateInDevice(device, stateDefinitions.active);
+            //last seen:
+            await this.createStateInDevice(device, stateDefinitions.lastSeen);
+            //menu status:
+            await this.createStateInDevice(device, stateDefinitions.menuStatus);
+            //power state:
+            await this.createStateInDevice(device, stateDefinitions.powerState);
+            //active source state:
+            await this.createStateInDevice(device, stateDefinitions.activeSource);
+
+            if (logicalAddress === 0) { //TV always has 0.0.0.0, but does not necessarily report that.
+                device.physicalAddress = "0.0.0.0";
+                await this.createStateInDevice(device, stateDefinitions.physicalAddress);
+            }
+
+            switch (logicalAddress) {
+                /*case CEC.LogicalAddress.PLAYBACKDEVICE1:
+                case CEC.LogicalAddress.PLAYBACKDEVICE2:
+                case CEC.LogicalAddress.PLAYBACKDEVICE3:
+                    this.createStateInDevice(device, stateDefinitions.deck);
+                    break;
+                case CEC.LogicalAddress.TUNER1:
+                case CEC.LogicalAddress.TUNER2:
+                case CEC.LogicalAddress.TUNER3:
+                case CEC.LogicalAddress.TUNER4:
+                    this.createStateInDevice(device, stateDefinitions.deck);
+                    this.createStateInDevice(device, stateDefinitions.tuner);
+                    break;*/
+                case CEC.LogicalAddress.RECORDINGDEVICE1:
+                case CEC.LogicalAddress.RECORDINGDEVICE2:
+                case CEC.LogicalAddress.RECORDINGDEVICE3:
+                    this.createStateInDevice(device, stateDefinitions.recording);
+                    break;
+            }
         } else {
+            this.logicalAddressToDevice[logicalAddress] = existingDevice;
+            existingDevice.created = true;
             await this.setDeviceActive(device, true, logicalAddress);
 
             //copy data from old device:
-            this.log.warn("Already had device with name " + name + " copy new stuff in old device.");
-            for (const key of Object.keys(existingDevice)) {
-                if (existingDevice[key] !== undefined && existingDevice[key] !== null) {
-                    let stateDef = stateDefinitions[key];
-                    if (stateDef) {
-                        await this.processEvent({
-                            source: logicalAddress,
-                            stateDef: stateDef,
-                            parsedData: existingDevice[key]
-                        });
-                    } else {
-                        if (key !== "created" && key !== "physicalAddressReallyChanged" && key !== "createdStates" &&
-                            key !== "lastGetName" && key !== "getNameTries" && key !== "lastGetPhysAddr" && key !== "getPhysAddrTries") {
-                            this.log.warn("No state definition for " + key);
-                        }
-                    }
-                }
-            }
+            this.log.info("Already knew device " + name + ". Update values.");
         }
 
         //set all fields in ioBroker, might have some stuff that was received before CEC Ready.
-        this.log.debug("PowerState: " + JSON.stringify(stateDefinitions["powerState"]));
         for (const key of Object.keys(device)) {
-
             if (device[key] !== undefined && device[key] !== null) {
                 let stateDef = stateDefinitions[key];
                 if (stateDef) {
@@ -426,8 +419,8 @@ class CEC2 extends utils.Adapter {
         await this.cec.SendMessage(null, logicalAddress, stateDefinitions.menuStatus.pollOpCode, stateDefinitions.menuStatus.pollArgument);
         await this.cec.SendMessage(null, logicalAddress, stateDefinitions.powerState.pollOpCode);
 
-        this.log.info("created/found device, returning " + JSON.stringify(device));
-        return device;
+        this.log.info("Creation of device " + device.name + " finished.");
+        return existingDevice || device;
     }
 
     async processEvent(data) {
@@ -446,8 +439,8 @@ class CEC2 extends utils.Adapter {
                 stateDef = eventToStateDefinition[data.event || data.opcode];
             }
             if (!stateDef) {
-                if (data.opcode !== CEC.Opcode.SET_MENU_LANGUAGE) {
-                    this.log.error("No stateDef for " + JSON.stringify(data));
+                if (data.opcode !== CEC.Opcode.SET_MENU_LANGUAGE && data.opcode !== CEC.Opcode.ROUTING_CHANGE && data.opcode !== CEC.Opcode.ROUTING_INFORMATION) {
+                    this.log.warn("No stateDef for " + JSON.stringify(data));
                 }
                 return;
             }
@@ -480,8 +473,8 @@ class CEC2 extends utils.Adapter {
 
             if (stateDef.name === stateDefinitions.physicalAddress.name) {
                 if (data && data.data && data.data.str) {
-                    if (device.physicalAddress !== data.data.str && !device.physicalAddressReallyChanged) {
-                        this.log.info("Devices with unexpected physical address came online on logical address " + device.logicalAddressHex);
+                    if (device.created && device.physicalAddress !== data.data.str && !device.physicalAddressReallyChanged) {
+                        this.log.info("Device with unexpected physical address came online on logical address " + device.logicalAddressHex);
                         if (device.active) {
                             await this.setDeviceActive(device, false, CEC.LogicalAddress.UNKNOWN);
                             delete this.logicalAddressToDevice[data.source];
@@ -526,9 +519,9 @@ class CEC2 extends utils.Adapter {
                 await this.setStateChangedAsync(id, value, true);
 
                 //set global active source here:
-                if (stateDef.name === stateDefinitions.activeSource.name) {
-                    await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions["active-source"]), device.physicalAddress, true);
-
+                if (stateDef.name === stateDefinitions.activeSource.name && data.data && data.data.str) {
+                    this.log.error("Setting activeSource to " + data.data.str);
+                    await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions["active-source"]), data.data.str, true);
                     for (const otherDevice of this.devices) {
                         if (otherDevice.name !== "Global" && otherDevice.activeSource && otherDevice.name !== device.name) {
                             await this.setStateChangedAsync(buildId(device, stateDef), false, true);
@@ -621,19 +614,19 @@ class CEC2 extends utils.Adapter {
         this.timeouts.pollAudio = setTimeout(async () => {
             //volume, mute and so on
             try {
-                await this.cec.SendCommand(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS, CECMonitor.EVENTS.REPORT_AUDIO_STATUS);
+                await this.cec.SendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS);
             } catch (e) {
                 this.log.info("Could not poll audio status: " + e);
             }
             //do we use audio at all?
             try {
-                await this.cec.SendCommand(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS, CECMonitor.EVENTS.SYSTEM_AUDIO_MODE_STATUS);
+                await this.cec.SendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS);
             } catch (e) {
                 this.log.info("Could not poll audio system status: " + e);
             }
             //who is active:
             try {
-                await this.cec.SendCommand(null, CEC.LogicalAddress.BROADCAST, CEC.Opcode.REQUEST_ACTIVE_SOURCE, CECMonitor.EVENTS.ACTIVE_SOURCE);
+                await this.cec.SendMessage(null, CEC.LogicalAddress.BROADCAST, CEC.Opcode.REQUEST_ACTIVE_SOURCE);
             } catch (e) {
                 this.log.info("Could not poll active source: " + e);
             }
@@ -667,7 +660,7 @@ class CEC2 extends utils.Adapter {
                     if (value) { //unpack val
                         value = value.val;
                     }
-                    existingDevice[def.name] = value; //remember values
+                    existingDevice[def.key || def.name] = value; //remember values
                     // @ts-ignore
                     existingDevice.createdStates.push(state.native.def);
                 }

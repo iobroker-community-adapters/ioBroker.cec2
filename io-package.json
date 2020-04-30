@@ -43,7 +43,15 @@
         "connectionType": "local",
         "dataSource": "push",
         "license": "MIT",
-        "messagebox": false
+        "messagebox": false,
+        "plugins": {
+            "sentry": {
+                "dsn": "https://f158f75380074647871f4665d54ee2f3@o377092.ingest.sentry.io/5208348",
+                "pathWhitelist": ["@iobroker", "iobroker.js-controller", "cec2", "stateDefinitions", "cec-monitor", "senzil"],
+                "pathBlacklist": [],
+                "errorBlacklist": ["SyntaxError"]
+            }
+        }
     },
     "native": {
         "osdName": "ioBroker",
