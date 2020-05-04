@@ -63,6 +63,20 @@
         "pollInterval": 30000
     },
     "objects": [
-
+    ],
+    "instanceObjects": [
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "connection status with cec-client / cec bus",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
     ]
 }

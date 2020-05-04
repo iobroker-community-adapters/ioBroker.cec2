@@ -670,19 +670,6 @@ class CEC2 extends utils.Adapter {
             this.devices.push(existingDevice);
         }
 
-        await this.setObjectNotExistsAsync("info.connection", {
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If communication with cec-client works",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {},
-        });
-
         //setup cec system
         await this.setupCECMonitor(this.config);
 
