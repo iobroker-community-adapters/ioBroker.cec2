@@ -18,9 +18,9 @@
  *          * ...
  *          * some Information what works and what not? (like capabilities?)
  *          * some things dependent on device class
- *      for device create channel(s):
+ *      for device create folder(s):
  *          * remote buttons -> with buttons for all possible remote buttons to be clicked.
- *
+ *          * poll -> poll buttons for some states
  */
 
 
@@ -49,8 +49,17 @@ const fs = require('fs').promises;
 const fsConstants = require('fs').constants;
 const stateDefinitions = require("./lib/stateDefinitions");
 
+
+/**
+ * Remove forbidden characters from names so I can use them as ID.
+ * @type {RegExp}
+ */
 const forbiddenCharacters = /[\]\[*,;'"`<>\\\s?]/g;
 
+/**
+ * Translate Event IDs to stateDefinitions.
+ * @type {Record<number|string,stateDefinitions.stateDefinition>}
+ */
 const eventToStateDefinition = {
     0: stateDefinitions.active, //0 === polling.
     "ACTIVE_SOURCE": stateDefinitions.activeSource,
@@ -74,13 +83,31 @@ const eventToStateDefinition = {
     "REPORT_ARC_ENDED": stateDefinitions.arc
 };
 
+/**
+ * Build ID from device and stateDefinition, i.e. needs to be in device folder and maybe also poll subfolder.
+ * @param {cecDevice|string} device - device
+ * @param {import("./lib/stateDefinitions").stateDefinition} stateDef - state definition of state
+ * @param {boolean} [poll] - true if in polling folder.
+ * @returns {string}
+ */
 function buildId(device, stateDef, poll = false) {
+    let name;
+    if (typeof device === 'string') {
+        name = device;
+    } else {
+        name = device.name;
+    }
     if (typeof stateDef === "string") {
         stateDef = eventToStateDefinition[stateDef];
     }
-    return device.name + "." + (stateDef.idPrefix ? stateDef.idPrefix + "." : "") + (poll ? "poll." : "") + stateDef.name;
+    return name + "." + (stateDef.idPrefix ? stateDef.idPrefix + "." : "") + (poll ? "poll." : "") + stateDef.name;
 }
 
+/**
+ * Cleanup name to create ID from it. Also contains hack for FireTV devices.
+ * @param {string} name
+ * @returns {string}
+ */
 function cleanUpName(name) {
     //hack, somehow FireTV reports different name, when off...
     if (name === "AFTR") {
@@ -91,16 +118,31 @@ function cleanUpName(name) {
     return newName;
 }
 
+/**
+ * Get device part of ioBroker Id
+ * @param {string} id
+ * @returns {string}
+ */
 function getDeviceIdFromId(id) {
     let parts = id.split(".");
-    return parts[2]; //0 == adapter, 2 == instance.
-    //return id.substring(id.lastIndexOf(".", lastDot - 1) + 1, lastDot);
+    return parts[2]; //0 == adapter, 1 == instance -> return 2.
 }
 
+/**
+ * Returns state part of ioBroker id (in device or poll folder)
+ * @param {string} id
+ * @returns {string}
+ */
 function getStateFromId(id) {
     return id.substring(id.lastIndexOf('.') + 1);
 }
 
+/**
+ * Get a stateDefinition from ioBroker ID
+ * @param {string} id
+ * @returns {import("./lib/stateDefinitions").stateDefinition}
+ * @throws error if no stateDefinition found for ID (should never happen!)
+ */
 function stateDefinitionFromId(id) {
     let stateName = getStateFromId(id);
     for (const key of Object.keys(stateDefinitions)) {
@@ -109,12 +151,40 @@ function stateDefinitionFromId(id) {
             return definition;
         }
     }
+    throw new Error("Could not find stateDefinition for " + id);
 }
 
-class CEC2 extends utils.Adapter {
+/**
+ * @typedef cecDevice
+ * @type {object}
+ * @property {Array<string>} createdStates      states created for this device
+ * @property {string} name                      name of device - cleaned up to be ID
+ * @property {number} logicalAddress            logicalAddress on bus. Negative for invalid.
+ * @property {string} logicalAddressHex         Hex version of logicalAddress
+ * @property {string} [physicalAddress]         Physical Address of device in 0.0.0.0 format
+ * @property {number} [lastGetName]             last time we asked for a name.
+ * @property {number} [getNameTries]            how often we have tried to get a name.
+ * @property {number} [lastGetPhysAddr]         last time we asked for a physical address
+ * @property {number} [getPhysAddrTries]        how often we have tried to get phyiscal address
+ * @property {boolean} [physicalAddressReallyChanged] true if physicalAddress really changed, i.e. device answered and name differs.
+ *
+ * @property {boolean} [active]                 active state value
+ * @property {number} [lastSeen]                last seen since value
+ * @property {boolean} [activeSource]           activeSource state value
+ * @property {number} [volume]                  volume (only on global device)
+ * @property {boolean} [volumeUp]               volumeUp state (only on global device)
+ * @property {boolean} [volumeDown]             volumeDown state (only on global device)
+ * @property {boolean} [mute]                   mute state (only on global device)
+ * @property {boolean} [arc]                    arc state (only on global device)
+ * @property {boolean} [systemAudio]            systemAudio state (only on global device)
+ * @property {Array<cecDevice>} [devices]       Array of all devices (only on global device?)
+ *
+ * @property {boolean} created                  if device was created in ioBroker or not.
+ */
 
+class CEC2 extends utils.Adapter {
     /**
-     * @param {Partial<ioBroker.AdapterOptions>} [options={}]
+     * @param {Partial<utils.AdapterOptions>} [options={}]
      */
     constructor(options) {
         super({
@@ -128,12 +198,17 @@ class CEC2 extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
 
         this.cec = {};
+        /** @type {Record<string, NodeJS.Timeout>} */
         this.timeouts = {};
+        /** @type {Record<number, cecDevice>} */
         this.logicalAddressToDevice = {};
+        /** @type {Array<cecDevice>} */
         this.devices = [];
+        /** @type {cecDevice} */
         this.globalDevice = {
             name: "Global",
             logicalAddress: CEC.LogicalAddress.BROADCAST,
+            get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
             volume: 0,
             volumeUp: false,
             volumeDown: false,
@@ -147,6 +222,10 @@ class CEC2 extends utils.Adapter {
         this.devices.push(this.globalDevice);
     }
 
+    /**
+     * Poll PowerStates of cec devices (currently only TV is polled -> too much polling seems no good idea).
+     * @returns {Promise<void>}
+     */
     async pollPowerStates() {
         if (this.timeouts.pollPowerStates) {
             clearTimeout(this.timeouts.pollPowerStates); //prevent multiple executions.
@@ -162,7 +241,12 @@ class CEC2 extends utils.Adapter {
         this.timeouts.pollPowerStates = setTimeout(() => this.pollPowerStates(), this.config.pollInterval || 30000);
     }
 
-    //create a state in device based on statedefinition and set value.
+    /**
+     * create a state in device based on statedefinition and set value.
+     * @param {cecDevice} device
+     * @param {import("./lib/stateDefinitions").stateDefinition} stateDefinition
+     * @returns {Promise<void>}
+     */
     async createStateInDevice(device, stateDefinition) {
         if (device.createdStates.find(s => s === (stateDefinition.key ? stateDefinition.key : stateDefinition.name))) {
             this.log.debug("State " + stateDefinition.name + " already created in " + device.name);
@@ -186,7 +270,7 @@ class CEC2 extends utils.Adapter {
             type: "state",
             common: {
                 type: stateDefinition.type,
-                description: stateDefinition.desc,
+                desc: stateDefinition.desc,
                 name: stateDefinition.name,
                 read: stateDefinition.read === undefined ? true : stateDefinition.read,
                 write: stateDefinition.write,
@@ -207,7 +291,7 @@ class CEC2 extends utils.Adapter {
                 type: "state",
                 common: {
                     type: "boolean",
-                    description: "poll " + stateDefinition.name,
+                    desc: "poll " + stateDefinition.name,
                     name: "poll " + stateDefinition.name,
                     role: "button",
                     read: false,
@@ -218,6 +302,11 @@ class CEC2 extends utils.Adapter {
         }
     }
 
+    /**
+     * Get a device from our devices aray by name.
+     * @param {string} name
+     * @returns {cecDevice|undefined}
+     */
     getDeviceByName(name) {
         if (name) {
             name = cleanUpName(name);
@@ -226,6 +315,13 @@ class CEC2 extends utils.Adapter {
         return undefined;
     }
 
+    /**
+     * Make a device active / inactive. Sets all necessary states.
+     * @param {cecDevice} device
+     * @param {boolean} active
+     * @param {number} logicalAddress - new logical Address
+     * @returns {Promise<void>}
+     */
     async setDeviceActive(device, active, logicalAddress) {
         device.active = active;
         device.logicalAddress = logicalAddress;
@@ -234,10 +330,16 @@ class CEC2 extends utils.Adapter {
         await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
     }
 
+    /**
+     * Create ioBroker Device for detected CEC device. Might return without creating if no name yet.
+     * @param {number} logicalAddress of detected device
+     * @param {Record<string,any>} data - incomming CEC message
+     * @returns {Promise<cecDevice>}
+     */
     async createCECDevice(logicalAddress, data) {
         this.log.debug("============================ Creating device: " + logicalAddress + ": " + JSON.stringify(data));
         //do we have a name already?
-        let name = data && data.opcode === CEC.Opcode.SET_OSD_NAME ? data.data.str : false;
+        let name = data && data.opcode === CEC.Opcode.SET_OSD_NAME ? cleanUpName(data.data.str) : '';
         if (!name && logicalAddress === 0) {
             name = "TV"; //TV does not really need to implement OSD Name... not nice. :-(
         }
@@ -253,6 +355,7 @@ class CEC2 extends utils.Adapter {
         }
         if (!device) {
             this.log.debug("Creating dummy device for " + logicalAddress + " to use during device creation.");
+            /** @type {cecDevice} */
             device = {
                 created: false,
                 lastGetName: 0,
@@ -260,7 +363,7 @@ class CEC2 extends utils.Adapter {
                 lastGetPhysAddr: 0,
                 getPhysAddrTries: 0,
                 logicalAddress: logicalAddress,
-                name: name ? cleanUpName(name) : undefined,
+                name: name ? cleanUpName(name) : '',
                 get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
                 createdStates: []
             };
@@ -423,6 +526,11 @@ class CEC2 extends utils.Adapter {
         return existingDevice || device;
     }
 
+    /**
+     * Process CEC Event
+     * @param {Record<string,any>} data - CEC event
+     * @returns {Promise<undefined|*>}
+     */
     async processEvent(data) {
         try {
             //REPORT_PHYSICAL_ADDRESS: {"type":"TRAFFIC","number":"17707","flow":"OUT","source":1,"target":15,"opcode":132,"args":[48,0,1],"event":"REPORT_PHYSICAL_ADDRESS","data":{"val":12288,"str":"3.0.0.0"}}
@@ -540,7 +648,7 @@ class CEC2 extends utils.Adapter {
 
     /**
      * initializes cec monitor
-     * @param config
+     * @param {ioBroker.AdapterConfig} config
      */
     async setupCECMonitor(config) {
         try {
@@ -649,24 +757,29 @@ class CEC2 extends utils.Adapter {
         for (const device of existingDevices) {
             let id = device._id;
             let existingDevice = {
-                createdStates: []
+                /** @type {Array<string>} */
+                createdStates: [],
+                active: false,
+                name: '',
+                created: true,
+                logicalAddress: CEC.LogicalAddress.UNKNOWN,
+                get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
             };
             let states = await this.getStatesOfAsync(id);
 
-            for (const state of states) {
-                if (!state.native.poll) { //skipp poll states
-                    let def = stateDefinitions[state.native.def];
-                    let value = await this.getStateAsync(state._id);
-                    if (value) { //unpack val
-                        value = value.val;
+            for (const stateObject of states) {
+                if (!stateObject.native.poll) { //skipp poll states
+                    const defString = /** @type {string} */ (stateObject.native.def);
+                    let def = stateDefinitions[defString];
+                    const state = await this.getStateAsync(stateObject._id);
+                    if (state) { //unpack val
+                        const value = state.val;
+                        existingDevice[def.key || def.name] = value; //remember values
                     }
-                    existingDevice[def.key || def.name] = value; //remember values
-                    // @ts-ignore
-                    existingDevice.createdStates.push(state.native.def);
+                    existingDevice.createdStates.push(defString);
                 }
             }
-            existingDevice.active = false;
-            await this.setStateChangedAsync(buildId(device, stateDefinitions.active), false, true);
+            await this.setStateChangedAsync(buildId(device.common.name, stateDefinitions.active), false, true);
             this.devices.push(existingDevice);
         }
 
@@ -776,7 +889,7 @@ class CEC2 extends utils.Adapter {
 if (module.parent) {
     // Export the constructor in compact mode
     /**
-     * @param {Partial<ioBroker.AdapterOptions>} [options={}]
+     * @param {Partial<utils.AdapterOptions>} [options={}]
      */
     module.exports = (options) => new CEC2(options);
 } else {
