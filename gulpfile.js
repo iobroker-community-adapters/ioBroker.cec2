@@ -406,8 +406,8 @@ gulp.task('updateReadme', function (done) {
         if (readme.indexOf(version) === -1) {
             const timestamp = new Date();
             const date = timestamp.getFullYear() + '-' +
-                ('0' + (timestamp.getMonth() + 1).toString(10)).slice(-2) + '-' +
-                ('0' + (timestamp.getDate()).toString(10)).slice(-2);
+                    ('0' + (timestamp.getMonth() + 1).toString(10)).slice(-2) + '-' +
+                    ('0' + (timestamp.getDate()).toString(10)).slice(-2);
 
             let news = '';
             if (iopackage.common.news && iopackage.common.news[pkg.version]) {
