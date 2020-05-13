@@ -28,7 +28,7 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.cec2"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.3.1",
+    "@iobroker/adapter-core": "^2.4.0",
     "@iobroker/plugin-sentry": "^1.0.2",
     "@senzil/cec-monitor": "^2.1.0"
   },
