@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.2",
+        "version": "0.0.3",
         "news": {
+            "0.0.3": {
+                "en": "added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).\nfixed possible crash on start",
+                "de": "Die Option 'verhindere unbenannte Geräte' wurde hinzugefügt, um die Erstellung von Geräten zu verhindern, die ihren Namen nicht melden. Dies passiert manchmal, wenn Geräte über den CEC-Bus sprechen, aber nicht eingeschaltet sind (abhängig vom Gerätetyp).\nMöglicher Absturz beim Start behoben",
+                "ru": "добавлен параметр «warnUnnamedDevices», чтобы не создавать устройства, которые не сообщают свое имя. Это иногда происходит, если устройства разговаривают по шине CEC, но не включены (зависит от типа устройства).\nисправлено возможное падение при запуске",
+                "pt": "foi adicionada a opção 'preventUnnamedDevices' para impedir a criação de dispositivos que não relatam seus nomes. Às vezes, isso acontece se os dispositivos estão falando no barramento CEC, mas não estão ligados (depende do tipo de dispositivo).\npossível falha fatal no início",
+                "nl": "'preventUnnamedDevices'-optie toegevoegd om te voorkomen dat apparaten worden gemaakt die hun naam niet rapporteren. Dit gebeurt soms als apparaten op de CEC-bus praten maar niet zijn ingeschakeld (afhankelijk van het apparaattype).\nmogelijke crash bij het starten opgelost",
+                "fr": "ajout de l'option 'preventUnnamedDevices' pour empêcher la création de périphériques qui ne signalent pas leur nom. Cela se produit parfois si les appareils parlent sur le bus CEC mais ne sont pas allumés (cela dépend du type d'appareil).\nCorrection d'un crash possible au démarrage",
+                "it": "aggiunta l'opzione 'preventUnnamedDevices' per impedire la creazione di dispositivi che non riportano il loro nome. Questo a volte accade se i dispositivi parlano sul bus CEC ma non sono accesi (dipende dal tipo di dispositivo).\nrisolto possibile arresto anomalo all'avvio",
+                "es": "Se agregó la opción 'preventUnnamedDevices' para evitar la creación de dispositivos que no informan su nombre. Esto sucede a veces si los dispositivos están hablando en el bus CEC pero no están encendidos (depende del tipo de dispositivo).\nSe corrigió el posible bloqueo al inicio",
+                "pl": "dodano opcję „preventUnnamedDevices”, aby zapobiec tworzeniu urządzeń, które nie zgłaszają swojej nazwy. Zdarza się to czasami, gdy urządzenia rozmawiają na magistrali CEC, ale nie są włączone (zależy od typu urządzenia).\nnaprawiono możliwą awarię przy starcie",
+                "zh-cn": "添加了“ preventUnnamedDevices”选项，可防止创建不报告其名称的设备。如果设备在CEC总线上通话但未打开（取决于设备类型），则有时会发生这种情况。\n修复了启动时可能发生的崩溃"
+            },
             "0.0.2": {
                 "en": "fixed a lot of bugs",
                 "de": "viele Fehler behoben"
@@ -12,7 +24,7 @@
                 "de": "Initiale Version"
             }
         },
-		"title": "HDMI CEC devices 2",
+        "title": "HDMI CEC devices 2",
         "titleLang": {
             "en": "HDMI CEC devices 2",
             "de": "HDMI CEC Geräte 2"
@@ -28,7 +40,9 @@
             "en": "docs/en/admin.md",
             "de": "docs/de/admin.md"
         },
-        "osDependencies": ["cec-utils"],
+        "osDependencies": [
+            "cec-utils"
+        ],
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "cec2.png",
@@ -36,7 +50,12 @@
         "enabled": true,
         "compact": true,
         "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.cec2/master/admin/cec2.png",
-        "keywords": ["multimedia", "HDMI", "CEC", "TV"],
+        "keywords": [
+            "multimedia",
+            "HDMI",
+            "CEC",
+            "TV"
+        ],
         "readme": "https://github.com/iobroker-community-adapters/ioBroker.cec2/blob/master/README.md",
         "loglevel": "info",
         "type": "hardware",
@@ -47,9 +66,18 @@
         "plugins": {
             "sentry": {
                 "dsn": "https://f158f75380074647871f4665d54ee2f3@o377092.ingest.sentry.io/5208348",
-                "pathWhitelist": ["@iobroker", "iobroker.js-controller", "cec2", "stateDefinitions", "cec-monitor", "senzil"],
+                "pathWhitelist": [
+                    "@iobroker",
+                    "iobroker.js-controller",
+                    "cec2",
+                    "stateDefinitions",
+                    "cec-monitor",
+                    "senzil"
+                ],
                 "pathBlacklist": [],
-                "errorBlacklist": ["SyntaxError"]
+                "errorBlacklist": [
+                    "SyntaxError"
+                ]
             }
         }
     },
@@ -63,8 +91,7 @@
         "pollInterval": 30000,
         "preventUnnamedDevices": false
     },
-    "objects": [
-    ],
+    "objects": [],
     "instanceObjects": [
         {
             "_id": "info.connection",

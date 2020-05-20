@@ -123,7 +123,7 @@ Or install from admin webpage.
 	Placeholder for next versions (this needs to be indented):
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 0.0.3 (2020-05-21)
 * added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).
 * fixed possible crash on start
 
