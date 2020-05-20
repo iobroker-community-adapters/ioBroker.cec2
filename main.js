@@ -185,6 +185,7 @@ function stateDefinitionFromId(id) {
  * @property {Array<cecDevice>} [devices]       Array of all devices (only on global device?)
  *
  * @property {boolean} created                  if device was created in ioBroker or not.
+ * @property {boolean} ignored                  if device is ignored (because no name & config setting)
  */
 
 class CEC2 extends utils.Adapter {
@@ -222,6 +223,7 @@ class CEC2 extends utils.Adapter {
             systemAudio: false,
             devices: this.devices,
             created: true,
+            ignored: false,
             createdStates: []
         };
         this.devices.push(this.globalDevice);
@@ -363,6 +365,7 @@ class CEC2 extends utils.Adapter {
             /** @type {cecDevice} */
             device = {
                 created: false,
+                ignored: false,
                 lastGetName: 0,
                 getNameTries: 0,
                 lastGetPhysAddr: 0,
@@ -406,6 +409,12 @@ class CEC2 extends utils.Adapter {
                 }
                 return device; //exit and retry later.
             }
+        }
+
+        if (!name && this.config.preventUnnamedDevices) {
+            device.ignored = true;
+            this.log.info('Ignoring device ' + device.logicalAddressHex + ' because did not get a name.');
+            return device;
         }
 
         //if we can not get name, but have physicalAddress already, use it.
@@ -577,6 +586,11 @@ class CEC2 extends utils.Adapter {
             if (stateDef.isGlobal) {
                 this.log.debug('State ' + stateDef.name + ' is global, use global device.');
                 device = this.globalDevice;
+            }
+
+            if (device && device.ignored) {
+                this.log.debug('Ignoring message from ignored device.');
+                return;
             }
 
             if (!device || !device.created) {
@@ -783,6 +797,7 @@ class CEC2 extends utils.Adapter {
                 active: false,
                 name: '',
                 created: true,
+                ignored: false,
                 logicalAddress: CEC.LogicalAddress.UNKNOWN,
                 get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
             };
