@@ -125,6 +125,7 @@ Or install from admin webpage.
 -->
 ### __WORK IN PROGRESS__
 * added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).
+* fixed possible crash on start
 
 ### 0.0.2 (2020-01-28)
 * fixed a lot of bugs

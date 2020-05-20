@@ -809,7 +809,7 @@ class CEC2 extends utils.Adapter {
                     /** @type {stateDefinition} */
                     const def = stateDefinitions[defString];
                     const state = await this.getStateAsync(stateObject._id);
-                    if (state) { //unpack val
+                    if (state && !def.readOnly) { //unpack val
                         existingDevice[def.key || def.name] = state.val; //remember values
                     }
                     existingDevice.createdStates.push(defString);
