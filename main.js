@@ -663,7 +663,7 @@ class CEC2 extends utils.Adapter {
 
                 //set global active source here:
                 if (stateDef.name === stateDefinitions.activeSource.name && data.data && data.data.str) {
-                    this.log.error('Setting activeSource to ' + data.data.str);
+                    this.log.debug('Setting activeSource to ' + data.data.str);
                     await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions['active-source']), data.data.str, true);
                     for (const otherDevice of this.devices) {
                         if (otherDevice.name !== 'Global' && otherDevice.activeSource && otherDevice.name !== device.name) {
