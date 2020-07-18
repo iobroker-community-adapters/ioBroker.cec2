@@ -1,7 +1,7 @@
 ![Logo](admin/cec2.png)
 ### ioBroker.cec2
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/iobroker-community-adapters/ioBroker.cec2.svg)](https://greenkeeper.io/)
+
 
 Adapter for HDMI CEC
 
