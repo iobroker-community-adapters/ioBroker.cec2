@@ -37,5 +37,17 @@ systemDictionary = {
     'osdNameString': {
         'en': 'Name in CEC network, might be visible on TV.',
         'de': 'Name im CEC Netzwerk, ggf. sichtbar am Fernseher'
+    },
+    'preventUnnamedDevices': {
+        'en': 'Ignore devices that do not report their name.',
+        'de': 'Ignorieren Sie Geräte, die ihren Namen nicht melden.',
+        'ru': 'Игнорировать устройства, которые не сообщают свое имя.',
+        'pt': 'Ignore os dispositivos que não informam seus nomes.',
+        'nl': 'Negeer apparaten die hun naam niet melden.',
+        'fr': 'Ignorez les appareils qui ne signalent pas leur nom.',
+        'it': 'Ignora i dispositivi che non riportano il loro nome.',
+        'es': 'Ignora los dispositivos que no informan su nombre.',
+        'pl': 'Zignoruj urządzenia, które nie zgłaszają swojej nazwy.',
+        'zh-cn': '忽略不报告其名称的设备。'
     }
 };
