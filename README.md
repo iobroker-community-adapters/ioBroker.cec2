@@ -1,7 +1,7 @@
 ![Logo](admin/cec2.png)
 ### ioBroker.cec2
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/iobroker-community-adapters/ioBroker.cec2.svg)](https://greenkeeper.io/)
+
 
 Adapter for HDMI CEC
 
@@ -110,13 +110,28 @@ npm install iobroker.cec2
 
 Or install from admin webpage.
 
+
+## Configuration
+
+* osd name: this name will reported to other devices, for example your TV. You might need to select ioBroker there to receive remote controls in ioBroker.
+* device type: You can set the device type, see discussion of logical address above to get an idea what that means. Use a device type that you have not many of.
+* prevent unnamed devices: Sometimes devices are not reporting their name in certain situations (for example Nintendo Switch won't report its name when in standby but announce itself). In this situations the adapter might create a duplicate of the device under it's physical address (i.e. for numbers). You can enable this option to prevent it.  
+
+
 ## Changelog
+<!-- 
+	Placeholder for next versions (this needs to be indented):
+	### __WORK IN PROGRESS__
+-->
+### 0.0.3 (2020-05-21)
+* added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).
+* fixed possible crash on start
 
 ### 0.0.2 (2020-01-28)
-* (Garfonso) fixed a lot of bugs
+* fixed a lot of bugs
 
 ### 0.0.1 (2020-01-28)
-* (Garfonso) initial release
+* initial release
 
 
 ### License
