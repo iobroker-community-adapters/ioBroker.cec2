@@ -354,6 +354,9 @@ class CEC2 extends utils.Adapter {
         let device = this.getDeviceByName(name);
         if (device && !this.logicalAddressToDevice[logicalAddress]) {
             this.logicalAddressToDevice[logicalAddress] = device; //we do not fill this from existing devices in ioBroker, do that here.
+            if(!device.active) {
+                await this.setDeviceActive(device, true, logicalAddress);
+            }
         }
 
         //do we have a device for the logicalAddress?
@@ -653,6 +656,10 @@ class CEC2 extends utils.Adapter {
             }
 
             if (device.created) {
+                if(!device.active) {
+                    await this.setDeviceActive(device, true, data.source);
+                }
+
                 await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
                 await this.setStateAsync(buildId(device, stateDefinitions.lastSeen), Date.now(), true);
 
