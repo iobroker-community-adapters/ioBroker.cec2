@@ -117,6 +117,9 @@ Or install from admin webpage.
 * device type: You can set the device type, see discussion of logical address above to get an idea what that means. Use a device type that you have not many of.
 * prevent unnamed devices: Sometimes devices are not reporting their name in certain situations (for example Nintendo Switch won't report its name when in standby but announce itself). In this situations the adapter might create a duplicate of the device under it's physical address (i.e. for numbers). You can enable this option to prevent it.  
 
+## Script examples:
+
+See [example Scripts](doc/ExampleScripts.md) for some example scripts that help with / repair multimedia setups.
 
 ## Changelog
 <!-- 
