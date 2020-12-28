@@ -832,7 +832,7 @@ class CEC2 extends utils.Adapter {
                     /** @type {stateDefinition} */
                     const def = stateDefinitions[defString];
                     const state = await this.getStateAsync(stateObject._id);
-                    if (state && !def.readOnly) { //unpack val
+                    if (state && def && !def.readOnly) { //unpack val
                         existingDevice[def.key || def.name] = state.val; //remember values
                     }
                     existingDevice.createdStates.push(defString);
@@ -842,7 +842,9 @@ class CEC2 extends utils.Adapter {
             this.devices.push(existingDevice);
 
             //make sure all states that should exist do exist.
-            await this.createDefaultDeviceStates(existingDevice);
+            if (existingDevice.name) {
+                await this.createDefaultDeviceStates(existingDevice);
+            }
         }
 
         //setup cec system
