@@ -334,7 +334,7 @@ class CEC2 extends utils.Adapter {
     async setDeviceActive(device, active, logicalAddress) {
         device.active = active;
         device.logicalAddress = logicalAddress;
-        await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
+        await this.setStateChangedAsync(buildId(device, stateDefinitions.active), active, true);
         await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
         await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
     }
