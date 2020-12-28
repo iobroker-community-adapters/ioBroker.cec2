@@ -752,6 +752,9 @@ class CEC2 extends utils.Adapter {
         await this.createStateInDevice(this.globalDevice, stateDefinitions['raw-command']);
         //active-source:
         await this.createStateInDevice(this.globalDevice, stateDefinitions['active-source']);
+        //osd:
+        await this.createStateInDevice(this.globalDevice, stateDefinitions['osd-message']);
+        await this.createStateInDevice(this.globalDevice, stateDefinitions['osd-message-clear']);
         //volume:
         await this.createStateInDevice(this.globalDevice, stateDefinitions.volume);
         await this.createStateInDevice(this.globalDevice, stateDefinitions.volumeUp);
@@ -859,10 +862,10 @@ class CEC2 extends utils.Adapter {
     onObjectChange(id, obj) {
         if (obj) {
             // The object was changed
-            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+            //this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
         } else {
             // The object was deleted
-            this.log.info(`object ${id} deleted`);
+            //this.log.info(`object ${id} deleted`);
         }
     }
 
@@ -878,7 +881,7 @@ class CEC2 extends utils.Adapter {
                 try {
                     this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                     const stateDefinition = stateDefinitionFromId(id);
-                    const isPoll = id.indexOf('.poll.') > 0;
+                    const isPoll = id.includes('.poll.');
                     const deviceName = getDeviceIdFromId(id);
                     const device = this.devices.find(d => d && d.name === deviceName);
                     if (!device) {
