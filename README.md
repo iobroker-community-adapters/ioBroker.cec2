@@ -126,7 +126,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 	Placeholder for next versions (this needs to be indented):
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 0.0.4 (2020-12-28)
 * Make sure active devices are marked as active.
 * make sure all devices have the required states
 * fix deactivating devices

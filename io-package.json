@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "news": {
+            "0.0.4": {
+                "en": "Make sure active devices are marked as active.\nmake sure all devices have the required states\nfix deactivating devices\nMake sure we deliver incoming update if user did poll.",
+                "de": "Stellen Sie sicher, dass aktive Geräte als aktiv markiert sind.\nStellen Sie sicher, dass alle Geräte den erforderlichen Status haben\nDeaktivierungsgeräte reparieren\nStellen Sie sicher, dass wir eingehende Updates bereitstellen, wenn der Benutzer eine Umfrage durchgeführt hat.",
+                "ru": "Убедитесь, что активные устройства отмечены как активные.\nубедитесь, что все устройства имеют необходимые состояния\nисправить деактивирующие устройства\nУбедитесь, что мы доставляем входящее обновление, если пользователь проводил опрос.",
+                "pt": "Certifique-se de que os dispositivos ativos estejam marcados como ativos.\ncertifique-se de que todos os dispositivos tenham os estados necessários\nconsertar dispositivos de desativação\nCertifique-se de entregar a atualização de entrada se o usuário fez a pesquisa.",
+                "nl": "Zorg ervoor dat actieve apparaten zijn gemarkeerd als actief.\nzorg ervoor dat alle apparaten de vereiste statussen hebben\nrepareer deactiveringsapparaten\nZorg ervoor dat we een inkomende update leveren als de gebruiker heeft gepolst.",
+                "fr": "Assurez-vous que les appareils actifs sont marqués comme actifs.\nassurez-vous que tous les appareils ont les états requis\ncorriger la désactivation des appareils\nAssurez-vous que nous livrons la mise à jour entrante si l'utilisateur a interrogé.",
+                "it": "Assicurati che i dispositivi attivi siano contrassegnati come attivi.\nassicurarsi che tutti i dispositivi abbiano gli stati richiesti\ncorreggere la disattivazione dei dispositivi\nAssicurati di consegnare l'aggiornamento in arrivo se l'utente ha eseguito il sondaggio.",
+                "es": "Asegúrese de que los dispositivos activos estén marcados como activos.\nasegúrese de que todos los dispositivos tengan los estados requeridos\narreglar los dispositivos de desactivación\nAsegúrese de entregar la actualización entrante si el usuario realizó una encuesta.",
+                "pl": "Upewnij się, że aktywne urządzenia są oznaczone jako aktywne.\nupewnij się, że wszystkie urządzenia mają wymagane stany\nnaprawić dezaktywację urządzeń\nUpewnij się, że dostarczamy nadchodzące aktualizacje, jeśli użytkownik przeprowadził ankietę.",
+                "zh-cn": "确保将活动设备标记为活动设备。\n确保所有设备都具有所需的状态\n修复停用设备\n如果用户进行了轮询，请确保我们传递传入的更新。"
+            },
             "0.0.3": {
                 "en": "added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).\nfixed possible crash on start",
                 "de": "Die Option 'verhindere unbenannte Geräte' wurde hinzugefügt, um die Erstellung von Geräten zu verhindern, die ihren Namen nicht melden. Dies passiert manchmal, wenn Geräte über den CEC-Bus sprechen, aber nicht eingeschaltet sind (abhängig vom Gerätetyp).\nMöglicher Absturz beim Start behoben",
