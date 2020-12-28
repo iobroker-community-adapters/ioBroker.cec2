@@ -340,6 +340,56 @@ class CEC2 extends utils.Adapter {
     }
 
     /**
+     * Creates default states in device, ie states all devices should have.
+     * @param {cecDevice} device
+     * @returns {Promise<void>}
+     */
+    async createDefaultDeviceStates(device) {
+        //set physical address:
+        await this.createStateInDevice(device, stateDefinitions.name);
+        //set logical address:
+        await this.createStateInDevice(device, stateDefinitions.logicalAddress);
+        await this.createStateInDevice(device, stateDefinitions.logicalAddressHex);
+        //set active:
+        await this.createStateInDevice(device, stateDefinitions.active);
+        //last seen:
+        await this.createStateInDevice(device, stateDefinitions.lastSeen);
+        //menu status:
+        await this.createStateInDevice(device, stateDefinitions.menuStatus);
+        //power state:
+        await this.createStateInDevice(device, stateDefinitions.powerState);
+        //active source state:
+        await this.createStateInDevice(device, stateDefinitions.activeSource);
+        //create buttons button
+        await this.createStateInDevice(device, stateDefinitions.createButtons);
+
+        if (device.logicalAddress === 0) { //TV always has 0.0.0.0, but does not necessarily report that.
+            device.physicalAddress = '0.0.0.0';
+            await this.createStateInDevice(device, stateDefinitions.physicalAddress);
+        }
+
+        switch (device.logicalAddress) {
+            /*case CEC.LogicalAddress.PLAYBACKDEVICE1:
+            case CEC.LogicalAddress.PLAYBACKDEVICE2:
+            case CEC.LogicalAddress.PLAYBACKDEVICE3:
+                this.createStateInDevice(device, stateDefinitions.deck);
+                break;
+            case CEC.LogicalAddress.TUNER1:
+            case CEC.LogicalAddress.TUNER2:
+            case CEC.LogicalAddress.TUNER3:
+            case CEC.LogicalAddress.TUNER4:
+                this.createStateInDevice(device, stateDefinitions.deck);
+                this.createStateInDevice(device, stateDefinitions.tuner);
+                break;*/
+            case CEC.LogicalAddress.RECORDINGDEVICE1:
+            case CEC.LogicalAddress.RECORDINGDEVICE2:
+            case CEC.LogicalAddress.RECORDINGDEVICE3:
+                await this.createStateInDevice(device, stateDefinitions.recording);
+                break;
+        }
+    }
+
+    /**
      * Create ioBroker Device for detected CEC device. Might return without creating if no name yet.
      * @param {number} logicalAddress of detected device
      * @param {event} data - incomming CEC message
@@ -471,48 +521,7 @@ class CEC2 extends utils.Adapter {
 
             //create device in objectDB:
             await this.createDeviceAsync(name);
-            //set physical address:
-            await this.createStateInDevice(device, stateDefinitions.name);
-            //set logical address:
-            await this.createStateInDevice(device, stateDefinitions.logicalAddress);
-            await this.createStateInDevice(device, stateDefinitions.logicalAddressHex);
-            //set active:
-            await this.createStateInDevice(device, stateDefinitions.active);
-            //last seen:
-            await this.createStateInDevice(device, stateDefinitions.lastSeen);
-            //menu status:
-            await this.createStateInDevice(device, stateDefinitions.menuStatus);
-            //power state:
-            await this.createStateInDevice(device, stateDefinitions.powerState);
-            //active source state:
-            await this.createStateInDevice(device, stateDefinitions.activeSource);
-            //create buttons button
-            await this.createStateInDevice(device, stateDefinitions.createButtons);
-
-            if (logicalAddress === 0) { //TV always has 0.0.0.0, but does not necessarily report that.
-                device.physicalAddress = '0.0.0.0';
-                await this.createStateInDevice(device, stateDefinitions.physicalAddress);
-            }
-
-            switch (logicalAddress) {
-                /*case CEC.LogicalAddress.PLAYBACKDEVICE1:
-                case CEC.LogicalAddress.PLAYBACKDEVICE2:
-                case CEC.LogicalAddress.PLAYBACKDEVICE3:
-                    this.createStateInDevice(device, stateDefinitions.deck);
-                    break;
-                case CEC.LogicalAddress.TUNER1:
-                case CEC.LogicalAddress.TUNER2:
-                case CEC.LogicalAddress.TUNER3:
-                case CEC.LogicalAddress.TUNER4:
-                    this.createStateInDevice(device, stateDefinitions.deck);
-                    this.createStateInDevice(device, stateDefinitions.tuner);
-                    break;*/
-                case CEC.LogicalAddress.RECORDINGDEVICE1:
-                case CEC.LogicalAddress.RECORDINGDEVICE2:
-                case CEC.LogicalAddress.RECORDINGDEVICE3:
-                    await this.createStateInDevice(device, stateDefinitions.recording);
-                    break;
-            }
+            await this.createDefaultDeviceStates(device);
         } else {
             this.logicalAddressToDevice[logicalAddress] = existingDevice;
             existingDevice.created = true;
@@ -831,6 +840,9 @@ class CEC2 extends utils.Adapter {
             }
             await this.setStateChangedAsync(buildId(device.common.name, stateDefinitions.active), false, true);
             this.devices.push(existingDevice);
+
+            //make sure all states that should exist do exist.
+            await this.createDefaultDeviceStates(existingDevice);
         }
 
         //setup cec system
