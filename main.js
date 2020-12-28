@@ -172,6 +172,7 @@ function stateDefinitionFromId(id) {
  * @property {number} [lastGetPhysAddr]         last time we asked for a physical address
  * @property {number} [getPhysAddrTries]        how often we have tried to get phyiscal address
  * @property {boolean} [physicalAddressReallyChanged] true if physicalAddress really changed, i.e. device answered and name differs.
+ * @property {Record<String, boolean>} didPoll true if device did just poll this stateref so next update will be forced to iobroker.
  *
  * @property {boolean} [active]                 active state value
  * @property {number} [lastSeen]                last seen since value
@@ -225,7 +226,8 @@ class CEC2 extends utils.Adapter {
             devices: this.devices,
             created: true,
             ignored: false,
-            createdStates: []
+            createdStates: [],
+            didPoll: {}
         };
         this.devices.push(this.globalDevice);
     }
@@ -428,7 +430,8 @@ class CEC2 extends utils.Adapter {
                 logicalAddress: logicalAddress,
                 name: name ? cleanUpName(name) : '',
                 get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
-                createdStates: []
+                createdStates: [],
+                didPoll: {}
             };
             this.logicalAddressToDevice[logicalAddress] = device;
         }
@@ -679,7 +682,12 @@ class CEC2 extends utils.Adapter {
                 const id = buildId(device, stateDef);
                 this.log.debug('Updating ' + id + ' to ' + value);
                 await this.createStateInDevice(device, stateDef);
-                await this.setStateChangedAsync(id, value, true);
+                if (device.didPoll[stateDef.name]) {
+                    await this.setStateAsync(id, value, true);
+                    device.didPoll[stateDef.name] = false;
+                } else {
+                    await this.setStateChangedAsync(id, value, true);
+                }
 
                 //set global active source here:
                 if (stateDef.name === stateDefinitions.activeSource.name && data.data && data.data.str) {
@@ -823,6 +831,7 @@ class CEC2 extends utils.Adapter {
                 ignored: false,
                 logicalAddress: CEC.LogicalAddress.UNKNOWN,
                 get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
+                didPoll: {}
             };
             const states = await this.getStatesOfAsync(id);
 
@@ -874,10 +883,10 @@ class CEC2 extends utils.Adapter {
 
     /**
      * Is called if a subscribed object changes
-     * @param {string} id
+     * @param {string} _id
      * @param {ioBroker.Object | null | undefined} obj
      */
-    onObjectChange(id, obj) {
+    onObjectChange(_id, obj) {
         if (obj) {
             // The object was changed
             //this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
@@ -908,6 +917,7 @@ class CEC2 extends utils.Adapter {
                     }
                     if (isPoll) {
                         if (stateDefinition.pollOpCode) {
+                            device.didPoll[stateDefinition.name] = true;
                             await this.cec.SendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
                             await this.cec.SendMessage(null, stateDefinition.pollTarget || device.logicalAddress, stateDefinition.pollOpCode, stateDefinition.pollArgument);
                         } else {
@@ -920,7 +930,8 @@ class CEC2 extends utils.Adapter {
                         }
                         await this.setObjectNotExistsAsync(`${device.name}.buttons.time`, {type: 'state', common: {name: 'Set time for next button press', unit: 'ms', write: true, read: false, role: 'level.timer', type: 'number'}, native: {isButton: true}});
                     } else if (id.includes('.buttons.time')) {
-                        if (state.val < 50) {
+                        if (!state.val || state.val < 50) {
+                            state.val = 50;
                             this.log.warn('Button presses below 50ms not supported. Increased time.');
                         }
                         device.currentButtonPressTime = Math.max(50, /** @type {number} */ (state.val));
