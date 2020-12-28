@@ -58,7 +58,7 @@
         ],
         "readme": "https://github.com/iobroker-community-adapters/ioBroker.cec2/blob/master/README.md",
         "loglevel": "info",
-        "type": "hardware",
+        "type": "multimedia",
         "connectionType": "local",
         "dataSource": "push",
         "license": "MIT",
