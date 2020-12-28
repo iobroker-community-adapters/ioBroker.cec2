@@ -183,6 +183,7 @@ function stateDefinitionFromId(id) {
  * @property {boolean} [arc]                    arc state (only on global device)
  * @property {boolean} [systemAudio]            systemAudio state (only on global device)
  * @property {Array<cecDevice>} [devices]       Array of all devices (only on global device?)
+ * @property {number} [currentButtonPressTime]  Time in millisecondes for the next button press to wait.
  *
  * @property {boolean} created                  if device was created in ioBroker or not.
  * @property {boolean} ignored                  if device is ignored (because no name & config setting)
@@ -269,10 +270,11 @@ class CEC2 extends utils.Adapter {
         }
 
         const id = buildId(device, stateDefinition);
-        if (id.indexOf('undefined') >= 0) {
+        if (id.includes('undefined')) {
             this.log.error('Creating state undefined: ' + JSON.stringify(stateDefinition) + ' in device' + JSON.stringify(device) + ' id ' + id);
             throw new Error('State undefined: ' + id);
         }
+
         await this.setObjectNotExistsAsync(id, {
             type: 'state',
             common: {
@@ -484,6 +486,8 @@ class CEC2 extends utils.Adapter {
             await this.createStateInDevice(device, stateDefinitions.powerState);
             //active source state:
             await this.createStateInDevice(device, stateDefinitions.activeSource);
+            //create buttons button
+            await this.createStateInDevice(device, stateDefinitions.createButtons);
 
             if (logicalAddress === 0) { //TV always has 0.0.0.0, but does not necessarily report that.
                 device.physicalAddress = '0.0.0.0';
@@ -894,6 +898,26 @@ class CEC2 extends utils.Adapter {
                             await this.cec.SendMessage(null, stateDefinition.pollTarget || device.logicalAddress, stateDefinition.pollOpCode, stateDefinition.pollArgument);
                         } else {
                             this.log.error('Can not poll ' + stateDefinition.name + '. Please report error.');
+                        }
+                    } else if (id.includes(stateDefinitions.createButtons.name)) {
+                        this.log.debug('Creating buttons for ' + device.name);
+                        for (const key of Object.keys(CEC.UserControlCode)) {
+                            await this.setObjectNotExistsAsync(`${device.name}.buttons.${key}`, {type: 'state', common: {name: key, write: true, read: false, role: 'button', type: 'boolean'}, native: {isButton: true}});
+                        }
+                        await this.setObjectNotExistsAsync(`${device.name}.buttons.time`, {type: 'state', common: {name: 'Set time for next button press', unit: 'ms', write: true, read: false, role: 'level.timer', type: 'number'}, native: {isButton: true}});
+                    } else if (id.includes('.buttons.time')) {
+                        if (state.val < 50) {
+                            this.log.warn('Button presses below 50ms not supported. Increased time.');
+                        }
+                        device.currentButtonPressTime = Math.max(50, /** @type {number} */ (state.val));
+                    } else if (id.includes('.buttons.')) {
+                        const name = id.substring(id.lastIndexOf('.') + 1);
+                        const code = CEC.UserControlCode[name];
+                        if (code) {
+                            await this.cec.SendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_PRESSED, code);
+                            setTimeout(async () => {
+                                await this.cec.SendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_RELEASE, code);
+                            }, device.currentButtonPressTime);
                         }
                     } else {
                         if (typeof stateDefinition.command === 'function') {
