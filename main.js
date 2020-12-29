@@ -928,7 +928,7 @@ class CEC2 extends utils.Adapter {
                         for (const key of Object.keys(CEC.UserControlCode)) {
                             await this.setObjectNotExistsAsync(`${device.name}.buttons.${key}`, {type: 'state', common: {name: key, write: true, read: false, role: 'button', type: 'boolean'}, native: {isButton: true}});
                         }
-                        await this.setObjectNotExistsAsync(`${device.name}.buttons.time`, {type: 'state', common: {name: 'Set time for next button press', unit: 'ms', write: true, read: false, role: 'level.timer', type: 'number'}, native: {isButton: true}});
+                        await this.setObjectNotExistsAsync(`${device.name}.buttons.time`, {type: 'state', common: {def: 500, name: 'Set time for next button press', unit: 'ms', write: true, read: false, role: 'level.timer', type: 'number'}, native: {isButton: true}});
                     } else if (id.includes('.buttons.time')) {
                         if (!state.val || state.val < 50) {
                             state.val = 50;
