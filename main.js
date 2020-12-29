@@ -907,7 +907,6 @@ class CEC2 extends utils.Adapter {
             if (!state.ack) {
                 try {
                     this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-                    const stateDefinition = stateDefinitionFromId(id);
                     const isPoll = id.includes('.poll.');
                     const deviceName = getDeviceIdFromId(id);
                     const device = this.devices.find(d => d && d.name === deviceName);
@@ -916,6 +915,7 @@ class CEC2 extends utils.Adapter {
                         return;
                     }
                     if (isPoll) {
+                        const stateDefinition = stateDefinitionFromId(id);
                         if (stateDefinition.pollOpCode) {
                             device.didPoll[stateDefinition.name] = true;
                             await this.cec.SendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
@@ -945,6 +945,7 @@ class CEC2 extends utils.Adapter {
                             }, device.currentButtonPressTime);
                         }
                     } else {
+                        const stateDefinition = stateDefinitionFromId(id);
                         if (typeof stateDefinition.command === 'function') {
                             this.log.debug('Sending ' + state.val + ' for id ' + id + ' to ' + deviceName);
                             await stateDefinition.command(state.val, device, this.cec, this.log);
