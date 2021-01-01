@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.4",
+        "version": "0.0.5",
         "news": {
+            "0.0.5": {
+                "en": "fix button presses\nadd default for button press time",
+                "de": "Fix-Taste drückt\nStandard für die Tastendruckzeit hinzufügen",
+                "ru": "исправить нажатия кнопок\nдобавить значение по умолчанию для времени нажатия кнопки",
+                "pt": "consertar botões pressionados\nadicionar padrão para o tempo de pressionamento do botão",
+                "nl": "fix knop indrukken\nvoeg standaard toe voor het indrukken van de knop",
+                "fr": "corriger les pressions sur les boutons\najouter la valeur par défaut pour le temps de pression du bouton",
+                "it": "correggere le pressioni dei pulsanti\naggiungere il valore predefinito per il tempo di pressione del pulsante",
+                "es": "arreglar pulsaciones de botones\nagregar predeterminado para el tiempo de pulsación del botón",
+                "pl": "Napraw naciśnięcia przycisku\ndodaj domyślny czas naciśnięcia przycisku",
+                "zh-cn": "固定按钮按下\n添加默认的按钮按下时间"
+            },
             "0.0.4": {
                 "en": "Make sure active devices are marked as active.\nmake sure all devices have the required states\nfix deactivating devices\nMake sure we deliver incoming update if user did poll.",
                 "de": "Stellen Sie sicher, dass aktive Geräte als aktiv markiert sind.\nStellen Sie sicher, dass alle Geräte den erforderlichen Status haben\nDeaktivierungsgeräte reparieren\nStellen Sie sicher, dass wir eingehende Updates bereitstellen, wenn der Benutzer eine Umfrage durchgeführt hat.",
