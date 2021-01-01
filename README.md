@@ -71,6 +71,15 @@ For every device there are the following states created:
 * activeSource = is the device the active source? Can switch this device to be active source
 * menuStatus = lets device be controlled by TV remote
 * state = power state of device (lets you switch it on/off, if supported)
+* createButtons = press here to generate states for buttons in .buttons subfolder.
+* buttons.time = time to press a button for (default 500ms).
+
+## Buttons
+Button presses do not work for all devices and some might need to have 
+an active connection with the ioBroker device to be controlled via CEC bus.
+For FireTV it works quite ok. 
+To test button presses, press `createButtons` button in a device and test some of the
+created buttons in some situations. Power works for quite a lot devices. 
 
 #### Global States
 
@@ -126,6 +135,10 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 	Placeholder for next versions (this needs to be indented):
 	### __WORK IN PROGRESS__
 -->
+### __WORK IN PROGRESS__
+* fix button presses
+* add default for button press time
+
 ### 0.0.4 (2020-12-28)
 * Make sure active devices are marked as active.
 * make sure all devices have the required states
