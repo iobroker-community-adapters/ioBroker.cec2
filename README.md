@@ -135,7 +135,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 	Placeholder for next versions (this needs to be indented):
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 0.0.6 (2021-01-02)
 * update dependencies
 
 ### 0.0.5 (2021-01-01)
