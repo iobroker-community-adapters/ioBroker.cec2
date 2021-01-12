@@ -336,9 +336,11 @@ class CEC2 extends utils.Adapter {
     async setDeviceActive(device, active, logicalAddress) {
         device.active = active;
         device.logicalAddress = logicalAddress;
-        await this.setStateChangedAsync(buildId(device, stateDefinitions.active), active, true);
-        await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
-        await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
+        if (device.name !== 'Gobal') {
+            await this.setStateChangedAsync(buildId(device, stateDefinitions.active), active, true);
+            await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
+            await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
+        }
     }
 
     /**
@@ -542,7 +544,8 @@ class CEC2 extends utils.Adapter {
                     await this.processEvent({source: logicalAddress, stateDef: stateDef, parsedData: device[key]});
                 } else {
                     if (key !== 'created' && key !== 'physicalAddressReallyChanged' && key !== 'createdStates' &&
-                        key !== 'lastGetName' && key !== 'getNameTries' && key !== 'lastGetPhysAddr' && key !== 'getPhysAddrTries' && key !== 'didPoll') {
+                        key !== 'lastGetName' && key !== 'getNameTries' && key !== 'lastGetPhysAddr' && key !== 'getPhysAddrTries' &&
+                        key !== 'didPoll' && key !== 'ignored') {
                         this.log.warn('No state definition for ' + key);
                     }
                 }
@@ -676,8 +679,10 @@ class CEC2 extends utils.Adapter {
                     await this.setDeviceActive(device, true, data.source);
                 }
 
-                await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
-                await this.setStateAsync(buildId(device, stateDefinitions.lastSeen), Date.now(), true);
+                if (device.name !== 'Global') {
+                    await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
+                    await this.setStateAsync(buildId(device, stateDefinitions.lastSeen), Date.now(), true);
+                }
 
                 const id = buildId(device, stateDef);
                 this.log.debug('Updating ' + id + ' to ' + value);
@@ -847,7 +852,9 @@ class CEC2 extends utils.Adapter {
                     existingDevice.createdStates.push(defString);
                 }
             }
-            await this.setStateChangedAsync(buildId(device.common.name, stateDefinitions.active), false, true);
+            if (device.common.name !== 'Global') {
+                await this.setStateChangedAsync(buildId(device.common.name, stateDefinitions.active), false, true);
+            }
             this.devices.push(existingDevice);
 
             //make sure all states that should exist do exist.
