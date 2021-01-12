@@ -542,7 +542,7 @@ class CEC2 extends utils.Adapter {
                     await this.processEvent({source: logicalAddress, stateDef: stateDef, parsedData: device[key]});
                 } else {
                     if (key !== 'created' && key !== 'physicalAddressReallyChanged' && key !== 'createdStates' &&
-                        key !== 'lastGetName' && key !== 'getNameTries' && key !== 'lastGetPhysAddr' && key !== 'getPhysAddrTries') {
+                        key !== 'lastGetName' && key !== 'getNameTries' && key !== 'lastGetPhysAddr' && key !== 'getPhysAddrTries' && key !== 'didPoll') {
                         this.log.warn('No state definition for ' + key);
                     }
                 }
