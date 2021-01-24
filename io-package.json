@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.6",
+        "version": "0.0.7",
         "news": {
+            "0.0.7": {
+                "en": "fix warnings",
+                "de": "Warnungen beheben",
+                "ru": "исправить предупреждения",
+                "pt": "corrigir avisos",
+                "nl": "repareer waarschuwingen",
+                "fr": "corriger les avertissements",
+                "it": "correggere gli avvisi",
+                "es": "corregir advertencias",
+                "pl": "napraw ostrzeżenia",
+                "zh-cn": "修正警告"
+            },
             "0.0.6": {
                 "en": "update dependencies",
                 "de": "Abhängigkeiten aktualisieren",
