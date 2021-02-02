@@ -1,6 +1,18 @@
 ![Logo](admin/cec2.png)
 ### ioBroker.cec2
 
+[![NPM version](http://img.shields.io/npm/v/iobroker.cec2.svg)](https://www.npmjs.com/package/iobroker.cec2)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.cec2.svg)](https://www.npmjs.com/package/iobroker.cec2)
+![Number of Installations (latest)](http://iobroker.live/badges/cec2-installed.svg)
+<!-- 
+![Number of Installations (stable)](http://iobroker.live/badges/cec2-stable.svg)
+-->
+[![Dependency Status](https://status.david-dm.org/gh/iobroker-community-adapters/iobroker.cec2.svg)](https://david-dm.org/iobroker-community-adapters/iobroker.cec2)
+[![Known Vulnerabilities](https://snyk.io/test/github/iobroker-community-adapters/ioBroker.cec2/badge.svg)](https://snyk.io/test/github/iobroker-community-adapters/ioBroker.cec2)
+
+[![NPM](https://nodei.co/npm/iobroker.cec2.png?downloads=true)](https://nodei.co/npm/iobroker.cec2/)
+
+**Tests:** ![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.cec2/workflows/Test%20and%20Release/badge.svg)
 
 
 Adapter for HDMI CEC
@@ -129,38 +141,6 @@ Or install from admin webpage.
 ## Script examples:
 
 See [example Scripts](doc/ExampleScripts.md) for some example scripts that help with / repair multimedia setups.
-
-## Changelog
-<!-- 
-	Placeholder for next versions (this needs to be indented):
-	### __WORK IN PROGRESS__
--->
-### 0.0.7 (2021-01-24)
-* fix warnings
-
-### 0.0.6 (2021-01-02)
-* update dependencies
-
-### 0.0.5 (2021-01-01)
-* fix button presses
-* add default for button press time
-
-### 0.0.4 (2020-12-28)
-* Make sure active devices are marked as active.
-* make sure all devices have the required states
-* fix deactivating devices
-* Make sure we deliver incoming update if user did poll.
-
-### 0.0.3 (2020-05-21)
-* added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).
-* fixed possible crash on start
-
-### 0.0.2 (2020-01-28)
-* fixed a lot of bugs
-
-### 0.0.1 (2020-01-28)
-* initial release
-
 
 ### License
 The MIT License (MIT)
