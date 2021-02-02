@@ -47,8 +47,8 @@ const utils = require('@iobroker/adapter-core');
  */
 
 //imports:
-const CEC = require('@senzil/cec-monitor').CEC;
-const CECMonitor = require('@senzil/cec-monitor').CECMonitor;
+const CEC = require('./lib/cec-constants');
+const CECMonitor = require('./lib/cec-monitor');
 const fs = require('fs').promises;
 const fsConstants = require('fs').constants;
 const stateDefinitions = /** @type {Record<string, stateDefinition>} */ (require('./lib/stateDefinitions'));
@@ -736,12 +736,9 @@ class CEC2 extends utils.Adapter {
             debug: true, //config.cecDebug,
             //hdmiport: config.hdmiPort,
             //processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
-            recorder: config.type === 'r',
-            player: config.type === 'p',
-            tuner: config.type === 't',
-            audio: config.type === 'a',
-            autorestart: true, //allows auto restart of cec-client.
-            command_timeout: 3,
+            type: config.type,
+            autoRestart: true, //allows auto restart of cec-client.
+            commandTimeout: 3,
             //user_control_hold_interval: config.userControlHoldInterval
         });
 
