@@ -13,7 +13,7 @@
  *          * power
  *          * activeSource true/false (must set to false, if somebody else gets active.
  *          * vendorId
- *          * device class (derivce from logical address?)
+ *          * device class (device from logical address?)
  *          * lastKnownLogicalAddress
  *          * ...
  *          * some Information what works and what not? (like capabilities?)
@@ -25,8 +25,8 @@
 
 
 //TODO:
-// - add user control as states in device (subfolder)
-//      - could also need a state with button press lenght
+// - add user control as states in device (sub folder)
+//      - could also need a state with button press length
 // - testing!!!
 // - especially setting stuff, everything besides on off needs testing, i.e.:
 //          activeSource (on AND off!),
@@ -35,7 +35,7 @@
 //          tuner (can I control TV tuner with that?),
 //          menu (can I open menu with that? On TV? On FireTV?),
 //  - add more specific polling, i.e. ask audio device for audio status and tuner maybe?
-//  - should we add parameter subfolder and allow polling of single states?
+//  - should we add parameter sub folder and allow polling of single states?
 
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
@@ -88,7 +88,7 @@ const eventToStateDefinition = {
 };
 
 /**
- * Build ID from device and stateDefinition, i.e. needs to be in device folder and maybe also poll subfolder.
+ * Build ID from device and stateDefinition, i.e. needs to be in device folder and maybe also poll sub folder.
  * @param {cecDevice|string} device - device
  * @param {stateDefinition} stateDef - state definition of state
  * @param {boolean} [poll] - true if in polling folder.
@@ -170,9 +170,9 @@ function stateDefinitionFromId(id) {
  * @property {number} [lastGetName]             last time we asked for a name.
  * @property {number} [getNameTries]            how often we have tried to get a name.
  * @property {number} [lastGetPhysAddr]         last time we asked for a physical address
- * @property {number} [getPhysAddrTries]        how often we have tried to get phyiscal address
+ * @property {number} [getPhysAddrTries]        how often we have tried to get physical address
  * @property {boolean} [physicalAddressReallyChanged] true if physicalAddress really changed, i.e. device answered and name differs.
- * @property {Record<String, boolean>} didPoll true if device did just poll this stateref so next update will be forced to iobroker.
+ * @property {Record<String, boolean>} didPoll true if device did just poll this state ref so next update will be forced to iobroker.
  *
  * @property {boolean} [active]                 active state value
  * @property {number} [lastSeen]                last seen since value
@@ -184,7 +184,7 @@ function stateDefinitionFromId(id) {
  * @property {boolean} [arc]                    arc state (only on global device)
  * @property {boolean} [systemAudio]            systemAudio state (only on global device)
  * @property {Array<cecDevice>} [devices]       Array of all devices (only on global device?)
- * @property {number} [currentButtonPressTime]  Time in millisecondes for the next button press to wait.
+ * @property {number} [currentButtonPressTime]  Time in milliseconds for the next button press to wait.
  *
  * @property {boolean} created                  if device was created in ioBroker or not.
  * @property {boolean} ignored                  if device is ignored (because no name & config setting)
@@ -242,8 +242,11 @@ class CEC2 extends utils.Adapter {
         }
 
         try {
-            const status = await this.cec.SendCommand(null, CEC.LogicalAddress.TV, CEC.Opcode.GIVE_DEVICE_POWER_STATUS, CECMonitor.EVENTS.REPORT_POWER_STATUS);
-            this.log.debug('TV Power is ' + status.data.str);
+            /** @type {event} */
+            const status = await this.cec.sendCommand(null, CEC.LogicalAddress.TV, CEC.Opcode.GIVE_DEVICE_POWER_STATUS, CECMonitor.EVENTS.REPORT_POWER_STATUS);
+            if (status && status.data) {
+                this.log.debug('TV Power is ' + status.data.str);
+            }
         } catch (e) {
             this.log.debug('TV did not answer to powerRequest: ' + e + ' - ' + e.stack);
         }
@@ -267,7 +270,9 @@ class CEC2 extends utils.Adapter {
         if (stateDefinition.valueList) {
             states = {};
             Object.keys(stateDefinition.valueList).forEach(key => {
-                states[stateDefinition.valueList[key]] = key;
+                if (stateDefinition.valueList && stateDefinition.valueList[key]) {
+                    states[stateDefinition.valueList[key]] = key;
+                }
             });
         }
 
@@ -292,7 +297,7 @@ class CEC2 extends utils.Adapter {
         });
         device.createdStates.push(stateDefinition.name);
 
-        //don't set val here, will set all vals when adapter start. We do not really want that. And we do not need that here, do we?
+        //don't set val here, will set all values when adapter start. We do not really want that. And we do not need that here, do we?
         //await this.setStateChangedAsync(id, val, true);
 
         //create poll states:
@@ -314,7 +319,7 @@ class CEC2 extends utils.Adapter {
     }
 
     /**
-     * Get a device from our devices aray by name.
+     * Get a device from our devices array by name.
      * @param {string} name
      * @returns {cecDevice|undefined}
      */
@@ -336,7 +341,7 @@ class CEC2 extends utils.Adapter {
     async setDeviceActive(device, active, logicalAddress) {
         device.active = active;
         device.logicalAddress = logicalAddress;
-        if (device.name !== 'Gobal') {
+        if (device.name !== 'Global') {
             await this.setStateChangedAsync(buildId(device, stateDefinitions.active), active, true);
             await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
             await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
@@ -396,13 +401,13 @@ class CEC2 extends utils.Adapter {
     /**
      * Create ioBroker Device for detected CEC device. Might return without creating if no name yet.
      * @param {number} logicalAddress of detected device
-     * @param {event} data - incomming CEC message
+     * @param {event} data - incoming CEC message
      * @returns {Promise<cecDevice>}
      */
     async createCECDevice(logicalAddress, data) {
         this.log.debug('============================ Creating device: ' + logicalAddress + ': ' + JSON.stringify(data));
         //do we have a name already?
-        let name = data && data.opcode === CEC.Opcode.SET_OSD_NAME ? cleanUpName(data.data.str) : '';
+        let name = (data && data.opcode === CEC.Opcode.SET_OSD_NAME && data.data) ? cleanUpName(data.data.str) : '';
         if (!name && logicalAddress === 0) {
             name = 'TV'; //TV does not really need to implement OSD Name... not nice. :-(
         }
@@ -452,13 +457,17 @@ class CEC2 extends utils.Adapter {
 
         //ask for name, if we don't have it
         if (!name) {
+            //no device can not be undefined here... :-(
+            // @ts-ignore
             if (device.getNameTries < 11) { //try to get name, if tried too often, continue with physicalAddress.
+                // @ts-ignore
                 if (Date.now() - device.lastGetName > 3000) {
                     this.log.info('No name for logicalAddress ' + logicalAddress + ', requesting it.');
                     try {
+                        // @ts-ignore
                         device.getNameTries += 1;
                         device.lastGetName = Date.now();
-                        await this.cec.SendMessage(null, logicalAddress, CEC.Opcode.GIVE_OSD_NAME);
+                        await this.cec.sendMessage(null, logicalAddress, CEC.Opcode.GIVE_OSD_NAME);
                         clearTimeout(this.timeouts['createTimeout' + logicalAddress]);
                         this.timeouts['createTimeout' + logicalAddress] = setTimeout(() => {
                             this.createCECDevice(logicalAddress, data);
@@ -484,13 +493,17 @@ class CEC2 extends utils.Adapter {
         }
         //ask for physicalAddress if we do not have it and it did not happen already / too fast / too many times. Exit and retry later.
         if (!name) {
+            //no device can not be undefined here... :-(
+            // @ts-ignore
             if (device.getPhysAddrTries < 11) { //try to get physicalAddress, if tried to often continue without it.
+                // @ts-ignore
                 if (Date.now() - device.lastGetPhysAddr > 60000) {
                     this.log.debug('Requesting name failed, try to get physical address for ' + logicalAddress);
                     try {
+                        // @ts-ignore
                         device.getPhysAddrTries += 1;
                         device.lastGetPhysAddr = Date.now();
-                        await this.cec.SendMessage(null, logicalAddress, CEC.Opcode.GIVE_PHYSICAL_ADDRESS);
+                        await this.cec.sendMessage(null, logicalAddress, CEC.Opcode.GIVE_PHYSICAL_ADDRESS);
                         clearTimeout(this.timeouts['createTimeout' + logicalAddress]);
                         this.timeouts['createTimeout' + logicalAddress] = setTimeout(() => {
                             this.createCECDevice(logicalAddress, data);
@@ -505,7 +518,7 @@ class CEC2 extends utils.Adapter {
 
         //all failed, we can not get a name... use Logical Address.
         if (!name) {
-            this.log.warn('Cound not find a name for device ' + logicalAddress);
+            this.log.warn('Could not find a name for device ' + logicalAddress);
             name = 'Unknown_' + Number(logicalAddress).toString((16)).toUpperCase();
         }
 
@@ -553,10 +566,10 @@ class CEC2 extends utils.Adapter {
         }
 
         //poll some more:
-        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.deck.pollOpCode, stateDefinitions.deck.pollArgument);
-        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.tuner.pollOpCode, stateDefinitions.tuner.pollArgument);
-        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.menuStatus.pollOpCode, stateDefinitions.menuStatus.pollArgument);
-        await this.cec.SendMessage(null, logicalAddress, stateDefinitions.powerState.pollOpCode);
+        await this.cec.sendMessage(null, logicalAddress, stateDefinitions.deck.pollOpCode, stateDefinitions.deck.pollArgument);
+        await this.cec.sendMessage(null, logicalAddress, stateDefinitions.tuner.pollOpCode, stateDefinitions.tuner.pollArgument);
+        await this.cec.sendMessage(null, logicalAddress, stateDefinitions.menuStatus.pollOpCode, stateDefinitions.menuStatus.pollArgument);
+        await this.cec.sendMessage(null, logicalAddress, stateDefinitions.powerState.pollOpCode);
 
         this.log.info('Creation of device ' + device.name + ' finished.');
         return existingDevice || device;
@@ -596,6 +609,8 @@ class CEC2 extends utils.Adapter {
 
             let stateDef = data.stateDef;
             if (!stateDef) {
+                //either event or opcode are always defined.
+                //@ts-ignore
                 stateDef = eventToStateDefinition[data.event || data.opcode];
             }
             if (!stateDef) {
@@ -647,7 +662,7 @@ class CEC2 extends utils.Adapter {
                         device.physicalAddressReallyChanged = true; //prevent endless loop, if physical address really changed.
 
                         //this should create the new device:
-                        await this.cec.SendCommand(null, data.source, CEC.Opcode.GIVE_OSD_NAME, CECMonitor.EVENTS.SET_OSD_NAME);
+                        await this.cec.sendCommand(null, data.source, CEC.Opcode.GIVE_OSD_NAME, CECMonitor.EVENTS.SET_OSD_NAME);
                         //add physical address to device:
                         return this.processEvent(data);
                     }
@@ -662,7 +677,7 @@ class CEC2 extends utils.Adapter {
                 }
                 if (stateDef.parse) {
                     value = stateDef.parse(data);
-                } else if (stateDef.type === 'string') {
+                } else if (stateDef.type === 'string' && data.data) {
                     value = data.data.str;
                 }
             }
@@ -734,7 +749,7 @@ class CEC2 extends utils.Adapter {
 
         this.cec = new CECMonitor(config.osdName, {
             debug: true, //config.cecDebug,
-            //hdmiport: config.hdmiPort,
+            //hdmiPort: config.hdmiPort,
             //processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
             type: config.type,
             autoRestart: true, //allows auto restart of cec-client.
@@ -751,7 +766,7 @@ class CEC2 extends utils.Adapter {
 
         this.log.debug('Starting CEC Monitor.');
         try {
-            await this.cec.WaitForReady();
+            await this.cec.waitForReady();
             await this.setStateChangedAsync('info.connection', true, true);
         } catch (e) {
             this.log.error('Could not start CEC adapter: ' + e + ' - ' + e.stack);
@@ -763,7 +778,7 @@ class CEC2 extends utils.Adapter {
         }
 
         this.log.debug('CEC Monitor ready.');
-        this.timeouts.scan = setTimeout(() => this.cec.WriteRawMessage('scan'), 10000);
+        this.timeouts.scan = setTimeout(() => this.cec.writeRawMessage('scan'), 10000);
 
         if (config.pollPowerStates) {
             await this.pollPowerStates();
@@ -790,19 +805,19 @@ class CEC2 extends utils.Adapter {
         this.timeouts.pollAudio = setTimeout(async () => {
             //volume, mute and so on
             try {
-                await this.cec.SendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS);
+                await this.cec.sendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS);
             } catch (e) {
                 this.log.info('Could not poll audio status: ' + e);
             }
             //do we use audio at all?
             try {
-                await this.cec.SendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS);
+                await this.cec.sendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_SYSTEM_AUDIO_MODE_STATUS);
             } catch (e) {
                 this.log.info('Could not poll audio system status: ' + e);
             }
             //who is active:
             try {
-                await this.cec.SendMessage(null, CEC.LogicalAddress.BROADCAST, CEC.Opcode.REQUEST_ACTIVE_SOURCE);
+                await this.cec.sendMessage(null, CEC.LogicalAddress.BROADCAST, CEC.Opcode.REQUEST_ACTIVE_SOURCE);
             } catch (e) {
                 this.log.info('Could not poll active source: ' + e);
             }
@@ -874,7 +889,7 @@ class CEC2 extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            this.cec.Stop();
+            this.cec.stop();
             for (const key of Object.keys(this.timeouts)) {
                 clearTimeout(this.timeouts[key]);
             }
@@ -922,8 +937,8 @@ class CEC2 extends utils.Adapter {
                         const stateDefinition = stateDefinitionFromId(id);
                         if (stateDefinition.pollOpCode) {
                             device.didPoll[stateDefinition.name] = true;
-                            await this.cec.SendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
-                            await this.cec.SendMessage(null, stateDefinition.pollTarget || device.logicalAddress, stateDefinition.pollOpCode, stateDefinition.pollArgument);
+                            await this.cec.sendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
+                            await this.cec.sendMessage(null, stateDefinition.pollTarget || device.logicalAddress, stateDefinition.pollOpCode, stateDefinition.pollArgument);
                         } else {
                             this.log.error('Can not poll ' + stateDefinition.name + '. Please report error.');
                         }
@@ -943,9 +958,9 @@ class CEC2 extends utils.Adapter {
                         const name = id.substring(id.lastIndexOf('.') + 1);
                         const code = CEC.UserControlCode[name];
                         if (code) {
-                            await this.cec.SendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_PRESSED, code);
+                            await this.cec.sendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_PRESSED, code);
                             setTimeout(async () => {
-                                await this.cec.SendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_RELEASE, code);
+                                await this.cec.sendMessage(null, device.logicalAddress, CEC.Opcode.USER_CONTROL_RELEASE, code);
                             }, device.currentButtonPressTime);
                         }
                     } else {
