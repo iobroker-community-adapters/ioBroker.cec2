@@ -2,41 +2,77 @@
 'use strict';
 
 systemDictionary = {
-    'template adapter settings': {
-        'en': 'Adapter settings for template',
-        'de': 'Adaptereinstellungen für template',
-        'ru': 'Настройки адаптера для template',
-        'pt': 'Configurações do adaptador para template',
-        'nl': 'Adapterinstellingen voor template',
-        'fr': "Paramètres d'adaptateur pour template",
-        'it': "Impostazioni dell'adattatore per template",
-        'es': 'Ajustes del adaptador para template',
-        'pl': 'Ustawienia adaptera dla template',
-        'zh-cn': 'template的适配器设置'
-    },
     'devTypeString': {
-        'en': 'Type of device to emulate',
-        'de': 'Gerätetyp, der emuliert werden soll'
+        "en": "Type of device to emulate",
+        "de": "Art des zu emulierenden Geräts",
+        "ru": "Тип устройства для эмуляции",
+        "pt": "Tipo de dispositivo para emular",
+        "nl": "Type apparaat om te emuleren",
+        "fr": "Type d'appareil à émuler",
+        "it": "Tipo di dispositivo da emulare",
+        "es": "Tipo de dispositivo a emular",
+        "pl": "Typ urządzenia do emulacji",
+        "zh-cn": "要模拟的设备类型"
     },
     'Playback': {
-        'en': 'Playback',
-        'de': 'Wiedergabe'
+        "en": "Playback",
+        "de": "Wiedergabe",
+        "ru": "Воспроизведение",
+        "pt": "Reprodução",
+        "nl": "Afspelen",
+        "fr": "Relecture",
+        "it": "Riproduzione",
+        "es": "Reproducción",
+        "pl": "Odtwarzanie nagranego dźwięku",
+        "zh-cn": "回放"
     },
     'Recording': {
-        'en': 'Recording',
-        'de': 'Aufnahme'
+        "en": "Recording",
+        "de": "Aufnahme",
+        "ru": "Запись",
+        "pt": "Gravação",
+        "nl": "Opnemen",
+        "fr": "Enregistrement",
+        "it": "Registrazione",
+        "es": "Grabación",
+        "pl": "Nagranie",
+        "zh-cn": "记录"
     },
     'Tuner': {
-        'en': 'Tuner',
-        'de': 'Tuner'
+        "en": "Tuner",
+        "de": "Tuner",
+        "ru": "Тюнер",
+        "pt": "Sintonizador",
+        "nl": "Stemapparaat",
+        "fr": "Tuner",
+        "it": "Sintonizzatore",
+        "es": "Sintonizador",
+        "pl": "Tuner",
+        "zh-cn": "调音器"
     },
     'Audio': {
-        'en': 'Audio',
-        'de': 'Audio'
+        "en": "Audio",
+        "de": "Audio",
+        "ru": "Аудио",
+        "pt": "Áudio",
+        "nl": "Audio",
+        "fr": "l'audio",
+        "it": "Audio",
+        "es": "Audio",
+        "pl": "Audio",
+        "zh-cn": "声音的"
     },
     'osdNameString': {
-        'en': 'Name in CEC network, might be visible on TV.',
-        'de': 'Name im CEC Netzwerk, ggf. sichtbar am Fernseher'
+        "en": "Name in CEC network, might be visible on TV.",
+        "de": "Der Name im CEC-Netzwerk ist möglicherweise im Fernsehen sichtbar.",
+        "ru": "Имя в сети ЦИК, может быть видно по ТВ.",
+        "pt": "Nome na rede CEC, pode estar visível na TV.",
+        "nl": "Naam in CEC-netwerk, mogelijk zichtbaar op tv.",
+        "fr": "Nom dans le réseau CEC, peut être visible à la télévision.",
+        "it": "Il nome nella rete CEC potrebbe essere visibile in TV.",
+        "es": "Nombre en la red CEC, puede verse en la televisión.",
+        "pl": "Nazwa w sieci CEC, może być widoczna na telewizorze.",
+        "zh-cn": "CEC网络中的名称，可能在电视上可见。"
     },
     'preventUnnamedDevices': {
         'en': 'Ignore devices that do not report their name.',
