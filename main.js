@@ -938,8 +938,13 @@ class CEC2 extends utils.Adapter {
                         const stateDefinition = stateDefinitionFromId(id);
                         if (stateDefinition.pollOpCode) {
                             device.didPoll[stateDefinition.name] = true;
-                            await this.cec.sendMessage(null, device.logicalAddress, stateDefinition.pollOpCode);
-                            await this.cec.sendMessage(null, stateDefinition.pollTarget || device.logicalAddress, stateDefinition.pollOpCode, stateDefinition.pollArgument);
+                            let target = null;
+                            if (stateDefinition.pollTarget) {
+                                target = stateDefinition.pollTarget;
+                            } else if (!stateDefinition.isGlobal) {
+                                target = device.logicalAddress;
+                            }
+                            await this.cec.sendMessage(null, target, stateDefinition.pollOpCode, stateDefinition.pollArgument);
                         } else {
                             this.log.error('Can not poll ' + stateDefinition.name + '. Please report error.');
                         }
