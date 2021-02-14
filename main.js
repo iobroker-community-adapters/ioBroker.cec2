@@ -83,6 +83,7 @@ const eventToStateDefinition = {
     'POLLING_MESSAGE': stateDefinitions.active,
     'REPORT_AUDIO_STATUS': stateDefinitions.volume,
     'SYSTEM_AUDIO_MODE_STATUS': stateDefinitions.systemAudio,
+    'SET_SYSTEM_AUDIO_MODE': stateDefinitions.systemAudio,
     'REPORT_ARC_STARTED': stateDefinitions.arc,
     'REPORT_ARC_ENDED': stateDefinitions.arc
 };
