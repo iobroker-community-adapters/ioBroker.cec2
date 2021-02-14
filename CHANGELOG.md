@@ -4,6 +4,9 @@
 	PLACEHOLDER for next version:
 	## __WORK IN PROGRESS__
 -->
+## __WORK IN PROGRESS__
+* add more translations.
+
 ## 0.0.8 (2021-02-14)
 * Switched from unmaintained dependency to own code to control cec-monitor binary.
 * Swtiched from event-stream to readline.
