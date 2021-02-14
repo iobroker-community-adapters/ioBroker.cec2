@@ -5,7 +5,9 @@
 	## __WORK IN PROGRESS__
 -->
 ## __WORK IN PROGRESS__
-* Switched from unmaintained dependency to own code to control cec-monitor binary
+* Switched from unmaintained dependency to own code to control cec-monitor binary.
+* Swtiched from event-stream to readline.
+* Probably fixed missed incomming events.
 
 ## 0.0.7 (2021-01-24)
 * fix warnings
