@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.7",
+        "version": "0.0.8",
         "news": {
+            "0.0.8": {
+                "en": "Switched from unmaintained dependency to own code to control cec-monitor binary.\nSwtiched from event-stream to readline.\nProbably fixed missed incomming events.",
+                "de": "Von nicht beibehaltener Abhängigkeit zu eigenem Code gewechselt, um die cec-monitor-Binärdatei zu steuern.\nVom Event-Stream zur Readline gewechselt.\nVermutlich verpasste eingehende Ereignisse behoben.",
+                "ru": "Переключен с необслуживаемой зависимости на собственный код для управления двоичным кодом cec-monitor.\nПереключен из потока событий в строку чтения.\nВероятно, исправлены пропущенные входящие события.",
+                "pt": "Mudou de dependência não mantida para o próprio código para controlar o binário cec-monitor.\nMudou de fluxo de evento para linha de leitura.\nProvavelmente consertou eventos de incomming perdidos.",
+                "nl": "Overgeschakeld van niet-onderhouden afhankelijkheid naar eigen code om cec-monitor binair te besturen.\nOmgeschakeld van event-stream naar readline.\nWaarschijnlijk opgeloste gemiste binnenkomende evenementen.",
+                "fr": "Passé d'une dépendance non maintenue à son propre code pour contrôler le binaire cec-monitor.\nPassé du flux d'événements à readline.\nProbablement fixe les événements entrants manqués.",
+                "it": "Passato da dipendenza non mantenuta al proprio codice per controllare il binario cec-monitor.\nPassaggio da event-stream a readline.\nProbabilmente sono stati risolti gli eventi in entrata persi.",
+                "es": "Se cambió de dependencia no mantenida a código propio para controlar el binario cec-monitor.\nCambiado de event-stream a readline.\nProbablemente arreglos los eventos entrantes perdidos.",
+                "pl": "Przełączono z nieobsługiwanej zależności na własny kod, aby kontrolować plik binarny cec-monitor.\nPrzełączono ze strumienia zdarzeń na readline.\nPrawdopodobnie naprawiono nieodebrane nadchodzące wydarzenia.",
+                "zh-cn": "从未维护的依赖关系切换到自己的代码，以控制cec-monitor二进制文件。\n从事件流切换到readline。\n可能修复了未收到的事件。"
+            },
             "0.0.7": {
                 "en": "fix warnings",
                 "de": "Warnungen beheben",
