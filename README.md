@@ -142,6 +142,10 @@ Or install from admin webpage.
 
 See [example Scripts](doc/ExampleScripts.md) for some example scripts that help with / repair multimedia setups.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ### License
 The MIT License (MIT)
 
