@@ -1,22 +1,4 @@
-# Changelog
-
-<!--
-	PLACEHOLDER for next version:
-	## __WORK IN PROGRESS__
--->
-## __WORK IN PROGRESS__
-* add more translations.
-
-## 0.0.8 (2021-02-14)
-* Switched from unmaintained dependency to own code to control cec-monitor binary.
-* Swtiched from event-stream to readline.
-* Probably fixed missed incomming events.
-
-## 0.0.7 (2021-01-24)
-* fix warnings
-
-## 0.0.6 (2021-01-02)
-* update dependencies
+# Older Changes
 
 ## 0.0.5 (2021-01-01)
 * fix button presses
