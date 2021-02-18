@@ -150,6 +150,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 -->
 ### __WORK IN PROGRESS__
 * add more translations.
+* add more options (poll TV power).
 
 ### 0.0.8 (2021-02-14)
 * Switched from unmaintained dependency to own code to control cec-monitor binary.
