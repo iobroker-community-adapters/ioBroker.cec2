@@ -103,6 +103,11 @@
         "osDependencies": [
             "cec-utils"
         ],
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ],
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "cec2.png",
@@ -125,14 +130,13 @@
         "messagebox": false,
         "plugins": {
             "sentry": {
-                "dsn": "https://f158f75380074647871f4665d54ee2f3@o377092.ingest.sentry.io/5208348",
+                "dsn": "https://ebf205f09b7f4a15b93c60810bd91092@sentry.iobroker.net/114",
                 "pathWhitelist": [
                     "@iobroker",
                     "iobroker.js-controller",
                     "cec2",
                     "stateDefinitions",
-                    "cec-monitor",
-                    "senzil"
+                    "cec-monitor"
                 ],
                 "pathBlacklist": [],
                 "errorBlacklist": [
@@ -151,6 +155,14 @@
     },
     "objects": [],
     "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
         {
             "_id": "info.connection",
             "type": "state",
