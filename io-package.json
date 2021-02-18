@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "cec2",
-        "version": "0.0.8",
+        "version": "0.1.0",
         "news": {
+            "0.1.0": {
+                "en": "add more translations.\nadd more options (poll TV power).",
+                "de": "Weitere Übersetzungen hinzufügen.\nWeitere Optionen hinzufügen (TV-Leistung abfragen).",
+                "ru": "добавить больше переводов.\nдобавить дополнительные параметры (опросить мощность ТВ).",
+                "pt": "adicione mais traduções.\nadicione mais opções (poll TV power).",
+                "nl": "voeg meer vertalingen toe.\nmeer opties toevoegen (poll TV power).",
+                "fr": "ajouter plus de traductions.\najouter plus d'options (interroger la puissance du téléviseur).",
+                "it": "aggiungi altre traduzioni.\naggiungere più opzioni (poll potenza TV).",
+                "es": "agregue más traducciones.\nagregue más opciones (encuesta de potencia de TV).",
+                "pl": "dodaj więcej tłumaczeń.\ndodaj więcej opcji (sondaż mocy TV).",
+                "zh-cn": "添加更多翻译。\n添加更多选项（轮询电视功能）。"
+            },
             "0.0.8": {
                 "en": "Switched from unmaintained dependency to own code to control cec-monitor binary.\nSwtiched from event-stream to readline.\nProbably fixed missed incomming events.",
                 "de": "Von nicht beibehaltener Abhängigkeit zu eigenem Code gewechselt, um die cec-monitor-Binärdatei zu steuern.\nVom Event-Stream zur Readline gewechselt.\nVermutlich verpasste eingehende Ereignisse behoben.",

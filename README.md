@@ -148,7 +148,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 	PLACEHOLDER for next version:
 	## __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 0.1.0 (2021-02-18)
 * add more translations.
 * add more options (poll TV power).
 
