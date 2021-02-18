@@ -64,7 +64,7 @@ systemDictionary = {
     },
     'osdNameString': {
         "en": "Name in CEC network, might be visible on TV.",
-        "de": "Der Name im CEC-Netzwerk ist möglicherweise im Fernsehen sichtbar.",
+        "de": "Name im CEC Netzwerk, möglicherweise am TV sichtbar.",
         "ru": "Имя в сети ЦИК, может быть видно по ТВ.",
         "pt": "Nome na rede CEC, pode estar visível na TV.",
         "nl": "Naam in CEC-netwerk, mogelijk zichtbaar op tv.",
@@ -76,7 +76,7 @@ systemDictionary = {
     },
     'preventUnnamedDevices': {
         'en': 'Ignore devices that do not report their name.',
-        'de': 'Ignorieren Sie Geräte, die ihren Namen nicht melden.',
+        'de': 'Ignoriere Geräte, die ihren Namen nicht melden.',
         'ru': 'Игнорировать устройства, которые не сообщают свое имя.',
         'pt': 'Ignore os dispositivos que não informam seus nomes.',
         'nl': 'Negeer apparaten die hun naam niet melden.',
@@ -85,5 +85,29 @@ systemDictionary = {
         'es': 'Ignora los dispositivos que no informan su nombre.',
         'pl': 'Zignoruj urządzenia, które nie zgłaszają swojej nazwy.',
         'zh-cn': '忽略不报告其名称的设备。'
+    },
+    'pollPowerStates': {
+        "en": "Poll power states of TV",
+        "de": "Den An/Aus Zustand des Fernsehens regelmäßig abfragen",
+        "ru": "Опрос состояния мощности ТВ",
+        "pt": "Pesquisar estados de energia da TV",
+        "nl": "Vraag de energietoestanden van tv af",
+        "fr": "Interroger les états d'alimentation du téléviseur",
+        "it": "Sondaggio degli stati di alimentazione della TV",
+        "es": "Poll power states of TV",
+        "pl": "Sprawdź stan zasilania telewizora",
+        "zh-cn": "电视的轮询电源状态"
+    },
+    'pollInterval': {
+        "en": "Interval for power poll",
+        "de": "Intervall für die Abfrage",
+        "ru": "Интервал опроса мощности",
+        "pt": "Intervalo para power poll",
+        "nl": "Interval voor power poll",
+        "fr": "Intervalle pour l'interrogation de puissance",
+        "it": "Intervallo per il sondaggio di potenza",
+        "es": "Intervalo para encuesta de potencia",
+        "pl": "Interwał dla ankiety zasilania",
+        "zh-cn": "功率轮询间隔"
     }
 };

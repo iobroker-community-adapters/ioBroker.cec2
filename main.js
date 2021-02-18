@@ -754,8 +754,7 @@ class CEC2 extends utils.Adapter {
             //processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
             type: config.type,
             autoRestart: true, //allows auto restart of cec-client.
-            commandTimeout: 3,
-            //user_control_hold_interval: config.userControlHoldInterval
+            commandTimeout: 3
         });
 
         this.cec.on('_debug', d => this.log.debug(d));
