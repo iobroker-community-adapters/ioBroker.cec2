@@ -762,6 +762,13 @@ class CEC2 extends utils.Adapter {
             this.cec.on('_debug', d => this.log.debug(d));
             this.cec.on('_traffic', d => this.log.debug(d));
             this.cec.on('_stop', d => d ? this.log.error('CEC Monitor stopped: ' + d) : this.log.debug('CEC Monitor stopped gracefully.'));
+            this.cec.on('_error', e => {
+                if (e.code === 'ENOENT') {
+                    this.log.error('cec-client not found. Please make sure cec-utils are installed and cec-client can be run by iobroker user.');
+                    return;  //can not do the rest of the stuff.
+                }
+                this.log.warn('Error from CEC library: ' + e);
+            });
 
             //add listeners for device changes:
             Object.keys(eventToStateDefinition).forEach(k => this.cec.on(k, d => this.processEvent(d)));
