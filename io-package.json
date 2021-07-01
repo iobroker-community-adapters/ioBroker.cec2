@@ -123,6 +123,7 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "icon": "cec2.png",
+        "tier": 2,
         "materialize": true,
         "enabled": true,
         "compact": true,
