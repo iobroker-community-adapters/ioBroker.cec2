@@ -747,24 +747,25 @@ class CEC2 extends utils.Adapter {
             }
         }
 
-        this.cec = new CECMonitor(config.osdName, {
-            debug: true, //config.cecDebug,
-            //hdmiPort: config.hdmiPort,
-            //processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
-            type: config.type,
-            autoRestart: true, //allows auto restart of cec-client.
-            commandTimeout: 3
-        });
-
-        this.cec.on('_debug', d => this.log.debug(d));
-        this.cec.on('_traffic', d => this.log.debug(d));
-        this.cec.on('_stop', d => d ? this.log.error('CEC Monitor stopped: ' + d) : this.log.debug('CEC Monitor stopped gracefully.'));
-
-        //add listeners for device changes:
-        Object.keys(eventToStateDefinition).forEach(k => this.cec.on(k, d => this.processEvent(d)));
-
-        this.log.debug('Starting CEC Monitor.');
         try {
+            this.log.debug('Starting CEC Monitor.');
+
+            this.cec = new CECMonitor(config.osdName, {
+                debug: true, //config.cecDebug,
+                //hdmiPort: config.hdmiPort,
+                //processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
+                type: config.type,
+                autoRestart: true, //allows auto restart of cec-client.
+                commandTimeout: 3
+            });
+
+            this.cec.on('_debug', d => this.log.debug(d));
+            this.cec.on('_traffic', d => this.log.debug(d));
+            this.cec.on('_stop', d => d ? this.log.error('CEC Monitor stopped: ' + d) : this.log.debug('CEC Monitor stopped gracefully.'));
+
+            //add listeners for device changes:
+            Object.keys(eventToStateDefinition).forEach(k => this.cec.on(k, d => this.processEvent(d)));
+
             await this.cec.waitForReady();
             await this.setStateChangedAsync('info.connection', true, true);
         } catch (e) {
