@@ -1,0 +1,11 @@
+{
+    "Audio": "Audio",
+    "Playback": "Afspelen",
+    "Recording": "Opnemen",
+    "Tuner": "Stemapparaat",
+    "devTypeString": "Type apparaat om te emuleren",
+    "osdNameString": "Naam in CEC-netwerk, mogelijk zichtbaar op tv.",
+    "pollInterval": "Interval voor power poll",
+    "pollPowerStates": "Vraag de energietoestanden van tv af",
+    "preventUnnamedDevices": "Negeer apparaten die hun naam niet melden."
+}

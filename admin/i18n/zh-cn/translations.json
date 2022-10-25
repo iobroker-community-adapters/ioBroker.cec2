@@ -1,0 +1,11 @@
+{
+    "Audio": "声音的",
+    "Playback": "回放",
+    "Recording": "记录",
+    "Tuner": "调音器",
+    "devTypeString": "要模拟的设备类型",
+    "osdNameString": "CEC网络中的名称，可能在电视上可见。",
+    "pollInterval": "功率轮询间隔",
+    "pollPowerStates": "电视的轮询电源状态",
+    "preventUnnamedDevices": "忽略不报告其名称的设备。"
+}

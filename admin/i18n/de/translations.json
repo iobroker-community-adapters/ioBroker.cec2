@@ -1,8 +1,11 @@
 {
-  "Name in CEC network, might be visible on TV.": "Name im CEC Netzwerk. Sichtbar z.B. auf dem TV.",
-  "Playback": "Wiedergabe",
-  "Recording": "Aufnahme",
-  "Tuner": "Tuner",
-  "Audio": "Audio",
-  "Type of device to emulate": "Gerät, das emuliert werden soll",
+    "Audio": "Audio",
+    "Playback": "Wiedergabe",
+    "Recording": "Aufnahme",
+    "Tuner": "Tuner",
+    "devTypeString": "Art des zu emulierenden Geräts",
+    "osdNameString": "Name im CEC Netzwerk, möglicherweise am TV sichtbar.",
+    "pollInterval": "Intervall für die Abfrage",
+    "pollPowerStates": "Den An/Aus Zustand des Fernsehens regelmäßig abfragen",
+    "preventUnnamedDevices": "Ignoriere Geräte, die ihren Namen nicht melden."
 }

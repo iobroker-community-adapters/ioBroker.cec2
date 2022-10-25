@@ -1,0 +1,11 @@
+{
+    "Audio": "Audio",
+    "Playback": "Odtwarzanie nagranego dźwięku",
+    "Recording": "Nagranie",
+    "Tuner": "Tuner",
+    "devTypeString": "Typ urządzenia do emulacji",
+    "osdNameString": "Nazwa w sieci CEC, może być widoczna na telewizorze.",
+    "pollInterval": "Interwał dla ankiety zasilania",
+    "pollPowerStates": "Sprawdź stan zasilania telewizora",
+    "preventUnnamedDevices": "Zignoruj urządzenia, które nie zgłaszają swojej nazwy."
+}

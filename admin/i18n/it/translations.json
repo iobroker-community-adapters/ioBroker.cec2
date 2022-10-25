@@ -1,0 +1,11 @@
+{
+    "Audio": "Audio",
+    "Playback": "Riproduzione",
+    "Recording": "Registrazione",
+    "Tuner": "Sintonizzatore",
+    "devTypeString": "Tipo di dispositivo da emulare",
+    "osdNameString": "Il nome nella rete CEC potrebbe essere visibile in TV.",
+    "pollInterval": "Intervallo per il sondaggio di potenza",
+    "pollPowerStates": "Sondaggio degli stati di alimentazione della TV",
+    "preventUnnamedDevices": "Ignora i dispositivi che non riportano il loro nome."
+}

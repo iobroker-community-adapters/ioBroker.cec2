@@ -1,0 +1,11 @@
+{
+    "Audio": "Audio",
+    "Playback": "Playback",
+    "Recording": "Recording",
+    "Tuner": "Tuner",
+    "devTypeString": "Type of device to emulate",
+    "osdNameString": "Name in CEC network, might be visible on TV.",
+    "pollInterval": "Interval for power poll",
+    "pollPowerStates": "Poll power states of TV",
+    "preventUnnamedDevices": "Ignore devices that do not report their name."
+}
