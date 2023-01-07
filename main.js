@@ -36,7 +36,6 @@
 //          menu (can I open menu with that? On TV? On FireTV?),
 //  - add more specific polling, i.e. ask audio device for audio status and tuner maybe?
 //  - should we add parameter sub folder and allow polling of single states?
-
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
@@ -73,6 +72,7 @@ const eventToStateDefinition = {
     //'SET_MENU_LANGUAGE': stateDefinitions.language,
     'RECORD_STATUS': stateDefinitions.recording,
     'CEC_VERSION': stateDefinitions.cecVersion,
+    'GET_CEC_VERSION': stateDefinitions.maxCecVersionSupported,
     'REPORT_PHYSICAL_ADDRESS': stateDefinitions.physicalAddress,
     'DECK_STATUS': stateDefinitions.deck,
     'TUNER_DEVICE_STATUS': stateDefinitions.tuner,
@@ -186,6 +186,8 @@ function stateDefinitionFromId(id) {
  * @property {boolean} [systemAudio]            systemAudio state (only on global device)
  * @property {Array<cecDevice>} [devices]       Array of all devices (only on global device?)
  * @property {number} [currentButtonPressTime]  Time in milliseconds for the next button press to wait.
+ * @property {number} maxCECVersionSupported    It seems Version 1.4 is not well-supported, yet. Try to emulate lower versions here. Number equals number in constants tried.
+ * @property {boolean} [tryingMaxCECVersion]    are we currently trying max cec version?
  *
  * @property {boolean} created                  if device was created in ioBroker or not.
  * @property {boolean} ignored                  if device is ignored (because no name & config setting)
@@ -227,7 +229,8 @@ class CEC2 extends utils.Adapter {
             created: true,
             ignored: false,
             createdStates: [],
-            didPoll: {}
+            didPoll: {},
+            maxCECVersionSupported: CEC.CECVersion.UNKNOWN
         };
         this.devices.push(this.globalDevice);
     }
@@ -438,7 +441,8 @@ class CEC2 extends utils.Adapter {
                 name: name ? cleanUpName(name) : '',
                 get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
                 createdStates: [],
-                didPoll: {}
+                didPoll: {},
+                maxCECVersionSupported: CEC.CECVersion.UNKNOWN
             };
             this.logicalAddressToDevice[logicalAddress] = device;
         }
@@ -473,7 +477,7 @@ class CEC2 extends utils.Adapter {
                             this.createCECDevice(logicalAddress, data);
                         }, 10000);
                     } catch (e) {
-                        this.log.error('Could not get name: ' + e + ' - ' + e.stack);
+                        this.log.error(`Could not get name: ${e} - ${e.stack}`);
                     }
                 }
                 return device; //exit and retry later.
@@ -681,6 +685,7 @@ class CEC2 extends utils.Adapter {
                     value = data.data.str;
                 }
             }
+
             //store value in device:
             if (device.created && device[stateDef.key || stateDef.name] === undefined) {
                 await this.createStateInDevice(device, stateDef);
@@ -721,6 +726,20 @@ class CEC2 extends utils.Adapter {
                 }
                 if (stateDef.name === stateDefinitions.volume.name) {
                     await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions.volume), value, true);
+                }
+
+                if (stateDef.name === stateDefinitions.maxCecVersionSupported.name) {
+                    if (device.maxCECVersionSupported === CEC.CECVersion.UNKNOWN && !device.tryingMaxCECVersion) {
+                        device.tryingMaxCECVersion = true;
+                        device.maxCECVersionSupported = CEC.CECVersion.VERSION_1_4 + 1; //start with trying 1_4
+                    }
+                    if (device.tryingMaxCECVersion) {
+                        device.maxCECVersionSupported -= 1;
+                        if (device.maxCECVersionSupported > 0) {
+                            await this.cec.sendMessage(null, device.logicalAddress, CEC.Opcode.CEC_VERSION, device.maxCECVersionSupported);
+                            await this.setStateChangedAsync(buildId(device, stateDefinitions.maxCecVersionSupported), device.maxCECVersionSupported, true);
+                        }
+                    }
                 }
             }
         } catch (e) {
@@ -772,6 +791,7 @@ class CEC2 extends utils.Adapter {
 
             //add listeners for device changes:
             Object.keys(eventToStateDefinition).forEach(k => this.cec.on(k, d => this.processEvent(d)));
+
 
             await this.cec.waitForReady();
             await this.setStateChangedAsync('info.connection', true, true);
@@ -855,7 +875,8 @@ class CEC2 extends utils.Adapter {
                 ignored: false,
                 logicalAddress: CEC.LogicalAddress.UNKNOWN,
                 get logicalAddressHex() { return Number(this.logicalAddress).toString(16); },
-                didPoll: {}
+                didPoll: {},
+                maxCECVersionSupported: CEC.CECVersion.UNKNOWN
             };
             const states = await this.getStatesOfAsync(id);
 
@@ -872,7 +893,11 @@ class CEC2 extends utils.Adapter {
                 }
             }
             if (device.common.name !== 'Global') {
-                await this.setStateChangedAsync(buildId(device.common.name, stateDefinitions.active), false, true);
+                let name = device.common.name;
+                if (typeof name !== 'string') {
+                    name = /** @type {string} */ (name.en || name.de || name.uk || name.es || name.ru || name.fr || name.it || name.nl || name.pl || name.pl || name['zh-cn']);
+                }
+                await this.setStateChangedAsync(buildId(name, stateDefinitions.active), false, true);
             }
             this.devices.push(existingDevice);
 
