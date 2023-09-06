@@ -148,9 +148,6 @@
             "uk": "Може використовуватися для моніторингу / керування мультимедійними пристроями за допомогою шини HDMI CEC. Серед можливих команд — увімкнути/вимкнути живлення, перемкнути вхід (для телевізорів), збільшити/зменшити гучність",
             "zh-cn": "可用于监视/控制使用 HDMI CEC 总线的多媒体设备。可能的命令包括电源开/关、开关输入（用于电视）、音量增大/减小"
         },
-        "authors": [
-            "Garfonso <garfonso@mobo.info>"
-        ],
         "docs": {
             "en": "docs/en/admin.md",
             "de": "docs/de/admin.md"
@@ -158,32 +155,21 @@
         "osDependencies": [
             "cec-utils"
         ],
-        "dependencies": [
-            {
-                "js-controller": ">=2.0.0"
-            }
-        ],
+        "authors": ["Garfonso <garfonso@mobo.info>"],
+        "keywords": ["multimedia", "HDMI", "CEC", "TV"],
+        "license": "MIT",
         "platform": "Javascript/Node.js",
-        "mode": "daemon",
+        "main": "main.js",
         "icon": "cec2.png",
-        "tier": 2,
-        "materialize": true,
         "enabled": true,
-        "compact": true,
         "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.cec2/master/admin/cec2.png",
-        "keywords": [
-            "multimedia",
-            "HDMI",
-            "CEC",
-            "TV"
-        ],
         "readme": "https://github.com/iobroker-community-adapters/ioBroker.cec2/blob/master/README.md",
         "loglevel": "info",
+        "mode": "daemon",
         "type": "multimedia",
+        "compact": true,
         "connectionType": "local",
         "dataSource": "push",
-        "license": "MIT",
-        "messagebox": false,
         "plugins": {
             "sentry": {
                 "dsn": "https://ebf205f09b7f4a15b93c60810bd91092@sentry.iobroker.net/114",
@@ -198,8 +184,19 @@
                 "errorBlacklist": [
                     "SyntaxError"
                 ]
+        "adminUI": {
+            "config": "materialize"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.22"
             }
-        }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.0.0"
+            }
+        ]
     },
     "native": {
         "osdName": "ioBroker",
