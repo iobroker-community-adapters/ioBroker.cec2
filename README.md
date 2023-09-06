@@ -144,7 +144,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.1.1 (2023-09-06)
 * dependency updates.
 * sending commands is now more reliable.
 * more error handling
@@ -163,7 +163,6 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 
 ### 0.0.6 (2021-01-02)
 * update dependencies
-
 
 ## License
 MIT License

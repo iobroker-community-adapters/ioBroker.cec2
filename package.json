@@ -1,6 +1,6 @@
 {
   "name": "iobroker.cec2",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Controls HDMI CEC devices form out of ioBroker.",
   "author": {
     "name": "Garfonso",

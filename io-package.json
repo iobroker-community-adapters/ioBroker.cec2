@@ -1,235 +1,218 @@
 {
-    "common": {
-        "name": "cec2",
-        "version": "0.1.0",
-        "news": {
-            "0.1.0": {
-                "en": "add more translations.\nadd more options (poll TV power).",
-                "de": "Weitere Übersetzungen hinzufügen.\nWeitere Optionen hinzufügen (TV-Leistung abfragen).",
-                "ru": "добавить больше переводов.\nдобавить дополнительные параметры (опросить мощность ТВ).",
-                "pt": "adicione mais traduções.\nadicione mais opções (poll TV power).",
-                "nl": "voeg meer vertalingen toe.\nmeer opties toevoegen (poll TV power).",
-                "fr": "ajouter plus de traductions.\najouter plus d'options (interroger la puissance du téléviseur).",
-                "it": "aggiungi altre traduzioni.\naggiungere più opzioni (poll potenza TV).",
-                "es": "agregue más traducciones.\nagregue más opciones (encuesta de potencia de TV).",
-                "pl": "dodaj więcej tłumaczeń.\ndodaj więcej opcji (sondaż mocy TV).",
-                "zh-cn": "添加更多翻译。\n添加更多选项（轮询电视功能）。",
-                "uk": "додати більше перекладів.\nдодати більше опцій (опитування живлення ТВ)."
-            },
-            "0.0.8": {
-                "en": "Switched from unmaintained dependency to own code to control cec-monitor binary.\nSwtiched from event-stream to readline.\nProbably fixed missed incomming events.",
-                "de": "Von nicht beibehaltener Abhängigkeit zu eigenem Code gewechselt, um die cec-monitor-Binärdatei zu steuern.\nVom Event-Stream zur Readline gewechselt.\nVermutlich verpasste eingehende Ereignisse behoben.",
-                "ru": "Переключен с необслуживаемой зависимости на собственный код для управления двоичным кодом cec-monitor.\nПереключен из потока событий в строку чтения.\nВероятно, исправлены пропущенные входящие события.",
-                "pt": "Mudou de dependência não mantida para o próprio código para controlar o binário cec-monitor.\nMudou de fluxo de evento para linha de leitura.\nProvavelmente consertou eventos de incomming perdidos.",
-                "nl": "Overgeschakeld van niet-onderhouden afhankelijkheid naar eigen code om cec-monitor binair te besturen.\nOmgeschakeld van event-stream naar readline.\nWaarschijnlijk opgeloste gemiste binnenkomende evenementen.",
-                "fr": "Passé d'une dépendance non maintenue à son propre code pour contrôler le binaire cec-monitor.\nPassé du flux d'événements à readline.\nProbablement fixe les événements entrants manqués.",
-                "it": "Passato da dipendenza non mantenuta al proprio codice per controllare il binario cec-monitor.\nPassaggio da event-stream a readline.\nProbabilmente sono stati risolti gli eventi in entrata persi.",
-                "es": "Se cambió de dependencia no mantenida a código propio para controlar el binario cec-monitor.\nCambiado de event-stream a readline.\nProbablemente arreglos los eventos entrantes perdidos.",
-                "pl": "Przełączono z nieobsługiwanej zależności na własny kod, aby kontrolować plik binarny cec-monitor.\nPrzełączono ze strumienia zdarzeń na readline.\nPrawdopodobnie naprawiono nieodebrane nadchodzące wydarzenia.",
-                "zh-cn": "从未维护的依赖关系切换到自己的代码，以控制cec-monitor二进制文件。\n从事件流切换到readline。\n可能修复了未收到的事件。",
-                "uk": "Перехід від непідтримуваної залежності до власного коду для керування двійковим файлом cec-monitor.\nПереключено з потоку подій на рядок читання.\nЙмовірно, виправлено пропущені вхідні події."
-            },
-            "0.0.7": {
-                "en": "fix warnings",
-                "de": "Warnungen beheben",
-                "ru": "исправить предупреждения",
-                "pt": "corrigir avisos",
-                "nl": "repareer waarschuwingen",
-                "fr": "corriger les avertissements",
-                "it": "correggere gli avvisi",
-                "es": "corregir advertencias",
-                "pl": "napraw ostrzeżenia",
-                "zh-cn": "修正警告",
-                "uk": "виправити попередження"
-            },
-            "0.0.6": {
-                "en": "update dependencies",
-                "de": "Abhängigkeiten aktualisieren",
-                "ru": "обновить зависимости",
-                "pt": "atualizar dependências",
-                "nl": "update afhankelijkheden",
-                "fr": "mettre à jour les dépendances",
-                "it": "aggiornare le dipendenze",
-                "es": "actualizar dependencias",
-                "pl": "zależności aktualizacji",
-                "zh-cn": "更新依赖",
-                "uk": "оновити залежності"
-            },
-            "0.0.5": {
-                "en": "fix button presses\nadd default for button press time",
-                "de": "Fix-Taste drückt\nStandard für die Tastendruckzeit hinzufügen",
-                "ru": "исправить нажатия кнопок\nдобавить значение по умолчанию для времени нажатия кнопки",
-                "pt": "consertar botões pressionados\nadicionar padrão para o tempo de pressionamento do botão",
-                "nl": "fix knop indrukken\nvoeg standaard toe voor het indrukken van de knop",
-                "fr": "corriger les pressions sur les boutons\najouter la valeur par défaut pour le temps de pression du bouton",
-                "it": "correggere le pressioni dei pulsanti\naggiungere il valore predefinito per il tempo di pressione del pulsante",
-                "es": "arreglar pulsaciones de botones\nagregar predeterminado para el tiempo de pulsación del botón",
-                "pl": "Napraw naciśnięcia przycisku\ndodaj domyślny czas naciśnięcia przycisku",
-                "zh-cn": "固定按钮按下\n添加默认的按钮按下时间",
-                "uk": "фіксувати натискання кнопок\nдодати час натискання кнопки за умовчанням"
-            },
-            "0.0.4": {
-                "en": "Make sure active devices are marked as active.\nmake sure all devices have the required states\nfix deactivating devices\nMake sure we deliver incoming update if user did poll.",
-                "de": "Stellen Sie sicher, dass aktive Geräte als aktiv markiert sind.\nStellen Sie sicher, dass alle Geräte den erforderlichen Status haben\nDeaktivierungsgeräte reparieren\nStellen Sie sicher, dass wir eingehende Updates bereitstellen, wenn der Benutzer eine Umfrage durchgeführt hat.",
-                "ru": "Убедитесь, что активные устройства отмечены как активные.\nубедитесь, что все устройства имеют необходимые состояния\nисправить деактивирующие устройства\nУбедитесь, что мы доставляем входящее обновление, если пользователь проводил опрос.",
-                "pt": "Certifique-se de que os dispositivos ativos estejam marcados como ativos.\ncertifique-se de que todos os dispositivos tenham os estados necessários\nconsertar dispositivos de desativação\nCertifique-se de entregar a atualização de entrada se o usuário fez a pesquisa.",
-                "nl": "Zorg ervoor dat actieve apparaten zijn gemarkeerd als actief.\nzorg ervoor dat alle apparaten de vereiste statussen hebben\nrepareer deactiveringsapparaten\nZorg ervoor dat we een inkomende update leveren als de gebruiker heeft gepolst.",
-                "fr": "Assurez-vous que les appareils actifs sont marqués comme actifs.\nassurez-vous que tous les appareils ont les états requis\ncorriger la désactivation des appareils\nAssurez-vous que nous livrons la mise à jour entrante si l'utilisateur a interrogé.",
-                "it": "Assicurati che i dispositivi attivi siano contrassegnati come attivi.\nassicurarsi che tutti i dispositivi abbiano gli stati richiesti\ncorreggere la disattivazione dei dispositivi\nAssicurati di consegnare l'aggiornamento in arrivo se l'utente ha eseguito il sondaggio.",
-                "es": "Asegúrese de que los dispositivos activos estén marcados como activos.\nasegúrese de que todos los dispositivos tengan los estados requeridos\narreglar los dispositivos de desactivación\nAsegúrese de entregar la actualización entrante si el usuario realizó una encuesta.",
-                "pl": "Upewnij się, że aktywne urządzenia są oznaczone jako aktywne.\nupewnij się, że wszystkie urządzenia mają wymagane stany\nnaprawić dezaktywację urządzeń\nUpewnij się, że dostarczamy nadchodzące aktualizacje, jeśli użytkownik przeprowadził ankietę.",
-                "zh-cn": "确保将活动设备标记为活动设备。\n确保所有设备都具有所需的状态\n修复停用设备\n如果用户进行了轮询，请确保我们传递传入的更新。",
-                "uk": "Переконайтеся, що активні пристрої позначені як активні.\nпереконайтеся, що всі пристрої мають необхідні стани\nвиправити пристрої дезактивації\nПереконайтеся, що ми надсилаємо вхідне оновлення, якщо користувач проводив опитування."
-            },
-            "0.0.3": {
-                "en": "added 'preventUnnamedDevices' option ot prevent creation of devices that do not report their name. This sometimes happens if devices are talking on CEC bus but are not switched on (depends on device type).\nfixed possible crash on start",
-                "de": "Die Option 'verhindere unbenannte Geräte' wurde hinzugefügt, um die Erstellung von Geräten zu verhindern, die ihren Namen nicht melden. Dies passiert manchmal, wenn Geräte über den CEC-Bus sprechen, aber nicht eingeschaltet sind (abhängig vom Gerätetyp).\nMöglicher Absturz beim Start behoben",
-                "ru": "добавлен параметр «warnUnnamedDevices», чтобы не создавать устройства, которые не сообщают свое имя. Это иногда происходит, если устройства разговаривают по шине CEC, но не включены (зависит от типа устройства).\nисправлено возможное падение при запуске",
-                "pt": "foi adicionada a opção 'preventUnnamedDevices' para impedir a criação de dispositivos que não relatam seus nomes. Às vezes, isso acontece se os dispositivos estão falando no barramento CEC, mas não estão ligados (depende do tipo de dispositivo).\npossível falha fatal no início",
-                "nl": "'preventUnnamedDevices'-optie toegevoegd om te voorkomen dat apparaten worden gemaakt die hun naam niet rapporteren. Dit gebeurt soms als apparaten op de CEC-bus praten maar niet zijn ingeschakeld (afhankelijk van het apparaattype).\nmogelijke crash bij het starten opgelost",
-                "fr": "ajout de l'option 'preventUnnamedDevices' pour empêcher la création de périphériques qui ne signalent pas leur nom. Cela se produit parfois si les appareils parlent sur le bus CEC mais ne sont pas allumés (cela dépend du type d'appareil).\nCorrection d'un crash possible au démarrage",
-                "it": "aggiunta l'opzione 'preventUnnamedDevices' per impedire la creazione di dispositivi che non riportano il loro nome. Questo a volte accade se i dispositivi parlano sul bus CEC ma non sono accesi (dipende dal tipo di dispositivo).\nrisolto possibile arresto anomalo all'avvio",
-                "es": "Se agregó la opción 'preventUnnamedDevices' para evitar la creación de dispositivos que no informan su nombre. Esto sucede a veces si los dispositivos están hablando en el bus CEC pero no están encendidos (depende del tipo de dispositivo).\nSe corrigió el posible bloqueo al inicio",
-                "pl": "dodano opcję „preventUnnamedDevices”, aby zapobiec tworzeniu urządzeń, które nie zgłaszają swojej nazwy. Zdarza się to czasami, gdy urządzenia rozmawiają na magistrali CEC, ale nie są włączone (zależy od typu urządzenia).\nnaprawiono możliwą awarię przy starcie",
-                "zh-cn": "添加了“ preventUnnamedDevices”选项，可防止创建不报告其名称的设备。如果设备在CEC总线上通话但未打开（取决于设备类型），则有时会发生这种情况。\n修复了启动时可能发生的崩溃",
-                "uk": "додано опцію 'preventUnnamedDevices' для запобігання створенню пристроїв, які не повідомляють про своє ім'я. Іноді це трапляється, якщо пристрої спілкуються по шині CEC, але не ввімкнено (залежить від типу пристрою).\nвиправлено можливий збій під час запуску"
-            },
-            "0.0.2": {
-                "en": "fixed a lot of bugs",
-                "de": "viele Fehler behoben",
-                "ru": "исправлено много ошибок",
-                "pt": "corrigiu muitos bugs",
-                "nl": "veel bugs verholpen",
-                "fr": "corrigé beaucoup de bugs",
-                "it": "corretto molti bug",
-                "es": "corrigió muchos errores",
-                "pl": "naprawiono wiele błędów",
-                "uk": "виправлено багато помилок",
-                "zh-cn": "修复了很多错误"
-            },
-            "0.0.1": {
-                "en": "initial adapter",
-                "de": "Initiale Version",
-                "ru": "начальный адаптер",
-                "pt": "adaptador inicial",
-                "nl": "initiële adapter",
-                "fr": "adaptateur initial",
-                "it": "adattatore iniziale",
-                "es": "adaptador inicial",
-                "pl": "początkowy adapter",
-                "uk": "початковий адаптер",
-                "zh-cn": "初始适配器"
-            }
-        },
-        "title": "HDMI CEC devices 2",
-        "titleLang": {
-            "en": "HDMI CEC devices 2",
-            "de": "HDMI CEC Geräte 2",
-            "ru": "Устройства HDMI CEC 2",
-            "pt": "Dispositivos HDMI CEC 2",
-            "nl": "HDMI CEC-apparaten 2",
-            "fr": "Périphériques HDMI CEC 2",
-            "it": "Dispositivi HDMI CEC 2",
-            "es": "Dispositivos HDMI CEC 2",
-            "pl": "Urządzenia HDMI CEC 2",
-            "uk": "Пристрої HDMI CEC 2",
-            "zh-cn": "HDMI CEC 设备 2"
-        },
-        "desc": {
-            "en": "Can be used to monitor / control multimedia devices using the HDMI CEC bus. Possible commands include power on/off, switch input (for TVs), volume up/donw",
-            "de": "Kann benutzt werden um Multimediageräte, die über den HDMI CEC Bus kommunizieren zu überwachen und zu kontrollieren. Mögliche Kommandos enthalten Standby an/aus, Eingang wählen (am TV), Lauter/Leiser.",
-            "ru": "Может использоваться для мониторинга/управления мультимедийными устройствами по шине HDMI CEC. Возможные команды включают в себя включение/выключение питания, переключение входа (для телевизоров), увеличение/уменьшение громкости.",
-            "pt": "Pode ser usado para monitorar/controlar dispositivos multimídia usando o barramento HDMI CEC. Os comandos possíveis incluem ligar/desligar, interruptor de entrada (para TVs), aumentar/diminuir volume",
-            "nl": "Kan worden gebruikt om multimedia-apparaten te bewaken / bedienen met behulp van de HDMI CEC-bus. Mogelijke commando's zijn onder meer aan/uit, schakelaaringang (voor tv's), volume omhoog/omlaag",
-            "fr": "Peut être utilisé pour surveiller/contrôler des appareils multimédias à l'aide du bus HDMI CEC. Les commandes possibles incluent la mise sous/hors tension, l'entrée de commutation (pour les téléviseurs), le volume haut/bas",
-            "it": "Può essere utilizzato per monitorare/controllare dispositivi multimediali utilizzando il bus HDMI CEC. Possibili comandi includono accensione/spegnimento, ingresso interruttore (per TV), volume su/giù",
-            "es": "Se puede usar para monitorear/controlar dispositivos multimedia usando el bus HDMI CEC. Los comandos posibles incluyen encendido/apagado, cambiar entrada (para televisores), subir/bajar volumen",
-            "pl": "Może być używany do monitorowania / sterowania urządzeniami multimedialnymi za pomocą magistrali HDMI CEC. Możliwe polecenia obejmują włączanie/wyłączanie zasilania, wejście przełącznika (dla telewizorów), zwiększanie/zmniejszanie głośności",
-            "uk": "Може використовуватися для моніторингу / керування мультимедійними пристроями за допомогою шини HDMI CEC. Серед можливих команд — увімкнути/вимкнути живлення, перемкнути вхід (для телевізорів), збільшити/зменшити гучність",
-            "zh-cn": "可用于监视/控制使用 HDMI CEC 总线的多媒体设备。可能的命令包括电源开/关、开关输入（用于电视）、音量增大/减小"
-        },
-        "docs": {
-            "en": "docs/en/admin.md",
-            "de": "docs/de/admin.md"
-        },
-        "osDependencies": {
-            "linux": ["cec-utils"]
-        },
-        "authors": ["Garfonso <garfonso@mobo.info>"],
-        "keywords": ["multimedia", "HDMI", "CEC", "TV"],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "cec2.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.cec2/master/admin/cec2.png",
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.cec2/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "multimedia",
-        "compact": true,
-        "connectionType": "local",
-        "dataSource": "push",
-        "plugins": {
-            "sentry": {
-                "dsn": "https://ebf205f09b7f4a15b93c60810bd91092@sentry.iobroker.net/114",
-                "pathWhitelist": [
-                    "@iobroker",
-                    "iobroker.js-controller",
-                    "cec2",
-                    "stateDefinitions",
-                    "cec-monitor"
-                ],
-                "pathBlacklist": [],
-                "errorBlacklist": [
-                    "SyntaxError"
-                ]
-            }
-        },
-        "adminUI": {
-            "config": "materialize"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=3.3.22"
-            }
+  "common": {
+    "name": "cec2",
+    "version": "0.1.1",
+    "news": {
+      "0.1.1": {
+        "en": "dependency updates.\nsending commands is now more reliable.\nmore error handling",
+        "de": "Abhängigkeitsaktualisierungen.\nSenden von befehlen ist jetzt zuverlässiger.\nMehr Fehlerbehandlung",
+        "ru": "обновления зависимости.\nотправка команд теперь более надежна.\nбольше обработки ошибок",
+        "pt": "atualizações de dependência.\nenviar comandos agora é mais confiável.\nmais manipulação de erros",
+        "nl": "afhankelijke updates.\ncommando's sturen is nu betrouwbaarer.\n_",
+        "fr": "mises à jour de dépendance.\nenvoyer des commandes est maintenant plus fiable.\nplus de manipulation d'erreurs",
+        "it": "aggiornamenti di dipendenza.\ninviare comandi è ora più affidabile.\nmaggiore gestione degli errori",
+        "es": "actualizaciones de dependencia.\nenviar comandos es ahora más confiable.\nmás manejo de errores",
+        "pl": "aktualizacja zależności.\nobecnie rozkazy wysyłania są bardziej wiarygodne.\nobsługa błędów",
+        "uk": "оновлення залежності.\nнадсилання команд тепер надійніше.\nбільше помилок",
+        "zh-cn": "依赖性更新。.\n现在派遣指挥更可靠。.\n更加错误地处理"
+      },
+      "0.1.0": {
+        "en": "add more translations.\nadd more options (poll TV power).",
+        "de": "Weitere Übersetzungen hinzufügen.\nWeitere Optionen hinzufügen (TV-Leistung abfragen).",
+        "ru": "добавить больше переводов.\nдобавить дополнительные параметры (опросить мощность ТВ).",
+        "pt": "adicione mais traduções.\nadicione mais opções (poll TV power).",
+        "nl": "voeg meer vertalingen toe.\nmeer opties toevoegen (poll TV power).",
+        "fr": "ajouter plus de traductions.\najouter plus d'options (interroger la puissance du téléviseur).",
+        "it": "aggiungi altre traduzioni.\naggiungere più opzioni (poll potenza TV).",
+        "es": "agregue más traducciones.\nagregue más opciones (encuesta de potencia de TV).",
+        "pl": "dodaj więcej tłumaczeń.\ndodaj więcej opcji (sondaż mocy TV).",
+        "zh-cn": "添加更多翻译。\n添加更多选项（轮询电视功能）。",
+        "uk": "додати більше перекладів.\nдодати більше опцій (опитування живлення ТВ)."
+      },
+      "0.0.8": {
+        "en": "Switched from unmaintained dependency to own code to control cec-monitor binary.\nSwtiched from event-stream to readline.\nProbably fixed missed incomming events.",
+        "de": "Von nicht beibehaltener Abhängigkeit zu eigenem Code gewechselt, um die cec-monitor-Binärdatei zu steuern.\nVom Event-Stream zur Readline gewechselt.\nVermutlich verpasste eingehende Ereignisse behoben.",
+        "ru": "Переключен с необслуживаемой зависимости на собственный код для управления двоичным кодом cec-monitor.\nПереключен из потока событий в строку чтения.\nВероятно, исправлены пропущенные входящие события.",
+        "pt": "Mudou de dependência não mantida para o próprio código para controlar o binário cec-monitor.\nMudou de fluxo de evento para linha de leitura.\nProvavelmente consertou eventos de incomming perdidos.",
+        "nl": "Overgeschakeld van niet-onderhouden afhankelijkheid naar eigen code om cec-monitor binair te besturen.\nOmgeschakeld van event-stream naar readline.\nWaarschijnlijk opgeloste gemiste binnenkomende evenementen.",
+        "fr": "Passé d'une dépendance non maintenue à son propre code pour contrôler le binaire cec-monitor.\nPassé du flux d'événements à readline.\nProbablement fixe les événements entrants manqués.",
+        "it": "Passato da dipendenza non mantenuta al proprio codice per controllare il binario cec-monitor.\nPassaggio da event-stream a readline.\nProbabilmente sono stati risolti gli eventi in entrata persi.",
+        "es": "Se cambió de dependencia no mantenida a código propio para controlar el binario cec-monitor.\nCambiado de event-stream a readline.\nProbablemente arreglos los eventos entrantes perdidos.",
+        "pl": "Przełączono z nieobsługiwanej zależności na własny kod, aby kontrolować plik binarny cec-monitor.\nPrzełączono ze strumienia zdarzeń na readline.\nPrawdopodobnie naprawiono nieodebrane nadchodzące wydarzenia.",
+        "zh-cn": "从未维护的依赖关系切换到自己的代码，以控制cec-monitor二进制文件。\n从事件流切换到readline。\n可能修复了未收到的事件。",
+        "uk": "Перехід від непідтримуваної залежності до власного коду для керування двійковим файлом cec-monitor.\nПереключено з потоку подій на рядок читання.\nЙмовірно, виправлено пропущені вхідні події."
+      },
+      "0.0.7": {
+        "en": "fix warnings",
+        "de": "Warnungen beheben",
+        "ru": "исправить предупреждения",
+        "pt": "corrigir avisos",
+        "nl": "repareer waarschuwingen",
+        "fr": "corriger les avertissements",
+        "it": "correggere gli avvisi",
+        "es": "corregir advertencias",
+        "pl": "napraw ostrzeżenia",
+        "zh-cn": "修正警告",
+        "uk": "виправити попередження"
+      },
+      "0.0.6": {
+        "en": "update dependencies",
+        "de": "Abhängigkeiten aktualisieren",
+        "ru": "обновить зависимости",
+        "pt": "atualizar dependências",
+        "nl": "update afhankelijkheden",
+        "fr": "mettre à jour les dépendances",
+        "it": "aggiornare le dipendenze",
+        "es": "actualizar dependencias",
+        "pl": "zależności aktualizacji",
+        "zh-cn": "更新依赖",
+        "uk": "оновити залежності"
+      },
+      "0.0.5": {
+        "en": "fix button presses\nadd default for button press time",
+        "de": "Fix-Taste drückt\nStandard für die Tastendruckzeit hinzufügen",
+        "ru": "исправить нажатия кнопок\nдобавить значение по умолчанию для времени нажатия кнопки",
+        "pt": "consertar botões pressionados\nadicionar padrão para o tempo de pressionamento do botão",
+        "nl": "fix knop indrukken\nvoeg standaard toe voor het indrukken van de knop",
+        "fr": "corriger les pressions sur les boutons\najouter la valeur par défaut pour le temps de pression du bouton",
+        "it": "correggere le pressioni dei pulsanti\naggiungere il valore predefinito per il tempo di pressione del pulsante",
+        "es": "arreglar pulsaciones de botones\nagregar predeterminado para el tiempo de pulsación del botón",
+        "pl": "Napraw naciśnięcia przycisku\ndodaj domyślny czas naciśnięcia przycisku",
+        "zh-cn": "固定按钮按下\n添加默认的按钮按下时间",
+        "uk": "фіксувати натискання кнопок\nдодати час натискання кнопки за умовчанням"
+      },
+      "0.0.4": {
+        "en": "Make sure active devices are marked as active.\nmake sure all devices have the required states\nfix deactivating devices\nMake sure we deliver incoming update if user did poll.",
+        "de": "Stellen Sie sicher, dass aktive Geräte als aktiv markiert sind.\nStellen Sie sicher, dass alle Geräte den erforderlichen Status haben\nDeaktivierungsgeräte reparieren\nStellen Sie sicher, dass wir eingehende Updates bereitstellen, wenn der Benutzer eine Umfrage durchgeführt hat.",
+        "ru": "Убедитесь, что активные устройства отмечены как активные.\nубедитесь, что все устройства имеют необходимые состояния\nисправить деактивирующие устройства\nУбедитесь, что мы доставляем входящее обновление, если пользователь проводил опрос.",
+        "pt": "Certifique-se de que os dispositivos ativos estejam marcados como ativos.\ncertifique-se de que todos os dispositivos tenham os estados necessários\nconsertar dispositivos de desativação\nCertifique-se de entregar a atualização de entrada se o usuário fez a pesquisa.",
+        "nl": "Zorg ervoor dat actieve apparaten zijn gemarkeerd als actief.\nzorg ervoor dat alle apparaten de vereiste statussen hebben\nrepareer deactiveringsapparaten\nZorg ervoor dat we een inkomende update leveren als de gebruiker heeft gepolst.",
+        "fr": "Assurez-vous que les appareils actifs sont marqués comme actifs.\nassurez-vous que tous les appareils ont les états requis\ncorriger la désactivation des appareils\nAssurez-vous que nous livrons la mise à jour entrante si l'utilisateur a interrogé.",
+        "it": "Assicurati che i dispositivi attivi siano contrassegnati come attivi.\nassicurarsi che tutti i dispositivi abbiano gli stati richiesti\ncorreggere la disattivazione dei dispositivi\nAssicurati di consegnare l'aggiornamento in arrivo se l'utente ha eseguito il sondaggio.",
+        "es": "Asegúrese de que los dispositivos activos estén marcados como activos.\nasegúrese de que todos los dispositivos tengan los estados requeridos\narreglar los dispositivos de desactivación\nAsegúrese de entregar la actualización entrante si el usuario realizó una encuesta.",
+        "pl": "Upewnij się, że aktywne urządzenia są oznaczone jako aktywne.\nupewnij się, że wszystkie urządzenia mają wymagane stany\nnaprawić dezaktywację urządzeń\nUpewnij się, że dostarczamy nadchodzące aktualizacje, jeśli użytkownik przeprowadził ankietę.",
+        "zh-cn": "确保将活动设备标记为活动设备。\n确保所有设备都具有所需的状态\n修复停用设备\n如果用户进行了轮询，请确保我们传递传入的更新。",
+        "uk": "Переконайтеся, що активні пристрої позначені як активні.\nпереконайтеся, що всі пристрої мають необхідні стани\nвиправити пристрої дезактивації\nПереконайтеся, що ми надсилаємо вхідне оновлення, якщо користувач проводив опитування."
+      }
+    },
+    "title": "HDMI CEC devices 2",
+    "titleLang": {
+      "en": "HDMI CEC devices 2",
+      "de": "HDMI CEC Geräte 2",
+      "ru": "Устройства HDMI CEC 2",
+      "pt": "Dispositivos HDMI CEC 2",
+      "nl": "HDMI CEC-apparaten 2",
+      "fr": "Périphériques HDMI CEC 2",
+      "it": "Dispositivi HDMI CEC 2",
+      "es": "Dispositivos HDMI CEC 2",
+      "pl": "Urządzenia HDMI CEC 2",
+      "uk": "Пристрої HDMI CEC 2",
+      "zh-cn": "HDMI CEC 设备 2"
+    },
+    "desc": {
+      "en": "Can be used to monitor / control multimedia devices using the HDMI CEC bus. Possible commands include power on/off, switch input (for TVs), volume up/donw",
+      "de": "Kann benutzt werden um Multimediageräte, die über den HDMI CEC Bus kommunizieren zu überwachen und zu kontrollieren. Mögliche Kommandos enthalten Standby an/aus, Eingang wählen (am TV), Lauter/Leiser.",
+      "ru": "Может использоваться для мониторинга/управления мультимедийными устройствами по шине HDMI CEC. Возможные команды включают в себя включение/выключение питания, переключение входа (для телевизоров), увеличение/уменьшение громкости.",
+      "pt": "Pode ser usado para monitorar/controlar dispositivos multimídia usando o barramento HDMI CEC. Os comandos possíveis incluem ligar/desligar, interruptor de entrada (para TVs), aumentar/diminuir volume",
+      "nl": "Kan worden gebruikt om multimedia-apparaten te bewaken / bedienen met behulp van de HDMI CEC-bus. Mogelijke commando's zijn onder meer aan/uit, schakelaaringang (voor tv's), volume omhoog/omlaag",
+      "fr": "Peut être utilisé pour surveiller/contrôler des appareils multimédias à l'aide du bus HDMI CEC. Les commandes possibles incluent la mise sous/hors tension, l'entrée de commutation (pour les téléviseurs), le volume haut/bas",
+      "it": "Può essere utilizzato per monitorare/controllare dispositivi multimediali utilizzando il bus HDMI CEC. Possibili comandi includono accensione/spegnimento, ingresso interruttore (per TV), volume su/giù",
+      "es": "Se puede usar para monitorear/controlar dispositivos multimedia usando el bus HDMI CEC. Los comandos posibles incluyen encendido/apagado, cambiar entrada (para televisores), subir/bajar volumen",
+      "pl": "Może być używany do monitorowania / sterowania urządzeniami multimedialnymi za pomocą magistrali HDMI CEC. Możliwe polecenia obejmują włączanie/wyłączanie zasilania, wejście przełącznika (dla telewizorów), zwiększanie/zmniejszanie głośności",
+      "uk": "Може використовуватися для моніторингу / керування мультимедійними пристроями за допомогою шини HDMI CEC. Серед можливих команд — увімкнути/вимкнути живлення, перемкнути вхід (для телевізорів), збільшити/зменшити гучність",
+      "zh-cn": "可用于监视/控制使用 HDMI CEC 总线的多媒体设备。可能的命令包括电源开/关、开关输入（用于电视）、音量增大/减小"
+    },
+    "docs": {
+      "en": "docs/en/admin.md",
+      "de": "docs/de/admin.md"
+    },
+    "osDependencies": {
+      "linux": [
+        "cec-utils"
+      ]
+    },
+    "authors": [
+      "Garfonso <garfonso@mobo.info>"
+    ],
+    "keywords": [
+      "multimedia",
+      "HDMI",
+      "CEC",
+      "TV"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "cec2.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.cec2/master/admin/cec2.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.cec2/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "multimedia",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "plugins": {
+      "sentry": {
+        "dsn": "https://ebf205f09b7f4a15b93c60810bd91092@sentry.iobroker.net/114",
+        "pathWhitelist": [
+          "@iobroker",
+          "iobroker.js-controller",
+          "cec2",
+          "stateDefinitions",
+          "cec-monitor"
         ],
-        "globalDependencies": [
-            {
-                "admin": ">=5.0.0"
-            }
+        "pathBlacklist": [],
+        "errorBlacklist": [
+          "SyntaxError"
         ]
+      }
     },
-    "native": {
-        "osdName": "ioBroker",
-        "type": "r",
-        "cecDebug": true,
-        "pollPowerStates": true,
-        "pollInterval": 30000,
-        "preventUnnamedDevices": false
+    "adminUI": {
+      "config": "materialize"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "connection status with cec-client / cec bus",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
+    "dependencies": [
+      {
+        "js-controller": ">=3.3.22"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.0.0"
+      }
     ]
+  },
+  "native": {
+    "osdName": "ioBroker",
+    "type": "r",
+    "cecDebug": true,
+    "pollPowerStates": true,
+    "pollInterval": 30000,
+    "preventUnnamedDevices": false
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "connection status with cec-client / cec bus",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
