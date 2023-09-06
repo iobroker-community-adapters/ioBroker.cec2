@@ -152,9 +152,9 @@
             "en": "docs/en/admin.md",
             "de": "docs/de/admin.md"
         },
-        "osDependencies": [
-            "cec-utils"
-        ],
+        "osDependencies": {
+            "linux": ["cec-utils"]
+        },
         "authors": ["Garfonso <garfonso@mobo.info>"],
         "keywords": ["multimedia", "HDMI", "CEC", "TV"],
         "license": "MIT",
