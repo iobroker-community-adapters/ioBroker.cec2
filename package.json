@@ -25,6 +25,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/iobroker-community-adapters/ioBroker.cec2"
+  },
   "engines": {
     "node": ">= 18"
   },
