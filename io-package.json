@@ -184,6 +184,8 @@
                 "errorBlacklist": [
                     "SyntaxError"
                 ]
+            }
+        },
         "adminUI": {
             "config": "materialize"
         },
