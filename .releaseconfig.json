@@ -1,4 +1,3 @@
 {
-  "plugins": ["iobroker", "license"],
-  "addPlaceholder": false
+    "plugins": ["iobroker", "license", "manual-review"]
 }
