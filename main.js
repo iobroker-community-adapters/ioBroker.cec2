@@ -897,6 +897,7 @@ class CEC2 extends utils.Adapter {
             if (device.common.name !== 'Global') {
                 let name = device.common.name;
                 if (typeof name !== 'string') {
+                    //@ts-ignore - somehow types do not yet know "uk".
                     name = /** @type {string} */ (name.en || name.de || name.uk || name.es || name.ru || name.fr || name.it || name.nl || name.pl || name.pl || name['zh-cn']);
                 }
                 await this.setStateChangedAsync(buildId(name, stateDefinitions.active), false, true);
@@ -973,7 +974,7 @@ class CEC2 extends utils.Adapter {
                         }
                         await this.setObjectNotExistsAsync(`${device.name}.buttons.time`, {type: 'state', common: {def: 500, name: 'Set time for next button press', unit: 'ms', write: true, read: false, role: 'level.timer', type: 'number'}, native: {isButton: true}});
                     } else if (id.includes('.buttons.time')) {
-                        if (!state.val || state.val < 50) {
+                        if (!state.val || Number(state.val) < 50) {
                             state.val = 50;
                             this.log.warn('Button presses below 50ms not supported. Increased time.');
                         }
