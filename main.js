@@ -1,8 +1,10 @@
+'use strict';
+
 /**
  *
  * cec2 adapter
  *
- * Created with @iobroker/create-adapter v1.20.0
+ * Created with @iobroker/create-adapter v2.5.0
  *
  * //native parameters will be in adapter.config
  *
@@ -1023,7 +1025,7 @@ class CEC2 extends utils.Adapter {
 }
 
 // @ts-ignore parent is a valid property on module
-if (module.parent) {
+if (require.main !== module) {
     // Export the constructor in compact mode
     /**
      * @param {Partial<utils.AdapterOptions>} [options={}]
