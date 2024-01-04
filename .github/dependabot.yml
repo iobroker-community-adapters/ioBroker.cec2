@@ -3,10 +3,20 @@ updates:
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: daily
+      interval: monthly
       time: "04:00"
       timezone: Europe/Berlin
-    allow:
-      - dependency-type: production
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 5
+    assignees:
+      - Garfonso
     versioning-strategy: increase
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+      time: "04:00"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 5
+    assignees:
+      - iobroker-community-adapters

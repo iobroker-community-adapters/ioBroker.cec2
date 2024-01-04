@@ -1,5 +1,9 @@
-.git
 .idea
+# No dot-directories except github/vscode
+.*/
+!.vscode/
+!.github/
+
 *.code-workspace
 node_modules
 nbproject
@@ -16,3 +20,4 @@ admin/i18n/*/flat.txt
 # helper scripts
 distribute.sh
 distribute.cmd
+admin/i18n/*/flat.txt

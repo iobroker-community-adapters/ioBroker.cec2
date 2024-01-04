@@ -1,14 +1,10 @@
 ![Logo](admin/cec2.png)
-### ioBroker.cec2
+# ioBroker.cec2
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.cec2.svg)](https://www.npmjs.com/package/iobroker.cec2)
+[![NPM version](https://img.shields.io/npm/v/iobroker.cec2.svg)](https://www.npmjs.com/package/iobroker.cec2)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.cec2.svg)](https://www.npmjs.com/package/iobroker.cec2)
-![Number of Installations (latest)](http://iobroker.live/badges/cec2-installed.svg)
-<!-- 
-![Number of Installations (stable)](http://iobroker.live/badges/cec2-stable.svg)
--->
-[![Dependency Status](https://status.david-dm.org/gh/iobroker-community-adapters/iobroker.cec2.svg)](https://david-dm.org/iobroker-community-adapters/iobroker.cec2)
-[![Known Vulnerabilities](https://snyk.io/test/github/iobroker-community-adapters/ioBroker.cec2/badge.svg)](https://snyk.io/test/github/iobroker-community-adapters/ioBroker.cec2)
+![Number of Installations](https://iobroker.live/badges/cec2-installed.svg)
+![Current version in stable repository](https://iobroker.live/badges/cec2-stable.svg)
 
 [![NPM](https://nodei.co/npm/iobroker.cec2.png?downloads=true)](https://nodei.co/npm/iobroker.cec2/)
 
@@ -147,11 +143,11 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 <!--
 	PLACEHOLDER for next version:
 	## __WORK IN PROGRESS__
-
 -->
-### __WORK IN PROGRESS__
-* depencendies updates
-* sending messages is now more reliable and messages are not concatenated.
+### 0.1.1 (2023-09-06)
+* dependency updates.
+* sending commands is now more reliable.
+* more error handling
 
 ### 0.1.0 (2021-02-18)
 * add more translations.
@@ -168,9 +164,8 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 ### 0.0.6 (2021-01-02)
 * update dependencies
 
-
-### License
-The MIT License (MIT)
+## License
+MIT License
 
 Copyright (c) 2020-2023 Garfonso <garfonso@mobo.info>
 
@@ -181,13 +176,13 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
