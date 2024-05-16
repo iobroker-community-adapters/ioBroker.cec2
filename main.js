@@ -347,9 +347,9 @@ class CEC2 extends utils.Adapter {
         device.active = active;
         device.logicalAddress = logicalAddress;
         if (device.name !== 'Global') {
-            await this.setStateChangedAsync(buildId(device, stateDefinitions.active), active, true);
-            await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
-            await this.setStateChangedAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
+            await this.setStateAsync(buildId(device, stateDefinitions.active), active, true);
+            await this.setStateAsync(buildId(device, stateDefinitions.logicalAddress), device.logicalAddress, true);
+            await this.setStateAsync(buildId(device, stateDefinitions.logicalAddressHex), device.logicalAddressHex, true);
         }
     }
 
@@ -702,7 +702,7 @@ class CEC2 extends utils.Adapter {
                 }
 
                 if (device.name !== 'Global') {
-                    await this.setStateChangedAsync(buildId(device, stateDefinitions.active), true, true);
+                    await this.setStateAsync(buildId(device, stateDefinitions.active), true, true);
                     await this.setStateAsync(buildId(device, stateDefinitions.lastSeen), Date.now(), true);
                 }
 
@@ -713,21 +713,21 @@ class CEC2 extends utils.Adapter {
                     await this.setStateAsync(id, value, true);
                     device.didPoll[stateDef.name] = false;
                 } else {
-                    await this.setStateChangedAsync(id, value, true);
+                    await this.setStateAsync(id, value, true);
                 }
 
                 //set global active source here:
                 if (stateDef.name === stateDefinitions.activeSource.name && data.data && data.data.str) {
                     this.log.debug('Setting activeSource to ' + data.data.str);
-                    await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions['active-source']), data.data.str, true);
+                    await this.setStateAsync(buildId(this.globalDevice, stateDefinitions['active-source']), data.data.str, true);
                     for (const otherDevice of this.devices) {
                         if (otherDevice.name !== 'Global' && otherDevice.activeSource && otherDevice.name !== device.name) {
-                            await this.setStateChangedAsync(buildId(device, stateDef), false, true);
+                            await this.setStateAsync(buildId(device, stateDef), false, true);
                         }
                     }
                 }
                 if (stateDef.name === stateDefinitions.volume.name) {
-                    await this.setStateChangedAsync(buildId(this.globalDevice, stateDefinitions.volume), value, true);
+                    await this.setStateAsync(buildId(this.globalDevice, stateDefinitions.volume), value, true);
                 }
 
                 if (stateDef.name === stateDefinitions.maxCecVersionSupported.name) {
