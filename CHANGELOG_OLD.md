@@ -1,4 +1,7 @@
 # Older Changes
+## 0.0.6 (2021-01-02)
+* update dependencies
+
 ## 0.0.5 (2021-01-01)
 * fix button presses
 * add default for button press time

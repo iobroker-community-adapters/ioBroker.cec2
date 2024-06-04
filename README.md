@@ -144,7 +144,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 	PLACEHOLDER for next version:
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 0.1.2 (2024-06-04)
 * prevent crash
 * try restart in case of error with cec-client
 
@@ -164,9 +164,6 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 
 ### 0.0.7 (2021-01-24)
 * fix warnings
-
-### 0.0.6 (2021-01-02)
-* update dependencies
 
 ## License
 MIT License

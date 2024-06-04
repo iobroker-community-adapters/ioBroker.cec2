@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "cec2",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "news": {
+      "0.1.2": {
+        "en": "prevent crash\ntry restart in case of error with cec-client",
+        "de": "verhindern absturz\nversuchen neustart bei fehlern mit cec-client",
+        "ru": "аварий\nпопробуйте перезапустить в случае ошибки cec-клиент",
+        "pt": "evitar acidente\ntente reiniciar em caso de erro com cec-client",
+        "nl": "crash voorkomen\nopnieuw starten in geval van fout met cec-client",
+        "fr": "prévenir les accidents\nessayez de redémarrer en cas d'erreur avec cec-client",
+        "it": "prevenire crash\nprovare a riavviare in caso di errore con cec-client",
+        "es": "prevenir el accidente\nprobar reiniciar en caso de error con cec-client",
+        "pl": "zapobiec awarii\nspróbuj ponownie uruchomić w przypadku błędu z cec- client",
+        "uk": "запобігання аварійних ситуацій\nспробуйте перезапустити в разі помилки з cec-client",
+        "zh-cn": "防止崩溃\n在 cec 客户端出错时尝试重新启动"
+      },
       "0.1.1": {
         "en": "dependency updates.\nsending commands is now more reliable.\nmore error handling",
         "de": "Abhängigkeitsaktualisierungen.\nSenden von befehlen ist jetzt zuverlässiger.\nMehr Fehlerbehandlung",
@@ -80,19 +93,6 @@
         "pl": "Napraw naciśnięcia przycisku\ndodaj domyślny czas naciśnięcia przycisku",
         "zh-cn": "固定按钮按下\n添加默认的按钮按下时间",
         "uk": "фіксувати натискання кнопок\nдодати час натискання кнопки за умовчанням"
-      },
-      "0.0.4": {
-        "en": "Make sure active devices are marked as active.\nmake sure all devices have the required states\nfix deactivating devices\nMake sure we deliver incoming update if user did poll.",
-        "de": "Stellen Sie sicher, dass aktive Geräte als aktiv markiert sind.\nStellen Sie sicher, dass alle Geräte den erforderlichen Status haben\nDeaktivierungsgeräte reparieren\nStellen Sie sicher, dass wir eingehende Updates bereitstellen, wenn der Benutzer eine Umfrage durchgeführt hat.",
-        "ru": "Убедитесь, что активные устройства отмечены как активные.\nубедитесь, что все устройства имеют необходимые состояния\nисправить деактивирующие устройства\nУбедитесь, что мы доставляем входящее обновление, если пользователь проводил опрос.",
-        "pt": "Certifique-se de que os dispositivos ativos estejam marcados como ativos.\ncertifique-se de que todos os dispositivos tenham os estados necessários\nconsertar dispositivos de desativação\nCertifique-se de entregar a atualização de entrada se o usuário fez a pesquisa.",
-        "nl": "Zorg ervoor dat actieve apparaten zijn gemarkeerd als actief.\nzorg ervoor dat alle apparaten de vereiste statussen hebben\nrepareer deactiveringsapparaten\nZorg ervoor dat we een inkomende update leveren als de gebruiker heeft gepolst.",
-        "fr": "Assurez-vous que les appareils actifs sont marqués comme actifs.\nassurez-vous que tous les appareils ont les états requis\ncorriger la désactivation des appareils\nAssurez-vous que nous livrons la mise à jour entrante si l'utilisateur a interrogé.",
-        "it": "Assicurati che i dispositivi attivi siano contrassegnati come attivi.\nassicurarsi che tutti i dispositivi abbiano gli stati richiesti\ncorreggere la disattivazione dei dispositivi\nAssicurati di consegnare l'aggiornamento in arrivo se l'utente ha eseguito il sondaggio.",
-        "es": "Asegúrese de que los dispositivos activos estén marcados como activos.\nasegúrese de que todos los dispositivos tengan los estados requeridos\narreglar los dispositivos de desactivación\nAsegúrese de entregar la actualización entrante si el usuario realizó una encuesta.",
-        "pl": "Upewnij się, że aktywne urządzenia są oznaczone jako aktywne.\nupewnij się, że wszystkie urządzenia mają wymagane stany\nnaprawić dezaktywację urządzeń\nUpewnij się, że dostarczamy nadchodzące aktualizacje, jeśli użytkownik przeprowadził ankietę.",
-        "zh-cn": "确保将活动设备标记为活动设备。\n确保所有设备都具有所需的状态\n修复停用设备\n如果用户进行了轮询，请确保我们传递传入的更新。",
-        "uk": "Переконайтеся, що активні пристрої позначені як активні.\nпереконайтеся, що всі пристрої мають необхідні стани\nвиправити пристрої дезактивації\nПереконайтеся, що ми надсилаємо вхідне оновлення, якщо користувач проводив опитування."
       }
     },
     "title": "HDMI CEC devices 2",
