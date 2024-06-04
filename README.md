@@ -142,9 +142,9 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 
 <!--
 	PLACEHOLDER for next version:
-	## __WORK IN PROGRESS__
+	### __WORK IN PROGRESS__
 -->
-## __WORK IN PROGRESS__
+### __WORK IN PROGRESS__
 * prevent crash
 * try restart in case of error with cec-client
 
