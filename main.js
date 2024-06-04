@@ -786,9 +786,12 @@ class CEC2 extends utils.Adapter {
             this.cec.on('_error', e => {
                 if (e.code === 'ENOENT') {
                     this.log.error('cec-client not found. Please make sure cec-utils are installed and cec-client can be run by iobroker user.');
-                    return;  //can not do the rest of the stuff.
+                    this.terminate(utils.EXIT_CODES.INVALID_DEPENDENCY_VERSION);
+                    //can not do the rest of the stuff.
                 }
-                this.log.warn('Error from CEC library: ' + e);
+                this.log.error('Error from CEC library: ' + e);
+                this.log.info('Trying to restart and correct the error.');
+                this.terminate(utils.EXIT_CODES.START_IMMEDIATELY_AFTER_STOP);
             });
 
             //add listeners for device changes:
