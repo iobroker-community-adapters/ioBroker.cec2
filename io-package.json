@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "cec2",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "news": {
+      "0.1.3": {
+        "en": "remove unnecessary files from npm package",
+        "de": "entferne unnötige dateien vom npm paket",
+        "ru": "удалить ненужные файлы из пакета npm",
+        "pt": "remover arquivos desnecessários do pacote npm",
+        "nl": "onnodige bestanden uit npm-pakket verwijderen",
+        "fr": "supprimer les fichiers inutiles du paquet npm",
+        "it": "rimuovere i file non necessari dal pacchetto npm",
+        "es": "eliminar archivos innecesarios del paquete npm",
+        "pl": "usunąć niepotrzebne pliki z pakietu npm",
+        "uk": "видалити непотрібні файли з пакета npm",
+        "zh-cn": "从 npm 包中删除不必要的文件"
+      },
       "0.1.2": {
         "en": "prevent crash\ntry restart in case of error with cec-client",
         "de": "verhindern absturz\nversuchen neustart bei fehlern mit cec-client",
@@ -80,19 +93,6 @@
         "pl": "zależności aktualizacji",
         "zh-cn": "更新依赖",
         "uk": "оновити залежності"
-      },
-      "0.0.5": {
-        "en": "fix button presses\nadd default for button press time",
-        "de": "Fix-Taste drückt\nStandard für die Tastendruckzeit hinzufügen",
-        "ru": "исправить нажатия кнопок\nдобавить значение по умолчанию для времени нажатия кнопки",
-        "pt": "consertar botões pressionados\nadicionar padrão para o tempo de pressionamento do botão",
-        "nl": "fix knop indrukken\nvoeg standaard toe voor het indrukken van de knop",
-        "fr": "corriger les pressions sur les boutons\najouter la valeur par défaut pour le temps de pression du bouton",
-        "it": "correggere le pressioni dei pulsanti\naggiungere il valore predefinito per il tempo di pressione del pulsante",
-        "es": "arreglar pulsaciones de botones\nagregar predeterminado para el tiempo de pulsación del botón",
-        "pl": "Napraw naciśnięcia przycisku\ndodaj domyślny czas naciśnięcia przycisku",
-        "zh-cn": "固定按钮按下\n添加默认的按钮按下时间",
-        "uk": "фіксувати натискання кнопок\nдодати час натискання кнопки за умовчанням"
       }
     },
     "titleLang": {
