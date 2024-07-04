@@ -144,6 +144,9 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 	PLACEHOLDER for next version:
 	### __WORK IN PROGRESS__
 -->
+### __WORK IN PROGRESS__
+* remove unnecessary files from npm package
+
 ### 0.1.2 (2024-06-04)
 * prevent crash
 * try restart in case of error with cec-client

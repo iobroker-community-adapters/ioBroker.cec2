@@ -95,7 +95,6 @@
         "uk": "фіксувати натискання кнопок\nдодати час натискання кнопки за умовчанням"
       }
     },
-    "title": "HDMI CEC devices 2",
     "titleLang": {
       "en": "HDMI CEC devices 2",
       "de": "HDMI CEC Geräte 2",
@@ -136,9 +135,7 @@
       "CEC",
       "TV"
     ],
-    "license": "MIT",
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "cec2.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.cec2/master/admin/cec2.png",
@@ -167,6 +164,11 @@
     },
     "adminUI": {
       "config": "materialize"
+    },
+    "tier": 2,
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
     },
     "dependencies": [
       {
