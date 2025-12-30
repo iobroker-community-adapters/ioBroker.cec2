@@ -2,15 +2,10 @@
   "name": "iobroker.cec2",
   "version": "0.1.3",
   "description": "Controls HDMI CEC devices form out of ioBroker.",
-  "author": {
-    "name": "Garfonso",
-    "email": "garfonso@mobo.info"
-  },
+  "author": "Garfonso <garfonso@mobo.info>",
   "contributors": [
-    {
-      "name": "Garfonso",
-      "email": "garfonso@mobo.info"
-    }
+    "Garfonso <garfonso@mobo.info>",
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.cec2",
   "license": "MIT",
