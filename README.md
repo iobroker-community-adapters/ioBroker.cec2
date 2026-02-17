@@ -149,6 +149,7 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 - (mcm1957) Adapter requires node.js >= 20 now
 - (copilot) Adapter requires js-controller >= 6.0.11 now
 - (copilot) Adapter requires admin >= 7.6.17 now
+- (mcm1957) Dependencies have been updated
 
 ### 0.1.3 (2024-07-04)
 * remove unnecessary files from npm package
