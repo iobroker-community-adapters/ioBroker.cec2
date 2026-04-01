@@ -50,8 +50,8 @@ const utils = require('@iobroker/adapter-core');
 //imports:
 const CEC = require('./lib/cec-constants');
 const CECMonitor = require('./lib/cec-monitor');
-const fs = require('fs').promises;
-const fsConstants = require('fs').constants;
+const fs = require('node:fs').promises;
+const fsConstants = require('node:fs').constants;
 const stateDefinitions = /** @type {Record<string, stateDefinition>} */ (require('./lib/stateDefinitions'));
 
 
