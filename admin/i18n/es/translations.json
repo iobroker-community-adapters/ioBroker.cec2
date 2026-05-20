@@ -1,11 +1,12 @@
 {
     "Audio": "Audio",
-    "Playback": "Reproducción",
-    "Recording": "Grabación",
-    "Tuner": "Sintonizador",
-    "devTypeString": "Tipo de dispositivo a emular",
+    "osdName": "Nombre OSD",
     "osdNameString": "Nombre en la red CEC, puede verse en la televisión.",
+    "Playback": "Reproducción",
     "pollInterval": "Intervalo para encuesta de potencia",
     "pollPowerStates": "Poll power states of TV",
-    "preventUnnamedDevices": "Ignora los dispositivos que no informan su nombre."
+    "preventUnnamedDevices": "Ignora los dispositivos que no informan su nombre.",
+    "Recording": "Grabación",
+    "Tuner": "Sintonizador",
+    "devTypeString": "Tipo de dispositivo a emular"
 }
