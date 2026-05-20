@@ -30,6 +30,12 @@ export default [
             // 'jsdoc/require-param-description': 'off',
             // 'jsdoc/require-returns-description': 'off',
             // 'jsdoc/require-returns-check': 'off',
+
+            // Allow JSDoc @type, @typedef, @property annotations in JS files.
+            // The base config uses `typed: true` which reports these as redundant
+            // (since TypeScript handles them natively), but this is a plain JS project
+            // that relies on JSDoc type annotations for IDE support.
+            'jsdoc/check-tag-names': ['warn', { typed: false }],
         },
     },
 ];

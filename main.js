@@ -42,8 +42,8 @@
 const utils = require('@iobroker/adapter-core');
 
 /**
- * stateDefinition - imported type..
- *
+ * @typedef stateDefinition - imported type.
+ * @type {import('./lib/stateDefinitions').stateDefinition}
  */
 
 //imports:
@@ -51,17 +51,19 @@ const CEC = require('./lib/cec-constants');
 const CECMonitor = require('./lib/cec-monitor');
 const fs = require('node:fs').promises;
 const fsConstants = require('node:fs').constants;
-const stateDefinitions = require('./lib/stateDefinitions');
+const stateDefinitions = /** @type {Record<string, stateDefinition>} */ (require('./lib/stateDefinitions'));
 
 /**
  * Remove forbidden characters from names so I can use them as ID.
  *
+ * @type {RegExp}
  */
 const forbiddenCharacters = /[\][*,;'"`<>\\\s?]/g;
 
 /**
  * Translate Event IDs to stateDefinitions.
  *
+ * @type {Record<number|string, stateDefinition>}
  */
 const eventToStateDefinition = {
     0: stateDefinitions.active, //0 === polling.
@@ -165,46 +167,34 @@ function stateDefinitionFromId(id) {
 }
 
 /**
- * createdStates      states created for this device
- *
- * name                      name of device - cleaned up to be ID
- *
- * logicalAddress            logicalAddress on bus. Negative for invalid.
- *
- * logicalAddressHex         Hex version of logicalAddress
- *
- * [physicalAddress]         Physical Address of device in 0.0.0.0 format
- *
- * [lastGetName]             last time we asked for a name.
- *
- * [getNameTries]            how often we have tried to get a name.
- *
- * [lastGetPhysAddr]         last time we asked for a physical address
- *
- * [getPhysAddrTries]        how often we have tried to get physical address
- *
- * [physicalAddressReallyChanged] true if physicalAddress really changed, i.e. device answered and name differs.
- *
- * didPoll true if device did just poll this state ref so next update will be forced to iobroker.
- *
- * [active]                 active state value
- *
- * [lastSeen]                last seen since value
- *
- * [activeSource]           activeSource state value
- *
- * @property {number} [volume]                  volume (only on global device)
- * @property {boolean} [volumeUp]               volumeUp state (only on global device)
- * @property {boolean} [volumeDown]             volumeDown state (only on global device)
- * @property {boolean} [mute]                   mute state (only on global device)
- * @property {boolean} [arc]                    arc state (only on global device)
- * @property {boolean} [systemAudio]            systemAudio state (only on global device)
- * @property {Array<cecDevice>} [devices]       Array of all devices (only on global device?)
- * @property {number} [currentButtonPressTime]  Time in milliseconds for the next button press to wait.
- * @property {number} maxCECVersionSupported    It seems Version 1.4 is not well-supported, yet. Try to emulate lower versions here. Number equals number in constants tried.
- * @property {boolean} [tryingMaxCECVersion]    are we currently trying max cec version?
- * @property {boolean} created                  if device was created in ioBroker or not.
- * @property {boolean} ignored                  if device is ignored (because no name & config setting)
+ * @typedef cecDevice
+ * @type {object}
+ * @property {Array<string>} createdStates - states created for this device
+ * @property {string} name - name of device - cleaned up to be ID
+ * @property {number} logicalAddress - logicalAddress on bus. Negative for invalid.
+ * @property {string} logicalAddressHex - Hex version of logicalAddress
+ * @property {string} [physicalAddress] - Physical Address of device in 0.0.0.0 format
+ * @property {number} [lastGetName] - last time we asked for a name.
+ * @property {number} [getNameTries] - how often we have tried to get a name.
+ * @property {number} [lastGetPhysAddr] - last time we asked for a physical address
+ * @property {number} [getPhysAddrTries] - how often we have tried to get physical address
+ * @property {boolean} [physicalAddressReallyChanged] - true if physicalAddress really changed, i.e. device answered and name differs.
+ * @property {Record<string, boolean>} didPoll - true if device did just poll this state ref so next update will be forced to iobroker.
+ * @property {boolean} [active] - active state value
+ * @property {number} [lastSeen] - last seen since value
+ * @property {boolean} [activeSource] - activeSource state value
+ * @property {number} [volume] - volume (only on global device)
+ * @property {boolean} [volumeUp] - volumeUp state (only on global device)
+ * @property {boolean} [volumeDown] - volumeDown state (only on global device)
+ * @property {boolean} [mute] - mute state (only on global device)
+ * @property {boolean} [arc] - arc state (only on global device)
+ * @property {boolean} [systemAudio] - systemAudio state (only on global device)
+ * @property {Array<cecDevice>} [devices] - Array of all devices (only on global device?)
+ * @property {number} [currentButtonPressTime] - Time in milliseconds for the next button press to wait.
+ * @property {number} maxCECVersionSupported - It seems Version 1.4 is not well-supported, yet. Try to emulate lower versions here. Number equals number in constants tried.
+ * @property {boolean} [tryingMaxCECVersion] - are we currently trying max cec version?
+ * @property {boolean} created - if device was created in ioBroker or not.
+ * @property {boolean} ignored - if device is ignored (because no name & config setting)
  */
 
 class CEC2 extends utils.Adapter {
@@ -222,9 +212,13 @@ class CEC2 extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
 
         this.cec = {};
+        /** @type {Record<string, NodeJS.Timeout>} */
         this.timeouts = {};
+        /** @type {Record<number, cecDevice>} */
         this.logicalAddressToDevice = {};
+        /** @type {Array<cecDevice>} */
         this.devices = [];
+        /** @type {cecDevice} */
         this.globalDevice = {
             name: 'Global',
             logicalAddress: CEC.LogicalAddress.BROADCAST,
@@ -258,6 +252,7 @@ class CEC2 extends utils.Adapter {
         }
 
         try {
+            /** @type {event} */
             const status = await this.cec.sendCommand(
                 null,
                 CEC.LogicalAddress.TV,
@@ -460,6 +455,7 @@ class CEC2 extends utils.Adapter {
         }
         if (!device) {
             this.log.debug(`Creating dummy device for ${logicalAddress} to use during device creation.`);
+            /** @type {cecDevice} */
             device = {
                 created: false,
                 ignored: false,
@@ -636,6 +632,22 @@ class CEC2 extends utils.Adapter {
         this.log.info(`Creation of device ${device.name} finished.`);
         return existingDevice || device;
     }
+
+    /**
+     * @typedef event
+     * @type {object}
+     * @property {number} source - source logical address
+     * @property {string} [type] - TRAFFIC or DEBUG
+     * @property {string} [number] - message number
+     * @property {"OUT"|"IN"} [flow] - flow direction
+     * @property {number} [target] - target logical address
+     * @property {number} [opcode] - CEC opcode
+     * @property {Array<number>} [args] - opcode arguments
+     * @property {string} [event] - event name string
+     * @property {{val: number, str: string}} [data] - parsed data value and string representation
+     * @property {stateDefinition} [stateDef] - associated state definition
+     * @property {unknown} [parsedData] - additional parsed data
+     */
 
     /**
      * Process CEC Event - update ioBroker states based on the incoming CEC message.
@@ -963,6 +975,7 @@ class CEC2 extends utils.Adapter {
         for (const device of existingDevices) {
             const id = device._id;
             const existingDevice = {
+                /** @type {Array<string>} */
                 createdStates: [],
                 active: false,
                 name: '',
@@ -980,7 +993,8 @@ class CEC2 extends utils.Adapter {
             for (const stateObject of states) {
                 if (!stateObject.native.poll) {
                     //skipp poll states
-                    const defString = stateObject.native.def;
+                    const defString = /** @type {string} */ (stateObject.native.def);
+                    /** @type {stateDefinition} */
                     const def = stateDefinitions[defString];
                     const state = await this.getStateAsync(stateObject._id);
                     if (state && def && !def.readOnly) {
@@ -1107,7 +1121,7 @@ class CEC2 extends utils.Adapter {
                             state.val = 50;
                             this.log.warn('Button presses below 50ms not supported. Increased time.');
                         }
-                        device.currentButtonPressTime = Math.max(50, state.val);
+                        device.currentButtonPressTime = Math.max(50, /** @type {number} */ (state.val));
                     } else if (id.includes('.buttons.')) {
                         const name = id.substring(id.lastIndexOf('.') + 1);
                         const code = CEC.UserControlCode[name];
