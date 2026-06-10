@@ -164,7 +164,7 @@
       }
     },
     "adminUI": {
-      "config": "materialize"
+      "config": "json"
     },
     "tier": 2,
     "licenseInformation": {

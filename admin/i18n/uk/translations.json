@@ -1,11 +1,12 @@
 {
     "Audio": "Аудіо",
-    "Playback": "Відтворення",
-    "Recording": "Запис",
-    "Tuner": "тюнер",
-    "devTypeString": "Тип пристрою для емуляції",
+    "osdName": "OSD ім'я",
     "osdNameString": "Ім'я в мережі CEC, може бути видно на ТБ.",
+    "Playback": "Відтворення",
     "pollInterval": "Інтервал для опитування потужності",
     "pollPowerStates": "Опитування станів живлення телевізора",
-    "preventUnnamedDevices": "Ігноруйте пристрої, які не повідомляють свою назву."
+    "preventUnnamedDevices": "Ігноруйте пристрої, які не повідомляють свою назву.",
+    "Recording": "Запис",
+    "Tuner": "тюнер",
+    "devTypeString": "Тип пристрою для емуляції"
 }

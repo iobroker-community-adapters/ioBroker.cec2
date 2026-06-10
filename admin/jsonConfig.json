@@ -1,0 +1,72 @@
+{
+    "type": "panel",
+    "items": {
+        "osdName": {
+            "type": "text",
+            "label": "osdName",
+            "help": "osdNameString",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+        },
+        "_spacer1": {
+            "type": "staticText",
+            "text": "",
+            "xs": 12
+        },
+        "type": {
+            "type": "select",
+            "label": "devTypeString",
+            "options": [
+                {"label": "Playback", "value": "p"},
+                {"label": "Recording", "value": "r"},
+                {"label": "Tuner", "value": "t"},
+                {"label": "Audio", "value": "a"}
+            ],
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+        },
+        "_spacer2": {
+            "type": "staticText",
+            "text": "",
+            "xs": 12
+        },
+        "pollPowerStates": {
+            "type": "checkbox",
+            "label": "pollPowerStates",
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "pollInterval": {
+            "type": "number",
+            "label": "pollInterval",
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "_spacer3": {
+            "type": "staticText",
+            "text": "",
+            "xs": 12
+        },
+        "preventUnnamedDevices": {
+            "type": "checkbox",
+            "label": "preventUnnamedDevices",
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        }
+    }
+}

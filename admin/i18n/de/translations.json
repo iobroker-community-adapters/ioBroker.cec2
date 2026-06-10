@@ -1,11 +1,12 @@
 {
     "Audio": "Audio",
-    "Playback": "Wiedergabe",
-    "Recording": "Aufnahme",
-    "Tuner": "Tuner",
-    "devTypeString": "Art des zu emulierenden Geräts",
+    "osdName": "OSD Name",
     "osdNameString": "Name im CEC Netzwerk, möglicherweise am TV sichtbar.",
+    "Playback": "Wiedergabe",
     "pollInterval": "Intervall für die Abfrage",
     "pollPowerStates": "Den An/Aus Zustand des Fernsehens regelmäßig abfragen",
-    "preventUnnamedDevices": "Ignoriere Geräte, die ihren Namen nicht melden."
+    "preventUnnamedDevices": "Ignoriere Geräte, die ihren Namen nicht melden.",
+    "Recording": "Aufnahme",
+    "Tuner": "Tuner",
+    "devTypeString": "Art des zu emulierenden Geräts"
 }
