@@ -10,6 +10,8 @@
 
 **Tests:** ![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.cec2/workflows/Test%20and%20Release/badge.svg)
 
+**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
+
 
 Adapter for HDMI CEC
 
@@ -143,6 +145,9 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 - (copilot) Adapter requires js-controller >= 6.0.11 now
 - (copilot) Adapter requires admin >= 7.6.17 now
 - (mcm1957) Dependencies have been updated
+- (Garfonso) Node.js 26 has been added to the test matrix
+- (Garfonso) Size attributes and i18n flag have been added to jsonConfig
+- (Garfonso) Dependencies have been updated
 
 ### 0.1.3 (2024-07-04)
 * remove unnecessary files from npm package
