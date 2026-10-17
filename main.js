@@ -212,7 +212,7 @@ class CEC2 extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
 
         this.cec = {};
-        /** @type {Record<string, NodeJS.Timeout>} */
+        /** @type {Record<string, ioBroker.Timeout | undefined>} */
         this.timeouts = {};
         /** @type {Record<number, cecDevice>} */
         this.logicalAddressToDevice = {};
@@ -248,7 +248,7 @@ class CEC2 extends utils.Adapter {
      */
     async pollPowerStates() {
         if (this.timeouts.pollPowerStates) {
-            clearTimeout(this.timeouts.pollPowerStates); //prevent multiple executions.
+            this.clearTimeout(this.timeouts.pollPowerStates); //prevent multiple executions.
         }
 
         try {
@@ -266,7 +266,10 @@ class CEC2 extends utils.Adapter {
             this.log.debug(`TV did not answer to powerRequest: ${e} - ${e.stack}`);
         }
 
-        this.timeouts.pollPowerStates = setTimeout(() => this.pollPowerStates(), this.config.pollInterval || 30000);
+        this.timeouts.pollPowerStates = this.setTimeout(
+            () => this.pollPowerStates(),
+            this.config.pollInterval || 30000,
+        );
     }
 
     /**
@@ -502,8 +505,8 @@ class CEC2 extends utils.Adapter {
                         device.getNameTries += 1;
                         device.lastGetName = Date.now();
                         await this.cec.sendMessage(null, logicalAddress, CEC.Opcode.GIVE_OSD_NAME);
-                        clearTimeout(this.timeouts[`createTimeout${logicalAddress}`]);
-                        this.timeouts[`createTimeout${logicalAddress}`] = setTimeout(() => {
+                        this.clearTimeout(this.timeouts[`createTimeout${logicalAddress}`]);
+                        this.timeouts[`createTimeout${logicalAddress}`] = this.setTimeout(() => {
                             this.createCECDevice(logicalAddress, data);
                         }, 10000);
                     } catch (e) {
@@ -539,8 +542,8 @@ class CEC2 extends utils.Adapter {
                         device.getPhysAddrTries += 1;
                         device.lastGetPhysAddr = Date.now();
                         await this.cec.sendMessage(null, logicalAddress, CEC.Opcode.GIVE_PHYSICAL_ADDRESS);
-                        clearTimeout(this.timeouts[`createTimeout${logicalAddress}`]);
-                        this.timeouts[`createTimeout${logicalAddress}`] = setTimeout(() => {
+                        this.clearTimeout(this.timeouts[`createTimeout${logicalAddress}`]);
+                        this.timeouts[`createTimeout${logicalAddress}`] = this.setTimeout(() => {
                             this.createCECDevice(logicalAddress, data);
                         }, 10000);
                     } catch (e) {
@@ -646,7 +649,7 @@ class CEC2 extends utils.Adapter {
      * @property {string} [event] - event name string
      * @property {{val: number, str: string}} [data] - parsed data value and string representation
      * @property {stateDefinition} [stateDef] - associated state definition
-     * @property {unknown} [parsedData] - additional parsed data
+     * @property {ioBroker.StateValue} [parsedData] - additional parsed data
      */
 
     /**
@@ -782,10 +785,10 @@ class CEC2 extends utils.Adapter {
                 this.log.debug(`Updating ${id} to ${value}`);
                 await this.createStateInDevice(device, stateDef);
                 if (device.didPoll[stateDef.name]) {
-                    await this.setStateAsync(id, value, true);
+                    await this.setStateAsync(id, value ?? null, true);
                     device.didPoll[stateDef.name] = false;
                 } else {
-                    await this.setStateAsync(id, value, true);
+                    await this.setStateAsync(id, value ?? null, true);
                 }
 
                 //set global active source here:
@@ -807,7 +810,7 @@ class CEC2 extends utils.Adapter {
                     }
                 }
                 if (stateDef.name === stateDefinitions.volume.name) {
-                    await this.setStateAsync(buildId(this.globalDevice, stateDefinitions.volume), value, true);
+                    await this.setStateAsync(buildId(this.globalDevice, stateDefinitions.volume), value ?? null, true);
                 }
 
                 if (stateDef.name === stateDefinitions.maxCecVersionSupported.name) {
@@ -870,6 +873,7 @@ class CEC2 extends utils.Adapter {
                 //hdmiPort: config.hdmiPort,
                 //processManaged: false, // if false -> will catch uncaught exceptions and exit process. Hm.
                 type: config.type,
+                adapter: this,
                 autoRestart: true, //allows auto restart of cec-client.
                 commandTimeout: 3,
             });
@@ -909,7 +913,7 @@ class CEC2 extends utils.Adapter {
         }
 
         this.log.debug('CEC Monitor ready.');
-        this.timeouts.scan = setTimeout(() => this.cec.writeRawMessage('scan'), 10000);
+        this.timeouts.scan = this.setTimeout(() => this.cec.writeRawMessage('scan'), 10000);
 
         if (config.pollPowerStates) {
             await this.pollPowerStates();
@@ -933,7 +937,7 @@ class CEC2 extends utils.Adapter {
         await this.createStateInDevice(this.globalDevice, stateDefinitions.arc);
         await this.createStateInDevice(this.globalDevice, stateDefinitions.standbyAll);
         //poll audio stuff:
-        this.timeouts.pollAudio = setTimeout(async () => {
+        this.timeouts.pollAudio = this.setTimeout(async () => {
             //volume, mute and so on
             try {
                 await this.cec.sendMessage(null, CEC.LogicalAddress.AUDIOSYSTEM, CEC.Opcode.GIVE_AUDIO_STATUS);
@@ -1005,22 +1009,22 @@ class CEC2 extends utils.Adapter {
                 }
             }
             if (device.common.name !== 'Global') {
-                let name = device.common.name;
-                if (typeof name !== 'string') {
-                    // @ts-expect-error - somehow types do not yet know "uk".
-                    name =
-                        name.en ||
-                        name.de ||
-                        name.uk ||
-                        name.es ||
-                        name.ru ||
-                        name.fr ||
-                        name.it ||
-                        name.nl ||
-                        name.pl ||
-                        name.pl ||
-                        name['zh-cn'];
-                }
+                const commonName = device.common.name;
+                const name =
+                    typeof commonName === 'string'
+                        ? commonName
+                        : commonName.en ||
+                          commonName.de ||
+                          commonName.uk ||
+                          commonName.es ||
+                          commonName.ru ||
+                          commonName.fr ||
+                          commonName.it ||
+                          commonName.nl ||
+                          commonName.pl ||
+                          commonName.pt ||
+                          commonName['zh-cn'] ||
+                          existingDevice.name;
                 await this.setStateChangedAsync(buildId(name, stateDefinitions.active), false, true);
             }
             this.devices.push(existingDevice);
@@ -1047,7 +1051,7 @@ class CEC2 extends utils.Adapter {
         try {
             this.cec.stop();
             for (const key of Object.keys(this.timeouts)) {
-                clearTimeout(this.timeouts[key]);
+                this.clearTimeout(this.timeouts[key]);
             }
             this.log.debug('cleaned everything up...');
             callback();
@@ -1132,14 +1136,14 @@ class CEC2 extends utils.Adapter {
                                 CEC.Opcode.USER_CONTROL_PRESSED,
                                 code,
                             );
-                            setTimeout(async () => {
+                            this.setTimeout(async () => {
                                 await this.cec.sendMessage(
                                     null,
                                     device.logicalAddress,
                                     CEC.Opcode.USER_CONTROL_RELEASE,
                                     code,
                                 );
-                            }, device.currentButtonPressTime);
+                            }, device.currentButtonPressTime ?? 0);
                         }
                     } else {
                         const stateDefinition = stateDefinitionFromId(id);
@@ -1182,7 +1186,6 @@ class CEC2 extends utils.Adapter {
     // }
 }
 
-// @ts-expect-error parent is a valid property on module
 if (require.main !== module) {
     // Export the constructor in compact mode
     /**

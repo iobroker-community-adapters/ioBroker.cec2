@@ -148,6 +148,9 @@ See [example Scripts](doc/ExampleScripts.md) for some example scripts that help 
 - (Garfonso) Node.js 26 has been added to the test matrix
 - (Garfonso) Size attributes and i18n flag have been added to jsonConfig
 - (Garfonso) Dependencies have been updated
+- (Garfonso) Adapter timers (setTimeout/setInterval) are used now, so timers are cleaned up on unload
+- (Garfonso) Type checking errors have been fixed
+- (Garfonso) Translations have been converted to the short i18n format
 
 ### 0.1.3 (2024-07-04)
 * remove unnecessary files from npm package

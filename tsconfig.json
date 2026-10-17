@@ -6,6 +6,7 @@
     "compilerOptions": {
         // do not compile anything, this file is just to configure type checking
         "noEmit": true,
+        "types": ["node", "mocha"],
 
         // check JS files
         "allowJs": true,
