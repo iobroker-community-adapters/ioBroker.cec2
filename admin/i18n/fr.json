@@ -4,9 +4,14 @@
     "Recording": "Enregistrement",
     "Tuner": "Tuner",
     "devTypeString": "Type d'appareil à émuler",
+    "hdmiPort": "Port HDMI",
+    "hdmiPortHelp": "Port HDMI du téléviseur/récepteur auquel l'adaptateur est connecté, 0 = détection automatique",
     "osdName": "Nom OSD",
     "osdNameString": "Nom dans le réseau CEC, peut être visible à la télévision.",
     "pollInterval": "Intervalle pour l'interrogation de puissance",
+    "pollIntervalHelp": "en millisecondes",
     "pollPowerStates": "Interroger les états d'alimentation du téléviseur",
+    "port": "Appareil CEC",
+    "portHelp": "c'est-à-dire /dev/cec1 ou /dev/ttyACM0, vide = détection automatique",
     "preventUnnamedDevices": "Ignorez les appareils qui ne signalent pas leur nom."
 }

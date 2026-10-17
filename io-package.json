@@ -184,11 +184,13 @@
   },
   "native": {
     "osdName": "ioBroker",
-    "type": "r",
+    "type": "p",
     "cecDebug": true,
     "pollPowerStates": true,
-    "pollInterval": 30000,
-    "preventUnnamedDevices": false
+    "pollInterval": 60000,
+    "preventUnnamedDevices": false,
+    "hdmiPort": 0,
+    "port": ""
   },
   "objects": [],
   "instanceObjects": [

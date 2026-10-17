@@ -4,9 +4,14 @@
     "Recording": "Registrazione",
     "Tuner": "Sintonizzatore",
     "devTypeString": "Tipo di dispositivo da emulare",
+    "hdmiPort": "Porta HDMI",
+    "hdmiPortHelp": "Porta HDMI del televisore/ricevitore a cui è collegato l'adattatore, 0 = rilevamento automatico",
     "osdName": "Nome OSD",
     "osdNameString": "Il nome nella rete CEC potrebbe essere visibile in TV.",
     "pollInterval": "Intervallo per il sondaggio di potenza",
+    "pollIntervalHelp": "in millisecondi",
     "pollPowerStates": "Sondaggio degli stati di alimentazione della TV",
+    "port": "Dispositivo CEC",
+    "portHelp": "cioè /dev/cec1 o /dev/ttyACM0, vuoto = rilevamento automatico",
     "preventUnnamedDevices": "Ignora i dispositivi che non riportano il loro nome."
 }

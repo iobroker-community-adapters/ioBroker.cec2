@@ -57,6 +57,8 @@
         "pollInterval": {
             "type": "number",
             "label": "pollInterval",
+            "help": "pollIntervalHelp",
+            "min": 5000,
             "xs": 12,
             "sm": 6,
             "md": 4,
@@ -64,6 +66,46 @@
             "xl": 3
         },
         "_spacer3": {
+            "type": "staticText",
+            "text": "",
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+        },
+        "_spacer4": {
+            "type": "staticText",
+            "text": "",
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+        },
+        "port": {
+            "type": "text",
+            "label": "port",
+            "help": "portHelp",
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "hdmiPort": {
+            "type": "number",
+            "label": "hdmiPort",
+            "help": "hdmiPortHelp",
+            "min": 0,
+            "max": 15,
+            "xs": 12,
+            "sm": 6,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "_spacer5": {
             "type": "staticText",
             "text": "",
             "xs": 12,

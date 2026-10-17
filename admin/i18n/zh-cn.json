@@ -4,9 +4,14 @@
     "Recording": "记录",
     "Tuner": "调音器",
     "devTypeString": "要模拟的设备类型",
+    "hdmiPort": "HDMI端口",
+    "hdmiPortHelp": "适配器所连接的电视/接收器的 HDMI 端口，0 = 自动检测",
     "osdName": "OSD名称",
     "osdNameString": "CEC网络中的名称，可能在电视上可见。",
     "pollInterval": "功率轮询间隔",
+    "pollIntervalHelp": "以毫秒为单位",
     "pollPowerStates": "电视的轮询电源状态",
+    "port": "CEC装置",
+    "portHelp": "即 /dev/cec1 或 /dev/ttyACM0，空 = 自动检测",
     "preventUnnamedDevices": "忽略不报告其名称的设备。"
 }

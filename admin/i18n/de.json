@@ -4,9 +4,14 @@
     "Recording": "Aufnahme",
     "Tuner": "Tuner",
     "devTypeString": "Art des zu emulierenden Geräts",
+    "hdmiPort": "HDMI-Port",
+    "hdmiPortHelp": "HDMI-Port des Fernsehers / Receivers, an dem der Adapter angeschlossen ist, 0 = automatisch",
     "osdName": "OSD Name",
     "osdNameString": "Name im CEC Netzwerk, möglicherweise am TV sichtbar.",
     "pollInterval": "Intervall für die Abfrage",
+    "pollIntervalHelp": "in Millisekunden",
     "pollPowerStates": "Den An/Aus Zustand des Fernsehens regelmäßig abfragen",
+    "port": "CEC-Gerät",
+    "portHelp": "z.B. /dev/cec1 oder /dev/ttyACM0, leer = automatisch erkennen",
     "preventUnnamedDevices": "Ignoriere Geräte, die ihren Namen nicht melden."
 }

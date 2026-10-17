@@ -4,9 +4,14 @@
     "Recording": "Nagranie",
     "Tuner": "Tuner",
     "devTypeString": "Typ urządzenia do emulacji",
+    "hdmiPort": "Port HDMI",
+    "hdmiPortHelp": "Port HDMI telewizora/odbiornika, do którego podłączony jest adapter, 0 = automatyczne wykrywanie",
     "osdName": "Nazwa OSD",
     "osdNameString": "Nazwa w sieci CEC, może być widoczna na telewizorze.",
     "pollInterval": "Interwał dla ankiety zasilania",
+    "pollIntervalHelp": "w milisekundach",
     "pollPowerStates": "Sprawdź stan zasilania telewizora",
+    "port": "Urządzenie CEC",
+    "portHelp": "tj. /dev/cec1 lub /dev/ttyACM0, pusty = automatyczne wykrywanie",
     "preventUnnamedDevices": "Zignoruj urządzenia, które nie zgłaszają swojej nazwy."
 }

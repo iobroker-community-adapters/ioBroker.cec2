@@ -4,9 +4,14 @@
     "Recording": "Opnemen",
     "Tuner": "Stemapparaat",
     "devTypeString": "Type apparaat om te emuleren",
+    "hdmiPort": "HDMI-poort",
+    "hdmiPortHelp": "HDMI-poort van de tv/ontvanger waarop de adapter is aangesloten, 0 = autodetect",
     "osdName": "OSD Naam",
     "osdNameString": "Naam in CEC-netwerk, mogelijk zichtbaar op tv.",
     "pollInterval": "Interval voor power poll",
+    "pollIntervalHelp": "in milliseconden",
     "pollPowerStates": "Vraag de energietoestanden van tv af",
+    "port": "CEC-apparaat",
+    "portHelp": "d.w.z. /dev/cec1 of /dev/ttyACM0, leeg = autodetect",
     "preventUnnamedDevices": "Negeer apparaten die hun naam niet melden."
 }

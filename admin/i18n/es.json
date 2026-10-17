@@ -4,9 +4,14 @@
     "Recording": "Grabación",
     "Tuner": "Sintonizador",
     "devTypeString": "Tipo de dispositivo a emular",
+    "hdmiPort": "Puerto HDMI",
+    "hdmiPortHelp": "Puerto HDMI del televisor/receptor al que está conectado el adaptador, 0 = detección automática",
     "osdName": "Nombre OSD",
     "osdNameString": "Nombre en la red CEC, puede verse en la televisión.",
     "pollInterval": "Intervalo para encuesta de potencia",
+    "pollIntervalHelp": "en milisegundos",
     "pollPowerStates": "Poll power states of TV",
+    "port": "dispositivo CCA",
+    "portHelp": "es decir, /dev/cec1 o /dev/ttyACM0, vacío = detección automática",
     "preventUnnamedDevices": "Ignora los dispositivos que no informan su nombre."
 }

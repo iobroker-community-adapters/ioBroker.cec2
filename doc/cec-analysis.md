@@ -174,10 +174,12 @@ OS (forky, expected ~2027). Options:
 
 ## 8. Suggested order
 
-1. ~~Evaluate the libCEC Node binding~~ done, see section 7.
-2. Bug fixes from section 3.
-3. Remove forged initiators and version emulation, default to playback, configurable HDMI port,
-   check `/dev/cec0`.
+1. ~~Evaluate the libCEC Node binding~~ done, see section 7. Decision: option A.
+2. ~~Bug fixes from section 3~~ done.
+3. ~~Remove forged initiators and version emulation, default to playback, configurable HDMI port,
+   check `/dev/cec0`~~ done. Also: default power poll interval 60 s, backend interface
+   (`lib/cec-backend.js`, `lib/cec-protocol.js`) with cec-client implementation (`lib/cec-monitor.js`).
+4. Open: libCEC binding backend (option B) once libCEC 8 is available in Debian stable.
 
 ## Sources
 

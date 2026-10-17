@@ -4,9 +4,14 @@
     "Recording": "Запись",
     "Tuner": "Тюнер",
     "devTypeString": "Тип устройства для эмуляции",
+    "hdmiPort": "HDMI-порт",
+    "hdmiPortHelp": "Порт HDMI телевизора/ресивера, к которому подключен адаптер, 0 = автоопределение",
     "osdName": "OSD имя",
     "osdNameString": "Имя в сети ЦИК, может быть видно по ТВ.",
     "pollInterval": "Интервал опроса мощности",
+    "pollIntervalHelp": "в миллисекундах",
     "pollPowerStates": "Опрос состояния мощности ТВ",
+    "port": "устройство ЦИК",
+    "portHelp": "т. е. /dev/cec1 или /dev/ttyACM0, пусто = автоопределение",
     "preventUnnamedDevices": "Игнорировать устройства, которые не сообщают свое имя."
 }
